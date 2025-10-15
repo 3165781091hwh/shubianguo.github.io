@@ -1,0 +1,215 @@
+/* Page16 - 推动规则创新页面样式 */
+
+/* 页面容器布局 */
+#page16-container .page-container {
+    position: relative; 
+    display: grid;
+    grid-template-columns: 150px 1fr;
+    grid-template-rows: 1fr auto;
+    grid-template-areas:
+        "sidebar main"
+        "footer footer";
+    height: 100vh;
+    padding: 2vw;
+    gap: 2vw;
+}
+
+/* 页面底部标题 */
+#page16-container .page-footer {
+    grid-area: footer;
+    text-align: center;
+    font-size: 3.5vw;
+    font-weight: 900;
+    letter-spacing: 0.2em;
+    padding-top: 1vw;
+    text-shadow: 0 0 15px rgba(255,255,255,0.7);
+    opacity: 0;
+    animation: fadeIn 0.8s 0.4s ease-out forwards;
+}
+
+/* 左侧侧边栏 */
+#page16-container .sidebar {
+    grid-area: sidebar;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 20px;
+    opacity: 0;
+    animation: slideInLeft 0.8s 0.6s ease-out forwards;
+}
+
+#page16-container .sidebar-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 80px;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    font-size: 1.5vw;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: var(--panel-bg);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+#page16-container .sidebar-item:hover {
+    transform: translateY(-5px) scale(1.05);
+    border-color: var(--primary-color-2);
+}
+
+#page16-container .sidebar-item.active {
+    background-color: var(--font-color);
+    color: var(--bg-color);
+    border-color: var(--font-color);
+}
+
+/* 主内容区域 */
+#page16-container .main-content {
+    grid-area: main;
+    display: grid;
+    grid-template-rows: 3fr 1fr; 
+    grid-template-columns: 1fr;
+    gap: 2vw; 
+    opacity: 0;
+    animation: fadeIn 0.8s 0.8s ease-out forwards;
+    min-height: 0;
+    padding-top: 2vh;
+}
+
+/* 上部分区域 */
+#page16-container .top-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2vw;
+    min-height: 0;
+}
+
+/* 下部分区域 */
+#page16-container .bottom-section .panel {
+    height: 100%;
+    padding: 1.5vw 2vw;
+    font-size: 1.0vw; 
+    line-height: 1.8;
+    overflow-y: auto;
+}
+
+#page16-container .bottom-section .panel p {
+    margin-bottom: 1em;
+}
+
+/* 高亮文本 */
+#page16-container .highlight-text {
+    font-weight: bold;
+    color: var(--primary-color-2);
+}
+
+/* 面板样式 */
+#page16-container .panel {
+    border-radius: 12px;
+    background: var(--panel-bg);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    border: 1px solid var(--border-color);
+}
+
+/* 图表容器 */
+#page16-container .chart-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    border-radius: 12px;
+    background: var(--panel-bg);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    border: 1px solid var(--border-color);
+}
+
+/* 图表控制按钮 */
+#page16-container .chart-controls {
+    flex-shrink: 0;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+#page16-container .chart-controls button {
+    padding: 8px 20px;
+    margin: 0 10px;
+    border: 1px solid var(--border-color);
+    background-color: transparent;
+    color: var(--font-color);
+    border-radius: 20px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#page16-container .chart-controls button.active,
+#page16-container .chart-controls button:hover {
+    background-color: var(--font-color);
+    color: var(--bg-color);
+    border-color: var(--font-color);
+}
+
+/* 图表显示区域 */
+#page16-container .chart-display-area {
+    flex-grow: 1;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    min-height: 0;
+}
+
+#page16-container .chart-display-area > div, 
+#page16-container .chart-display-area > img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transition: opacity 0.4s ease-in-out;
+}
+
+#page16-container .chart-display-area img {
+    object-fit: contain;
+}
+
+/* 页面脚注 */
+#page16-container .page-footnote {
+    position: absolute;
+    bottom: 1vw;
+    right: 2vw;
+    font-size: 0.7vw;
+    color: rgba(61, 64, 91, 0.8);
+    max-width: 70%;
+    white-space: nowrap; 
+    text-align: right;
+    z-index: 10;
+}
+
+/* 动画关键帧 */
+@keyframes fadeIn { 
+    from { 
+        opacity: 0; 
+        transform: translateY(10px); 
+    } 
+    to { 
+        opacity: 1; 
+        transform: translateY(0); 
+    } 
+}
+
+@keyframes slideInLeft { 
+    from { 
+        opacity: 0; 
+        transform: translateX(-50px); 
+    } 
+    to { 
+        opacity: 1; 
+        transform: translateX(0); 
+    } 
+} 

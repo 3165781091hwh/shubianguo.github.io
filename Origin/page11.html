@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>医药集采数据新闻 - 影响企业绩效</title>
+    <!-- 引入 ECharts 库 -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <style>
+        /* --- 风格标准：完全继承自【白版】文件 --- */
+        :root {
+            --bg-color: #FFFBF0;
+            --font-color: #3D405B;
+            --primary-color-1: #3D405B; /* 颜色1: 深灰蓝 (对照组/实验组) */
+            --primary-color-2: #E07A5F;  /* 颜色2: 珊瑚橙 (实验组/对照组) */
+            --border-color: rgba(0, 0, 0, 0.1);
+            --panel-bg: rgba(255, 255, 255, 0.5);
+            --font-family-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body {
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            background-color: var(--bg-color);
+            font-family: var(--font-family-main);
+            color: var(--font-color);
+        }
+
+        /* --- 页面整体布局 (基于【白版】并按内容提示词调整) --- */
+        .page-container {
+            display: grid;
+            grid-template-columns: 150px 1fr;
+            grid-template-rows: 1fr auto;
+            grid-template-areas:
+                "sidebar main"
+                "footer footer";
+            height: 100vh;
+            padding: 2vw;
+            gap: 2vw;
+        }
+        
+        /* --- 底部大标题 (与【白版】位置、风格相同) --- */
+        .page-footer {
+            grid-area: footer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3.5vw;
+            font-weight: 900;
+            letter-spacing: 0.2em;
+            padding-top: 1vw;
+            opacity: 0;
+            animation: fadeIn 0.8s 0.4s ease-out forwards;
+        }
+
+        /* --- 左侧边栏 (与【白版】位置、风格相同) --- */
+        .sidebar {
+            grid-area: sidebar;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 20px;
+            opacity: 0;
+            animation: slideInLeft 0.8s 0.6s ease-out forwards;
+        }
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 80px;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 1.5vw;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: var(--panel-bg);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        .sidebar-item:hover {
+            transform: translateY(-5px) scale(1.05);
+            border-color: var(--primary-color-2);
+        }
+        .sidebar-item.active {
+            background-color: var(--font-color);
+            color: var(--bg-color);
+            border-color: var(--font-color);
+        }
+        
+        /* --- 主内容区 (遵从内容提示词，创建新布局) --- */
+        .main-content {
+            grid-area: main;
+            display: flex;
+            flex-direction: column;
+            gap: 2vw; 
+            opacity: 0;
+            animation: fadeIn 0.8s 0.8s ease-out forwards;
+            min-height: 0;
+        }
+
+        /* 上方图表区 (占2/3) */
+        .top-charts-container {
+            flex: 2;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2vw;
+            min-height: 0;
+        }
+        
+        /* 下方文本区 (占1/3) */
+        .bottom-text-container {
+            flex: 1;
+            min-height: 0;
+        }
+
+        /* 通用面板/容器样式 (来自【白版】的info-panel) */
+        .panel {
+            width: 100%;
+            height: 100%;
+            padding: 25px;
+            border-radius: 12px;
+            background: var(--panel-bg);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+        }
+        .text-panel {
+            display: flex;
+            flex-direction: column; 
+            align-items: flex-start;
+            font-size: 1vw;
+            /* 修改点 ①：将行间距从 1.8 缩小为 1.6 */
+            line-height: 1.6;
+            padding: 1.5vw;
+            overflow-y: auto; 
+        }
+        .text-panel p {
+            margin-bottom: 1em; 
+        }
+        .text-panel p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* 新增：页面全局注释样式 */
+        .page-annotation {
+            position: fixed; /* 相对于浏览器窗口定位 */
+            bottom: 2vw;     /* 与页面padding保持一致 */
+            right: 2vw;      /* 与页面padding保持一致 */
+            font-size: 13px;
+            color: #888;
+            /* 修改点 ①：增加最大宽度以减少换行 */
+            max-width: 450px;
+            text-align: right;
+            line-height: 1.5;
+            pointer-events: none;
+            z-index: 100; /* 确保在最顶层 */
+        }
+
+
+        /* --- 动画 (来自【白版】) --- */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideInLeft { from { opacity: 0; transform: translateX(-50px); } to { opacity: 1; transform: translateX(0); } }
+    </style>
+</head>
+<body>
+
+    <div class="page-container">
+        
+        <aside class="sidebar">
+            <div class="sidebar-item">患者</div>
+            <div class="sidebar-item active">业界</div>
+            <div class="sidebar-item">社会</div>
+            <div class="sidebar-item">其他</div>
+        </aside>
+
+        <main class="main-content">
+            <!-- 上三分之二：左右两个图表 -->
+            <div class="top-charts-container">
+                <div id="chart-roe" class="panel"></div>
+                <div id="chart-tobin-q" class="panel"></div>
+            </div>
+            <!-- 下三分之一：一个文本框 -->
+            <div class="bottom-text-container">
+                <div class="panel text-panel">
+                    <p>集采改革带来的“骨折价”药品，对患者来说无疑是一件好事，那对供应链上游的医药企业来说呢？</p>
+                    <p>从短期效益来看，主要面向国内市场的医药企业在面对如此巨大价格降幅后，面对适应原有价格体系的生产成本、销售成本肯定一时间难以适应。但是，集采降价的核心机制是合理的机制产生合理的价格。</p>
+                    <p>长期来看，新的、合理的、适应集采改革的价格制定规则的机制一旦形成，一旦企业探索出了新的成本调控机制。企业拥有的是“以量代价”的中国14亿人口巨大而稳定的市场，而这带来的是可观的长期效益。在十轮集采过后，已经有不少企业从集采改革中获益，市场蓬勃发展。</p>
+                </div>
+            </div>
+        </main>
+
+        <footer class="page-footer">
+            影响企业绩效
+        </footer>
+
+    </div>
+    
+    <!-- 全局注释的HTML元素 -->
+    <div class="page-annotation">*托宾Q比率：企业股票市值对股票所代表的资产重置成本的比值，也可以说是企业市价(股价)与企业净资产的比值。</div>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    // --- 数据准备 (从图片表格中提取) ---
+    const timeLabels = ['2018Q1', '2018Q2', '2018Q3', '2018Q4', '2019Q1', '2019Q2', '2019Q3', '2019Q4', '2020Q1', '2020Q2', '2020Q3', '2020Q4', '2021Q1'];
+    
+    // 数据1: ROE
+    const roeData = {
+        experimental: [0.032, 0.039, 0.031, 0.016, 0.037, 0.045, 0.008, 0.015, 0.022, 0.04, 0.034, 0.021, 0.033],
+        control:      [0.031, 0.034, 0.027, 0.002, 0.025, 0.033, 0.029, 0.019, 0.025, 0.036, 0.033, -0.001, 0.033]
+    };
+
+    // 数据2: 托宾Q
+    const tobinQData = {
+        control: [2.5, 2.4, 2.3, 2.0, 2.7, 2.6, 2.7, 2.8, 3.0, 3.6, 3.8, 3.7, 3.3],
+        experimental: [4.0, 4.2, 3.7, 3.0, 3.7, 3.5, 3.6, 3.8, 3.9, 4.2, 4.3, 4.4, 4.5]
+    };
+
+    const colors = {
+        color1: getComputedStyle(document.documentElement).getPropertyValue('--primary-color-1').trim(),
+        color2: getComputedStyle(document.documentElement).getPropertyValue('--primary-color-2').trim()
+    };
+
+    // --- 初始化 ECharts 实例 ---
+    const chartRoe = echarts.init(document.getElementById('chart-roe'));
+    const chartTobinQ = echarts.init(document.getElementById('chart-tobin-q'));
+
+    // --- 通用图表配置 ---
+    const baseOption = {
+        tooltip: { trigger: 'axis' },
+        grid: { left: '10%', right: '5%', bottom: '22%', top: '20%' }, 
+        xAxis: { type: 'category', boundaryGap: false, data: timeLabels, axisLabel: { rotate: 30 } },
+        yAxis: { type: 'value', axisLabel: { formatter: '{value}' } },
+        legend: {
+            bottom: 0,
+            textStyle: {
+                fontSize: 14
+            }
+        }
+    };
+
+    // --- 配置图表1: ROE ---
+    const optionRoe = {
+        ...baseOption,
+        title: { text: '企业短期绩效净资产收益率的演变趋势', left: 'center', textStyle: { fontSize: 28 } },
+        color: [colors.color2, colors.color1],
+        legend: { ...baseOption.legend, data: ['中标企业', '未中标企业'] },
+        series: [
+            { name: '中标企业', type: 'line', smooth: true, data: roeData.experimental },
+            { name: '未中标企业', type: 'line', smooth: true, data: roeData.control }
+        ]
+    };
+
+    // --- 配置图表2: 托宾Q ---
+    const optionTobinQ = {
+        ...baseOption,
+        title: { text: '企业长期绩效托宾 Q 的演变趋势', left: 'center', textStyle: { fontSize: 28 } },
+        color: [colors.color2, colors.color1],
+        legend: { ...baseOption.legend, data: ['中标企业', '未中标企业'] },
+        series: [
+            { name: '中标企业', type: 'line', smooth: true, data: tobinQData.experimental },
+            { name: '未中标企业', type: 'line', smooth: true, data: tobinQData.control }
+        ]
+    };
+
+    // --- 渲染图表 ---
+    chartRoe.setOption(optionRoe);
+    chartTobinQ.setOption(optionTobinQ);
+
+    // --- 窗口大小调整 ---
+    window.addEventListener('resize', function () {
+        chartRoe.resize();
+        chartTobinQ.resize();
+    });
+});
+</script>
+
+</body>
+</html>

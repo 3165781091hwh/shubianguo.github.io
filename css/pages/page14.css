@@ -1,0 +1,202 @@
+/* =================================================================== */
+/*                           PAGE14 样式文件                            */
+/* =================================================================== */
+/* 页面14 - 节约医保开支 */
+
+/* 页面容器布局 */
+#page14-container .page-container {
+    display: grid;
+    grid-template-columns: 150px 1fr;
+    grid-template-rows: 1fr auto;
+    grid-template-areas:
+        "sidebar main"
+        "footer footer";
+    height: 100vh;
+    padding: 2vw;
+    gap: 2vw;
+}
+
+/* 页面底部标题 */
+#page14-container .page-footer {
+    grid-area: footer;
+    text-align: center;
+    font-size: 3.5vw;
+    font-weight: 900;
+    letter-spacing: 0.2em;
+    padding-top: 1vw;
+    text-shadow: 0 0 15px rgba(255,255,255,0.7);
+    opacity: 0;
+    animation: fadeIn 0.8s 0.4s ease-out forwards;
+}
+
+/* 左侧边栏 */
+#page14-container .sidebar {
+    grid-area: sidebar;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 20px;
+    opacity: 0;
+    animation: slideInLeft 0.8s 0.6s ease-out forwards;
+}
+
+#page14-container .sidebar-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 80px;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    font-size: 1.5vw;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: var(--panel-bg);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+#page14-container .sidebar-item:hover {
+    transform: translateY(-5px) scale(1.05);
+    border-color: var(--primary-color-2);
+}
+
+#page14-container .sidebar-item.active {
+    background-color: var(--font-color);
+    color: var(--bg-color);
+    border-color: var(--font-color);
+}
+
+/* 主内容区域 */
+#page14-container .main-content {
+    grid-area: main;
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+    gap: 2vw; 
+    opacity: 0;
+    animation: fadeIn 0.8s 0.8s ease-out forwards;
+    min-height: 0;
+}
+
+#page14-container .left-column {
+    display: grid;
+    grid-template-rows: 2fr 1fr;
+    gap: 2vw;
+    min-height: 0;
+}
+
+/* 右侧列面板 */
+#page14-container .right-column .panel {
+    height: 100%;
+    padding: 2vw;
+    font-size: 1.0vw; 
+    line-height: 1.8;
+    overflow-y: auto;
+}
+
+#page14-container .right-column .panel p {
+    margin-bottom: 1.5em;
+}
+
+/* 高亮文本 */
+#page14-container .highlight-text {
+    font-weight: bold;
+    color: var(--primary-color-2);
+}
+
+/* 图表容器 */
+#page14-container .chart-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    border-radius: 12px;
+    background: var(--panel-bg);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    border: 1px solid var(--border-color);
+}
+
+/* 图表控制按钮 */
+#page14-container .chart-controls {
+    flex-shrink: 0;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+#page14-container .chart-controls button {
+    padding: 8px 20px;
+    margin: 0 10px;
+    border: 1px solid var(--border-color);
+    background-color: transparent;
+    color: var(--font-color);
+    border-radius: 20px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#page14-container .chart-controls button.active,
+#page14-container .chart-controls button:hover {
+    background-color: var(--font-color);
+    color: var(--bg-color);
+    border-color: var(--font-color);
+}
+
+/* 主图表区域 */
+#page14-container #main-chart {
+    flex-grow: 1;
+    width: 100%;
+    height: 100%;
+    transition: opacity 0.4s ease-in-out;
+}
+
+/* 左下图片容器 */
+#page14-container .art-text {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+/* 图片样式 */
+#page14-container .art-text img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain; /* 保证图片完整显示且不变形 */
+    transform: translateY(-10%);
+}
+
+/* 面板样式 */
+#page14-container .panel {
+    border-radius: 12px;
+    background: var(--panel-bg);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    border: 1px solid var(--border-color);
+}
+
+/* 动画定义 */
+@keyframes fadeIn { 
+    from { 
+        opacity: 0; 
+        transform: translateY(10px); 
+    } 
+    to { 
+        opacity: 1; 
+        transform: translateY(0); 
+    } 
+}
+
+@keyframes slideInLeft { 
+    from { 
+        opacity: 0; 
+        transform: translateX(-50px); 
+    } 
+    to { 
+        opacity: 1; 
+        transform: translateX(0); 
+    } 
+} 

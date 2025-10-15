@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page 2 - 集采是什么？ (单页动态版)</title>
+    <style>
+        /* 1. 全局与字体设置 (按照您的规范) */
+        :root {
+            --bg-color: #FFFBF0;
+            --text-color: #333;
+            --primary-red: #c0392b;
+            --blueprint-blue: #2980b9;
+            --success-green: #27ae60;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            /* 严格按照您提供的字体回退链 */
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            color: var(--text-color);
+            margin: 0;
+            /* 关键：禁止滚动，让页面成为一个固定舞台 */
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* 2. 页面主容器与布局 */
+        .page-container {
+            width: 90vw;
+            height: 90vh;
+            max-width: 1400px;
+            max-height: 800px;
+            display: flex;
+            gap: 5vw;
+            align-items: center;
+        }
+
+        /* 左侧视觉区 (蓝图) */
+        .visual-section {
+            flex: 1;
+            position: relative;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 251, 240, 0.8), rgba(255, 251, 240, 0.8)), /* 半透明遮罩，让蓝图不那么刺眼 */
+                linear-gradient(var(--blueprint-blue) 1px, transparent 1px), 
+                linear-gradient(90deg, var(--blueprint-blue) 1px, transparent 1px);
+            background-size: 20px 20px;
+            border: 1px solid var(--blueprint-blue);
+            border-radius: 8px;
+            opacity: 0;
+            animation: fadeIn 1s 0.5s ease-out forwards;
+        }
+
+        /* 右侧信息区 */
+        .info-section {
+            flex: 1;
+            height: 100%;
+            position: relative; /* 用于内部元素的定位 */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* 3. "高级"的房子 - SVG蓝图风格 */
+        .house-blueprint-svg {
+            position: absolute;
+            width: 60%;
+            max-width: 350px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .house-blueprint-svg path, .house-blueprint-svg rect, .house-blueprint-svg line, .house-blueprint-svg text {
+            stroke-width: 2;
+            stroke: var(--blueprint-blue);
+            fill: none;
+            stroke-dasharray: 500;
+            stroke-dashoffset: 500;
+            opacity: 0;
+        }
+
+        /* 房子建造动画 */
+        .house-blueprint-svg .foundation { animation: draw 1s 1s forwards; }
+        .house-blueprint-svg .walls { animation: draw 1s 1.5s forwards; }
+        .house-blueprint-svg .roof { animation: draw 1s 2s forwards; }
+        .house-blueprint-svg .label { animation: typeIn 1s 2.5s forwards; fill: var(--blueprint-blue); stroke: none; }
+        
+        /* 组成元素与箭头 */
+        .component {
+            position: absolute;
+            display: flex;
+            align-items: center;
+            gap: 1.5vw;
+            opacity: 0;
+        }
+        .component.worker { top: 15%; left: 100%; animation: slideIn 0.8s 3s forwards; }
+        .component.materials { top: 45%; left: 100%; animation: slideIn 0.8s 3.3s forwards; }
+        .component.money { top: 75%; left: 100%; animation: slideIn 0.8s 3.6s forwards; }
+        
+        .component .icon { width: clamp(30px, 4vw, 50px); }
+        .component .label { font-size: clamp(16px, 1.8vw, 24px); font-weight: 600; color: var(--text-color); }
+        .component .arrow path { stroke: var(--text-color); stroke-width: 2; stroke-dasharray: 100; stroke-dashoffset: 100; animation: draw 0.8s 0.2s forwards; opacity: 1; }
+
+        /* 4. 右侧信息区内容与动画 */
+        .info-panel {
+            position: absolute;
+            width: 100%;
+            opacity: 0;
+            transform: translateY(20px);
+            font-weight: 300; /* 较细的字重 */
+            font-size: clamp(16px, 2.2vw, 28px); /* 响应式字号，有上下限 */
+            line-height: 1.8;
+        }
+
+        /* 动画控制每一幕的出现和消失 */
+        #panel-1 { animation: scene 4.5s 4s forwards; }
+        #panel-2 { animation: scene 5s 9s forwards; }
+        #panel-3 { animation: scene 5s 14.5s forwards; }
+        
+        .info-panel strong {
+            font-weight: 600;
+            color: var(--primary-red);
+        }
+
+        .price-demo {
+            text-align: center;
+            margin-top: 2vh;
+        }
+        .price-tag { font-size: clamp(24px, 3.5vw, 40px); font-weight: 700; }
+        .old-price { color: #aaa; text-decoration: line-through; text-decoration-color: var(--primary-red); text-decoration-thickness: 3px; }
+        .new-price { color: var(--success-green); }
+        .price-arrow { margin: 0 1vw; }
+
+        .dialogue-bubble {
+            background: #e9f5ff;
+            border: 2px solid #bce0fd;
+            border-radius: .4em;
+            padding: 2vw;
+        }
+        .dialogue-bubble .question { font-style: italic; color: #555; display: block; margin-bottom: 1.5vh; }
+        .dialogue-bubble .answer { font-weight: bold; color: #0056b3; }
+
+        /* 5. 动画 Keyframes */
+        @keyframes fadeIn { to { opacity: 1; } }
+        @keyframes draw { to { stroke-dashoffset: 0; opacity: 1; } }
+        @keyframes typeIn { to { stroke-dashoffset: 0; opacity: 1; } }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes scene {
+            0% { opacity: 0; transform: translateY(20px); }
+            10% { opacity: 1; transform: translateY(0); } /* 淡入 */
+            90% { opacity: 1; transform: translateY(0); } /* 保持显示 */
+            100% { opacity: 0; transform: translateY(-20px); } /* 淡出 */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="page-container">
+        
+        <!-- 左侧视觉区 -->
+        <div class="visual-section">
+            <svg class="house-blueprint-svg" viewBox="0 0 200 180" xmlns="http://www.w3.org/2000/svg">
+                <!-- House -->
+                <g class="house">
+                    <rect class="foundation" x="10" y="160" width="180" height="10" />
+                    <path class="walls" d="M20 160 V 90 L 100 50 L 180 90 V 160 H 20"/>
+                    <path class="roof" d="M100 50 L 20 90 M 100 50 L 180 90 M 10 85 L 190 85"/>
+                    <text class="label" x="100" y="125" font-size="20" text-anchor="middle" font-family="Kaiti, serif">房子</text>
+                </g>
+                <!-- Components -->
+                <g class="component worker">
+                    <svg class="arrow" x="-100" y="27" width="80" height="20" viewBox="0 0 80 20"><path d="M70 10 H10 L20 5 M10 10 L20 15" fill="none"/></svg>
+                    <g class="icon">
+                        <circle cx="120" cy="37" r="8" fill="var(--bg-color)" stroke="var(--text-color)"/>
+                        <line x1="120" y1="45" x2="120" y2="60" stroke="var(--text-color)"/>
+                        <line x1="105" y1="50" x2="135" y2="50" stroke="var(--text-color)"/>
+                    </g>
+                    <text class="label" x="145" y="42" font-size="16" fill="var(--text-color)" stroke="none" opacity="1" stroke-dashoffset="0">工人</text>
+                </g>
+                 <g class="component materials">
+                    <svg class="arrow" x="-100" y="81" width="80" height="20" viewBox="0 0 80 20"><path d="M70 10 H10 L20 5 M10 10 L20 15" fill="none"/></svg>
+                    <g class="icon">
+                        <rect x="110" y="81" width="20" height="20" fill="var(--bg-color)" stroke="var(--text-color)"/>
+                        <path d="M135 101 L 145 81 L 155 101 Z" fill="var(--bg-color)" stroke="var(--text-color)"/>
+                    </g>
+                    <text class="label" x="165" y="96" font-size="16" fill="var(--text-color)" stroke="none" opacity="1" stroke-dashoffset="0">建材</text>
+                </g>
+                 <g class="component money">
+                    <svg class="arrow" x="-100" y="135" width="80" height="20" viewBox="0 0 80 20"><path d="M70 10 H10 L20 5 M10 10 L20 15" fill="none"/></svg>
+                    <g class="icon">
+                       <rect x="115" y="135" width="30" height="20" rx="2" fill="var(--bg-color)" stroke="var(--text-color)"/>
+                       <text x="126" y="151" font-size="14" fill="var(--text-color)" stroke="none" opacity="1" stroke-dashoffset="0">$</text>
+                    </g>
+                    <text class="label" x="155" y="150" font-size="16" fill="var(--text-color)" stroke="none" opacity="1" stroke-dashoffset="0">钱</text>
+                </g>
+            </svg>
+        </div>
+
+        <!-- 右侧信息区 -->
+        <div class="info-section">
+            <!-- 第一幕 -->
+            <div class="info-panel" id="panel-1">
+                <p>保持身体健康就像是盖房子，要有技能高超的<strong>医师</strong>(工人)，优质的<strong>药品</strong>(建材)，和足够的<strong>钱</strong>。</p>
+                <p>而**“集采”**，就是国家作为“总包方”，用团购的方式，帮你把建材的价格谈到最低。</p>
+            </div>
+            <!-- 第二幕 -->
+            <div class="info-panel" id="panel-2">
+                <h2>澄清一个误会：</h2>
+                <p>集采不是帮你<strong>付钱</strong>，而是帮你<strong>省钱</strong>！它像“主播严选”一样，帮你把价格<strong>打下来</strong>。</p>
+                <div class="price-demo">
+                    <span class="price-tag old-price">¥ 120.00</span>
+                    <span class="price-arrow price-tag">→</span>
+                    <span class="price-tag new-price">¥ 12.00</span>
+                </div>
+            </div>
+            <!-- 第三幕 -->
+            <div class="info-panel" id="panel-3">
+                 <div class="dialogue-bubble">
+                    <span class="question">“咦？药便宜了这么多，还没一顿饭贵！”</span>
+                    <span class="answer">没错！这就是集采的力量。</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>

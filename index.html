@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>"灵魂砍价"背后的医药集采</title>
+
+    <!-- 0. 引用第三方库 -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+
+    <!-- 1. 引用全局通用CSS -->
+    <link rel="stylesheet" href="css/main.css">
+
+    <!-- 2. 引用各个页面的独立CSS -->
+    <link rel="stylesheet" href="css/pages/cover.css">
+    <link rel="stylesheet" href="css/pages/page1.css">
+    <link rel="stylesheet" href="css/pages/page2.css">
+    <link rel="stylesheet" href="css/pages/page4.css">
+    <link rel="stylesheet" href="css/pages/page5.css">
+    <link rel="stylesheet" href="css/pages/page6.css">
+    <link rel="stylesheet" href="css/pages/page7.css">
+    <link rel="stylesheet" href="css/pages/page8.css">
+    <link rel="stylesheet" href="css/pages/page9.css">
+    <link rel="stylesheet" href="css/pages/page10.css">
+    <link rel="stylesheet" href="css/pages/page11.css">
+    <link rel="stylesheet" href="css/pages/page12.css">
+    <link rel="stylesheet" href="css/pages/page13.css">
+    <link rel="stylesheet" href="css/pages/page14.css">
+    <link rel="stylesheet" href="css/pages/page15.css">
+    <link rel="stylesheet" href="css/pages/page16.css">
+    <!-- 如果有新页面，在这里继续添加CSS链接 -->
+
+</head>
+<body>
+
+    <!-- =================================================================== -->
+    <!--                            页面内容容器                             -->
+    <!-- =================================================================== -->
+    <main>
+        
+        <!-- ▼▼▼ COVER HTML CONTENT START ▼▼▼ -->
+        <!-- 封面页面 -->
+        <section id="cover" class="page-section">
+            <div class="page-indicator">Page 0</div>
+            <div class="side-images">
+                <img src="Resourses/左半边小人.png" alt="左小人" class="left-person">
+                <img src="Resourses/右半边小人.png" alt="右小人" class="right-person">
+            </div>
+            <div class="content-wrapper">
+                <h1 class="cover-title">"灵魂砍价"背后的<br>医药集采</h1>
+            </div>
+            <div class="scroll-hint">
+                <div class="scroll-arrow"></div>
+                <div class="scroll-text">向下滚动以浏览</div>
+            </div>
+        </section>
+        <!-- ▲▲▲ COVER HTML CONTENT END ▲▲▲ -->
+
+        <!-- ▼▼▼ PAGE1 HTML CONTENT START ▼▼▼ -->
+        <!-- 页面1 - 实现横向滚动拦截 -->
+        <div id="page1-container" class="page-section">
+            <div class="page-indicator">Page 1</div>
+            <div class="intro-slide-wrapper">
+                <!-- Page 1: 背景介绍 -->
+                <div class="intro-slide" data-slide="1">
+                    <span class="page-bg-number">1</span>
+                    <div class="content-wrapper">
+                        <div class="word-cloud-container">
+                            <span class="w1" data-depth="0.3">2018年</span>
+                            <span class="w2" data-depth="0.6">药品集采</span>
+                            <span class="w3" data-depth="0.2">改革开始</span>
+                            <span class="w4" data-depth="0.8">10轮</span>
+                        </div>
+                        <div class="text-container">
+                            <p>2018年，国家组织药品集中采购改革开始，至今已进行整整10轮。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Page 2: 成果与效益 -->
+                <div class="intro-slide" data-slide="2">
+                    <span class="page-bg-number">2</span>
+                    <div class="content-wrapper">
+                        <div class="word-cloud-container">
+                            <span class="w1" data-depth="0.8">平均下降58%</span>
+                            <span class="w2" data-depth="0.4">节约1635亿</span>
+                            <span class="w3" data-depth="0.6">5450万头猪</span>
+                            <span class="w4" data-depth="0.2">全国吃4个月</span>
+                        </div>
+                        <div class="text-container">
+                            <p>集采药品价格平均下降58%，累计节约费用1635亿元，相当于5450万头猪的价格。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Page 3: 质疑与挑战 -->
+                <div class="intro-slide" data-slide="3">
+                    <span class="page-bg-number">3</span>
+                    <div class="content-wrapper">
+                        <div class="word-cloud-container">
+                            <span class="w1" data-depth="0.5">便宜没好货?</span>
+                            <span class="w2" data-depth="0.8">药变便宜了</span>
+                            <span class="w3" data-depth="0.3">为什么?</span>
+                        </div>
+                        <div class="text-container">
+                            <p>很多人只感受到药价变化，甚至产生"便宜没好货"的质疑。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Page 4: 提出核心问题 -->
+                <div class="intro-slide" data-slide="4">
+                    <span class="page-bg-number">4</span>
+                    <div class="content-wrapper">
+                        <div class="word-cloud-container">
+                            <span class="w1" data-depth="0.4">是什么?</span>
+                            <span class="w2" data-depth="0.8">为了什么?</span>
+                            <span class="w3" data-depth="0.6">好不好?</span>
+                        </div>
+                        <div class="text-container">
+                            <p>到底什么是集采？为了什么？好不好？这正是我们要回答的问题。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- ▲▲▲ PAGE1 HTML CONTENT END ▲▲▲ -->
+
+
+
+        <!-- ▼▼▼ PAGE2 HTML CONTENT START ▼▼▼ -->
+        <!-- 页面2 - 集采是什么？ -->
+        <section id="page2-container" class="page-section">
+            <div class="page-indicator">Page 2</div>
+            <div class="page2-container">
+                <!-- 左侧视觉区 -->
+                <div class="visual-section">
+                    <svg class="house-blueprint-svg" viewBox="0 0 200 180" xmlns="http://www.w3.org/2000/svg">
+                        <!-- House -->
+                        <g class="house">
+                            <rect class="foundation" x="10" y="160" width="180" height="10" />
+                            <path class="walls" d="M20 160 V 90 L 100 50 L 180 90 V 160 H 20"/>
+                            <path class="roof" d="M100 50 L 20 90 M 100 50 L 180 90 M 10 85 L 190 85"/>
+                            <text class="label" x="100" y="125" font-size="20" text-anchor="middle" font-family="Kaiti, serif">房子</text>
+                        </g>
+                        <!-- Components -->
+                        <g class="component worker">
+                            <svg class="arrow" x="-100" y="27" width="80" height="20" viewBox="0 0 80 20"><path d="M70 10 H10 L20 5 M10 10 L20 15" fill="none"/></svg>
+                            <g class="icon">
+                                <circle cx="120" cy="37" r="8" fill="var(--bg-color)" stroke="var(--text-color)"/>
+                                <line x1="120" y1="45" x2="120" y2="60" stroke="var(--text-color)"/>
+                                <line x1="105" y1="50" x2="135" y2="50" stroke="var(--text-color)"/>
+                            </g>
+                            <text class="label" x="145" y="42" font-size="16" fill="var(--text-color)" stroke="none" opacity="1" stroke-dashoffset="0">工人</text>
+                        </g>
+                         <g class="component materials">
+                            <svg class="arrow" x="-100" y="81" width="80" height="20" viewBox="0 0 80 20"><path d="M70 10 H10 L20 5 M10 10 L20 15" fill="none"/></svg>
+                            <g class="icon">
+                                <rect x="110" y="81" width="20" height="20" fill="var(--bg-color)" stroke="var(--text-color)"/>
+                                <path d="M135 101 L 145 81 L 155 101 Z" fill="var(--bg-color)" stroke="var(--text-color)"/>
+                            </g>
+                            <text class="label" x="165" y="96" font-size="16" fill="var(--text-color)" stroke="none" opacity="1" stroke-dashoffset="0">建材</text>
+                        </g>
+                         <g class="component money">
+                            <svg class="arrow" x="-100" y="135" width="80" height="20" viewBox="0 0 80 20"><path d="M70 10 H10 L20 5 M10 10 L20 15" fill="none"/></svg>
+                            <g class="icon">
+                               <rect x="115" y="135" width="30" height="20" rx="2" fill="var(--bg-color)" stroke="var(--text-color)"/>
+                               <text x="126" y="151" font-size="14" fill="var(--text-color)" stroke="none" opacity="1" stroke-dashoffset="0">$</text>
+                            </g>
+                            <text class="label" x="155" y="150" font-size="16" fill="var(--text-color)" stroke="none" opacity="1" stroke-dashoffset="0">钱</text>
+                        </g>
+                    </svg>
+                </div>
+
+                <!-- 右侧信息区 -->
+                <div class="info-section">
+                    <!-- 场景1 -->
+                    <div class="info-panel" data-step="1">
+                        <p>保持身体健康就像是盖房子，要有技能高超的<strong>医师</strong>(工人)，优质的<strong>药品</strong>(建材)，和足够的<strong>钱</strong>。</p>
+                        <p>而**"集采"**，就是国家作为"总包方"，用团购的方式，帮你把建材的价格谈到最低。</p>
+                    </div>
+                    <!-- 场景2 -->
+                    <div class="info-panel" data-step="2">
+                        <h2>澄清一个误会：</h2>
+                        <p>集采不是帮你<strong>付钱</strong>，而是帮你<strong>省钱</strong>！它像"主播严选"一样，帮你把价格<strong>打下来</strong>。</p>
+                        <div class="price-demo">
+                            <span class="price-tag old-price">¥ 120.00</span>
+                            <span class="price-arrow price-tag">→</span>
+                            <span class="price-tag new-price">¥ 12.00</span>
+                        </div>
+                    </div>
+                    <!-- 场景3 -->
+                    <div class="info-panel" data-step="3">
+                         <div class="dialogue-bubble">
+                            <span class="question">"咦？药便宜了这么多，还没一顿饭贵！"</span>
+                            <span class="answer">没错！这就是集采的力量。</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- ▲▲▲ PAGE2 HTML CONTENT END ▲▲▲ -->
+
+        <!-- ▼▼▼ PAGE3 HTML CONTENT START ▼▼▼ -->
+        <!-- 页面3 - 继续测试 -->
+        <section id="page3-container" class="page-section">
+            <div class="page-indicator">Page 3</div>
+            <div class="content-wrapper">
+                <h1>页面3 - 集采效果</h1>
+                <p>这是第三个页面，继续测试PPT翻页式滚动效果。</p>
+                <div class="demo-content">
+                    <h2>集采效果</h2>
+                    <p>集采药品价格平均下降58%，累计节约费用1635亿元。</p>
+                    <p>这些数据充分说明了集采政策的成功。</p>
+                </div>
+            </div>
+        </section>
+        <!-- ▲▲▲ PAGE3 HTML CONTENT END ▲▲▲ -->
+
+        <!-- ▼▼▼ PAGE4 HTML CONTENT START ▼▼▼ -->
+        <!-- 页面4 - 时间轴动画页面 -->
+        <section id="page4-container" class="page-section">
+            <div class="page-indicator">Page 4</div>
+            <div class="page-header" id="pageHeader">
+                <h1>医药集采发展历程</h1>
+                <p>动画: 手动控制播放</p>
+            </div>
+            <div class="timeline-canvas" id="timelineCanvas">
+                <svg class="timeline-paths" id="svgPaths">
+                    <path id="path-bg"></path>
+                    <path id="path-future"></path>
+                    <path id="path-progress"></path>
+                </svg>
+            </div>
+        </section>
+        <!-- ▲▲▲ PAGE4 HTML CONTENT END ▲▲▲ -->
+
+        <!-- ▼▼▼ PAGE5 HTML CONTENT START ▼▼▼ -->
+        <!-- 页面5 - 药品集采数据深度洞察 -->
+        <section id="page5-container" class="page-section">
+            <div class="page-indicator">Page 5</div>
+            <div class="header">
+                <div class="logo-container" id="logo-container">
+                    <img src="https://youke1.picui.cn/s1/2025/08/17/68a0b37b5a6d5.png" alt="中国医疗保障徽标">
+                    <div class="logo-tooltip" id="logo-tooltip">中国医疗保障徽标象征着<b>保障与责任，呵护与托底</b>。</div>
+                </div>
+            </div>
+            <div class="tabs">
+                <div class="tab active" onclick="switchTab(0)">关键指标</div>
+                <div class="tab" onclick="switchTab(1)">发展历程</div>
+                <div class="tab" onclick="switchTab(2)">品种数占比</div>
+                <div class="tab" onclick="switchTab(3)">时间跨度</div>
+                <div class="tab" onclick="switchTab(4)">综合影响力</div>
+            </div>
+            <div class="chart-container">
+                <div id="bar-line-chart" class="chart-wrapper active"></div>
+                <div id="stream-chart" class="chart-wrapper"></div>
+                <div id="pie-chart" class="chart-wrapper"></div>
+                <div id="timeline-chart-wrapper" class="chart-wrapper">
+                     <button id="gantt-toggle-btn" class="gantt-toggle" onclick="toggleGanttView()">对齐起点比较</button>
+                     <div id="timeline-chart" style="width:100%; height:100%;"></div>
+                </div>
+                <div id="impact-chart" class="chart-wrapper"></div>
+            </div>
+        </section>
+        <!-- ▲▲▲ PAGE5 HTML CONTENT END ▲▲▲ -->
+
+        <!-- ▼▼▼ PAGE6 HTML CONTENT START ▼▼▼ -->
+        <!-- 页面6 - 国家药品集采流程泳道图 -->
+        <section id="page6-container" class="page-section">
+            <div class="page-indicator">Page 6</div>
+            <div class="title-container">
+                <h1 class="main-title">国家药品集采流程 · 泳道图</h1>
+                <p class="subtitle">基于角色分工的跨部门协同流程视图</p>
+            </div>
+            
+            <div class="swimlane-container">
+                <div class="swimlane-grid" id="grid">
+                    <!-- Headers -->
+                    <div class="lane-header" style="grid-row: 1;">国家联采办</div>
+                    <div class="lane-header" style="grid-row: 2;">医药企业</div>
+                    <div class="lane-header" style="grid-row: 3;">医疗机构</div>
+                    <div class="lane-header" style="grid-row: 4;">监管/支付方</div>
+                    
+                    <!-- Tasks -->
+                    <div id="task1-1" class="task-box dark" style="grid-row: 1; grid-column: 2;">发布采购文件</div>
+                    <div id="task2-2" class="task-box" style="grid-row: 2; grid-column: 3;">提交报价</div>
+                    <div id="task1-3" class="task-box dark" style="grid-row: 1; grid-column: 4;">开标 & 公示</div>
+                    <div id="task1-4" class="task-box" style="grid-row: 1; grid-column: 5;">确定中选结果</div>
+                    <div id="task2-5" class="task-box" style="grid-row: 2; grid-column: 6;">签订协议</div>
+                    <div id="task3-5" class="task-box" style="grid-row: 3; grid-column: 6;">签订协议</div>
+                    <div id="task4-6" class="task-box" style="grid-row: 4; grid-column: 7;">医保基金结算</div>
+                    
+                    <div id="task3-1" class="task-box" style="grid-row: 3; grid-column: 2;">上报采购量</div>
+                    <div id="task4-3" class="task-box" style="grid-row: 4; grid-column: 4;">现场监督</div>
+                </div>
+                <svg class="line-svg" id="line-svg"></svg>
+            </div>
+        </section>
+        <!-- ▲▲▲ PAGE6 HTML CONTENT END ▲▲▲ -->
+
+        <!-- ▼▼▼ PAGE7 HTML CONTENT START ▼▼▼ -->
+        <!-- 页面7 - 药品集采分析 -->
+        <section id="page7-container" class="page-section">
+            <div class="page-indicator">Page 7</div>
+            <!-- 侧边栏 -->
+            <div class="sidebar">
+                <div class="sidebar-item active">患者</div>
+                <div class="sidebar-item">企业</div>
+                <div class="sidebar-item">社会</div>
+                <div class="sidebar-item">其他</div>
+            </div>
+
+            <!-- 主内容区 -->
+            <div class="main-content">
+                <!-- 图表 -->
+                <div class="chart-wrapper">
+                    <div class="chart-title">图四：历次集采价格降幅与最高有效申报价趋势</div>
+                    <div id="main-chart"></div>
+                </div>
+
+                <!-- 文字解释 -->
+                <div class="explanation-card">
+                    <h3>图表解读</h3>
+                    <p>
+                        <strong>价格降幅稳定：</strong>历次集采的平均价格降幅始终维持在较高水平，体现了政策在挤压药品价格水分方面的持续效力。
+                    </p>
+                    <p>
+                        <strong>申报价波动：</strong>最高有效申报价的均值与波动范围（标准差）较大，反映出不同批次、不同品种药品的竞争格局和定价策略存在显著差异。
+                    </p>
+                </div>
+            </div>
+
+            <!-- 底部大标题 -->
+            <div class="footer-title">
+                降低患者负担
+            </div>
+        </section>
+        <!-- ▲▲▲ PAGE7 HTML CONTENT END ▲▲▲ -->
+
+        <!-- ▼▼▼ PAGE8 HTML CONTENT START ▼▼▼ -->
+        <!-- 页面8 - 集采前后医疗费用变化 -->
+        <section id="page8-container" class="page-section">
+            <div class="page-indicator">Page 8</div>
+            <header class="page-header">
+                <div class="main-title">降低患者负担</div>
+                <div class="page-number">Page<span>8</span></div>
+            </header>
+            
+            <aside class="sidebar">
+                <div class="sidebar-item active">患者</div>
+                <div class="sidebar-item">企业</div>
+                <div class="sidebar-item">社会</div>
+                <div class="sidebar-item">其他</div>
+            </aside>
+
+            <main class="main-content">
+                <div class="chart-controls">
+                    <button id="show-change-rate" class="control-btn active">费用变化率</button>
+                    <button id="show-composition" class="control-btn">费用构成流转</button>
+                </div>
+                <div id="chart-container"></div>
+            </main>
+
+            <aside class="info-panel">
+                <h3>图表解读</h3>
+                <div id="info-text">
+                     <p><strong>降费成效显著：</strong>药品相关费用降幅最为明显，直接体现了集采政策的核心成效。图表清晰展示了各类费用的<strong>相对变化幅度</strong>。</p>
+                     <p><strong>结构腾笼换鸟：</strong>部分体现医务价值的项目（如耗材）费用呈<strong>正增长</strong>，反映了医疗费用结构的优化调整，而非一味压缩。</p>
+                </div>
+            </aside>
+
+            <footer class="page-footer">
+                <div id="chart-title-container" class="chart-title"></div>
+            </footer>
+        </section>
+        <!-- ▲▲▲ PAGE8 HTML CONTENT END ▲▲▲ -->
+
+        <!-- ▼▼▼ PAGE9 HTML CONTENT START ▼▼▼ -->
+        <!-- 页面9 - 药品集采深度解析 -->
+        <section id="page9-container" class="page-section">
+            <div class="page-indicator">Page 9</div>
+            <aside class="side-nav">
+                <div class="nav-item active">患者</div>
+                <div class="nav-item">企业</div>
+                <div class="nav-item">社会</div>
+                <div class="nav-item">其他</div>
+            </aside>
+
+            <main class="main-content">
+                <header class="page-header">
+                    <div class="subtitle">Page 9 / 药品集中采购影响分析</div>
+                    <h1 class="title">政策驱动下的市场响应与质量保证</h1>
+                </header>
+
+                <div class="content-grid">
+                    <section class="chart-section">
+                        <h3>门诊患者换药人数趋势分析</h3>
+                        <div id="chart-container"></div>
+                        <div class="chart-summary">
+                            数据显示，政策实施后，从原研药换为中选仿制药（"换"）的人数呈现**持续且显著的下降趋势**。这表明随着时间推移，市场和患者群体逐渐适应，换药行为趋于稳定。
+                        </div>
+                    </section>
+
+                    <section class="rules-section">
+                        <h3>仿制药一致性评价核心规则</h3>
+                        <div class="accordion">
+                            <div class="accordion-item">
+                                <div class="accordion-header">1. 评价对象与时限</div>
+                                <div class="accordion-content">
+                                    <div class="accordion-content-inner">化学药品新注册分类实施前批准上市的仿制药，在首家品种通过一致性评价后，其他相同品种原则上应在**3年内**完成评价。</div>
+                                </div>
+                            </div>
+                            <div class="accordion-item active">
+                                <div class="accordion-header">2. 核心评价方法：生物等效性(BE)</div>
+                                <div class="accordion-content">
+                                    <div class="accordion-content-inner">
+                                       这是评价的根本方法，旨在证明仿制药与原研药在人体内吸收速度和程度相当。
+                                        <div class="highlight-box">
+                                            <strong>试验流程:</strong> 健康志愿者 ➔ 分为A/B两组进行交叉给药 (仿制药/原研药) ➔ 检测关键指标。
+                                            <br>
+                                            <strong>核心指标:</strong>
+                                            <ul>
+                                                <li>**血药浓度峰值 (Cmax):** 仿制药需达到原研药的 70%-143%。</li>
+                                                <li>**体内总暴露量 (AUC):** 仿制药需达到原研药的 80%-125%。</li>
+                                            </ul>
+                                            注意：BE研究关注的是药代动力学，不等同于临床疗效等效性。
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <div class="accordion-header">3. 参比制剂选择原则</div>
+                                <div class="accordion-content">
+                                    <div class="accordion-content-inner">首选境内上市的**原研药品**作为参比制剂，以确保评价标准的一致性和权威性。特殊情况下可按程序选用其他制剂。</div>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <div class="accordion-header">4. 企业主体与国家鼓励</div>
+                                <div class="accordion-content">
+                                    <div class="accordion-content-inner">企业是评价工作的主体，承担主要责任。同时，国家在技术、审批、采购等环节对通过评价的品种给予政策鼓励，形成正向激励。</div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+                
+                <footer class="page-conclusion">药品质量得到保证</footer>
+            </main>
+        </section>
+        <!-- ▲▲▲ PAGE9 HTML CONTENT END ▲▲▲ -->
+
+        <!-- ▼▼▼ PAGE10 HTML CONTENT START ▼▼▼ -->
+        <!-- 页面10 - 药品质量与可及性得到保证 -->
+        <section id="page10-container" class="page-section">
+            <div class="page-indicator">Page 10</div>
+            <div class="page-container">
+                <div class="side-panel">
+                    <div id="st-patient" class="stakeholder-item">患者</div>
+                    <div id="st-industry" class="stakeholder-item">业界</div>
+                    <div id="st-society" class="stakeholder-item">社会</div>
+                </div>
+                <div class="main-content">
+                    <div id="chart1" class="content-block chart-wrapper">
+                        <h3>2000-2024医保目录药品数量</h3>
+                        <div class="bar-chart-vertical"><!-- Chart 1 content --></div>
+                    </div>
+                    <div id="chart2" class="content-block chart-wrapper">
+                        <h3>2024医保新增药品分类</h3>
+                        <div class="bar-chart-horizontal"><!-- Chart 2 content --></div>
+                    </div>
+                    <div id="summary" class="content-block summary-text">
+                        <p>通过仿制药一致性评价和长期监管体系，国家药品集采保障了采购药品的质量。从发布采购意见到中标名单，再到将违规企业列入黑名单，国家药品集采大胆探索、小心求证，寻求价格机制和药品疗效之间的微妙平衡。</p>
+                        <p>通过国家医保、药品集采和市场调控的组合拳，药品的可及性得到保障。十轮集采覆盖430余种药品，让老百姓用得到的药价格全被"打下来"。</p>
+                    </div>
+                    <div id="conclusion" class="content-block conclusion">
+                        <h1>药品质量与可及性得到保证</h1>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- ▲▲▲ PAGE10 HTML CONTENT END ▲▲▲ -->
+
+        <!-- ▼▼▼ PAGE11 HTML CONTENT START ▼▼▼ -->
+        <!-- 页面11 - 影响企业绩效 -->
+        <section id="page11-container" class="page-section">
+            <div class="page-indicator">Page 11</div>
+            <div class="page-container">
+                <aside class="sidebar">
+                    <div class="sidebar-item">患者</div>
+                    <div class="sidebar-item active">业界</div>
+                    <div class="sidebar-item">社会</div>
+                    <div class="sidebar-item">其他</div>
+                </aside>
+
+                <main class="main-content">
+                    <!-- 上三分之二：左右两个图表 -->
+                    <div class="top-charts-container">
+                        <div id="chart-roe" class="panel"></div>
+                        <div id="chart-tobin-q" class="panel"></div>
+                    </div>
+                    <!-- 下三分之一：一个文本框 -->
+                    <div class="bottom-text-container">
+                        <div class="panel text-panel">
+                            <p>集采改革带来的"骨折价"药品，对患者来说无疑是一件好事，那对供应链上游的医药企业来说呢？</p>
+                            <p>从短期效益来看，主要面向国内市场的医药企业在面对如此巨大价格降幅后，面对适应原有价格体系的生产成本、销售成本肯定一时间难以适应。但是，集采降价的核心机制是合理的机制产生合理的价格。</p>
+                            <p>长期来看，新的、合理的、适应集采改革的价格制定规则的机制一旦形成，一旦企业探索出了新的成本调控机制。企业拥有的是"以量代价"的中国14亿人口巨大而稳定的市场，而这带来的是可观的长期效益。在十轮集采过后，已经有不少企业从集采改革中获益，市场蓬勃发展。</p>
+                        </div>
+                    </div>
+                </main>
+
+                <footer class="page-footer">
+                    影响企业绩效
+                </footer>
+            </div>
+            
+            <!-- 全局注释的HTML元素 -->
+            <div class="page-annotation">*托宾Q比率：企业股票市值对股票所代表的资产重置成本的比值，也可以说是企业市价(股价)与企业净资产的比值。</div>
+        </section>
+        <!-- ▲▲▲ PAGE11 HTML CONTENT END ▲▲▲ -->
+
+        <!-- ▼▼▼ PAGE12 HTML CONTENT START ▼▼▼ -->
+        <!-- 页面12 - 推动产业升级 -->
+        <section id="page12-container" class="page-section">
+            <div class="page-indicator">Page 12</div>
+            <div class="page-container">
+                <aside class="sidebar">
+                    <div class="sidebar-item">患者</div>
+                    <div class="sidebar-item active">业界</div>
+                    <div class="sidebar-item">社会</div>
+                    <div class="sidebar-item">其他</div>
+                </aside>
+
+                <main class="main-content">
+                    <!-- 分页按钮 -->
+                    <div class="tab-nav">
+                        <button id="btnA" class="tab-button active">创新药成为增长引擎</button>
+                        <button id="btnB" class="tab-button">不同类企业营收差异</button>
+                    </div>
+
+                    <!-- 正文A -->
+                    <div id="contentA" class="tab-content active">
+                        <div class="top-charts-container panel">
+                             <div id="chartA" style="width: 100%; height: 100%;"></div>
+                        </div>
+                        <div class="bottom-text-container">
+                            <div class="panel text-panel">
+                                <p>当仿制药利润被集采机制压缩，企业的增长引擎从销售仿制药转向研发创新药。由此可见，对在中国医药市场寻求收益的药企来说，具有创新能力是至关重要的，药品集采对于产业升级的倒逼作用正在显现。</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 正文B -->
+                    <div id="contentB" class="tab-content">
+                        <div class="top-charts-container panel">
+                            <div id="chart-container-B">
+                                <div class="chart-grid-title">不同类别企业中选前后销售变化</div>
+                                <div class="chart-grid">
+                                    <div class="grid-item" id="chartB1"></div>
+                                    <div class="grid-item" id="chartB2"></div>
+                                    <div class="grid-item" id="chartB3"></div>
+                                    <div class="grid-item" id="chartB4"></div>
+                                </div>
+                                 <div class="chart-grid-legend">
+                                    <span class="legend-item">
+                                        <span class="legend-color" style="background-color: var(--primary-color-1);"></span>集采前销售额(亿元)
+                                    </span>
+                                     <span class="legend-item">
+                                        <span class="legend-color" style="background-color: var(--primary-color-2);"></span>集采后销售额(亿元)
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="bottom-text-container">
+                            <div class="panel text-panel">
+                               <p>然而现状下，在集采中收益最高的药企还是以生产仿制药为主。当集采的入门券只发给有能力接受"以量换价"的药企时，望而兴叹的其他企业们便只能无奈的面临退出市场危机。而他们留下的市场份额，便成为了"门内人"的第一波红利。但"大快朵颐"后，仍只会"接人之鱼"的仿制药企业该何去何从？</p>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+
+                <footer class="page-footer">
+                    推动产业升级
+                </footer>
+            </div>
+        </section>
+        <!-- ▲▲▲ PAGE12 HTML CONTENT END ▲▲▲ -->
+
+        <!-- ▼▼▼ PAGE13 HTML CONTENT START ▼▼▼ -->
+        <!-- 页面13 - 推动产业升级 -->
+        <section id="page13-container" class="page-section">
+            <div class="page-indicator">Page 13</div>
+            <div class="page-container">
+                <aside class="sidebar">
+                    <div class="sidebar-item">患者</div>
+                    <div class="sidebar-item">业界</div>
+                    <div class="sidebar-item">社会</div>
+                    <div class="sidebar-item active">其他</div>
+                </aside>
+
+                <main class="main-content">
+                    <div class="panel text-panel">
+                        <p>总的来说，集采改革对于医药企业的影响是<strong>喜忧参半，错综复杂</strong>的。对于医药产业的<strong>龙头企业</strong>来说，药品集采带来的是价格机制急剧变化的短期阵痛和中国14亿人口市场稳定、可观的长期收益，需要他们加快产业升级，提高科研创新能力，实现从仿制到创新的跨越。而对于<strong>小微企业</strong>来讲，药品集采在短期来看虽然淘汰了一批不适应当前形式的，产能不足的落后企业，但也为具有独立科研能力的"小巨人"企业开了绿灯，扫清了发展障碍；在长期来看，药品集采<strong>降低了整个医药产业的内卷程度</strong>，<strong>为有着自身局限性的小微药企指明了发展道路</strong>，需要他们认清形势，深耕细分市场，借助合力模式，利用政策红利，开拓出未曾发现的蓝海市场。</p>
+                    </div>
+                </main>
+
+                <footer class="page-footer">
+                    推动产业升级
+                </footer>
+            </div>
+        </section>
+        <!-- ▲▲▲ PAGE13 HTML CONTENT END ▲▲▲ -->
+
+        <!-- ▼▼▼ PAGE14 HTML CONTENT START ▼▼▼ -->
+        <!-- 页面14 - 节约医保开支 -->
+        <section id="page14-container" class="page-section">
+            <div class="page-indicator">Page 14</div>
+            <div class="page-container">
+                <aside class="sidebar">
+                    <div class="sidebar-item">患者</div>
+                    <div class="sidebar-item">业界</div>
+                    <div class="sidebar-item active">社会</div>
+                </aside>
+
+                <main class="main-content">
+                    <div class="left-column">
+                        <div class="chart-container">
+                            <div class="chart-controls">
+                                <button id="btn-chart-a" class="active">集采前市场分布</button>
+                                <button id="btn-chart-b">集采后销售额变化</button>
+                            </div>
+                            <div id="main-chart"></div>
+                        </div>
+                        <div class="art-text">
+                            <img src="https://youke1.picui.cn/s1/2025/08/19/68a4404965f46.png" alt="医保基金节约数据">
+                        </div>
+                    </div>
+                    <div class="right-column">
+                        <div class="panel">
+                            <p><strong class="highlight-text">医保资金在药品上的费用=药品单价*药品销售量</strong>。集采改革如何节约医保开支，便应当从单价如何降低和药品销售量如何减少上入手。</p>
+                            <p>一、<strong class="highlight-text">药品价格降低</strong>。这个话题似乎在前文已经多次提到，也阐释了其原因，但那解释的是单一药品价格下降的原理，对于消费端来讲其背后还有一个绕不开的话题是，患者消费药品均价如何降低？这就是集采药和非集采药之间的竞争了。国家医保通过对集采药品的政策倾斜，将集采药药品更多的列入医保报销名单的方法，让集采药品在消费端占据更大市场，获得更多入准空间，让常见消费药品尽量由集采药品组成，降低药品的平均价格。</p>
+                            <p>二、<strong class="highlight-text">药品销售量降低</strong>。乍一看，似乎有些难以理解，难道说，医保节省开支的方式是给患者"不开药、少开药"？对，但不全对。对是因为，药品销售量的下降必然是因为临床开药量的下降，这也就是说，医生开药的量确实较集采之前有所下降。但不全对是因为，少开或不开的这部分药，是为了解决"过度医疗"的问题。在原有药品"带金销售"，药品提成与医生收入挂钩的机制下，临床治疗过程中，难免会存在"开药量大于实际需求量"的情况。而新的集采机制建立后，"带金销售"被取缔，"钱药"挂钩的模式被废止，过度医疗的问题自然被解决。所以药品销售量降低，其实是拧干了开药流程中的水分，是药品销售量归于理性空间。</p>
+                            <p>由此，<strong class="highlight-text">更低的药品价格*更低的药品销售量=更少的医保资金</strong>。</p>
+                        </div>
+                    </div>
+                </main>
+
+                <footer class="page-footer">
+                    节约医保开支
+                </footer>
+            </div>
+        </section>
+        <!-- ▲▲▲ PAGE14 HTML CONTENT END ▲▲▲ -->
+
+        <!-- ▼▼▼ PAGE15 HTML CONTENT START ▼▼▼ -->
+        <!-- 页面15 - 推动规则模式高效透明化 -->
+        <section id="page15-container" class="page-section">
+            <div class="page-indicator">Page 15</div>
+            <div class="page-container">
+                <aside class="sidebar">
+                    <div class="sidebar-item">患者</div>
+                    <div class="sidebar-item">业界</div>
+                    <div class="sidebar-item active">社会</div>
+                </aside>
+
+                <main class="main-content">
+                    <div class="top-section">
+                        <div class="left-image-container">
+                            <img src="https://youke1.picui.cn/s1/2025/08/19/68a4480f50422.png" alt="规则说明">
+                        </div>
+                        <div class="chart-container">
+                            <div class="chart-controls">
+                                <button id="btn-chart-a" class="active">不调整支付范围的药品</button>
+                                <button id="btn-chart-b">调整支付范围的药品</button>
+                            </div>
+                            <div id="main-chart"></div>
+                        </div>
+                    </div>
+                    <div class="bottom-panel">
+                        <p><strong>高效</strong>：随着集采改革带来的医院采购药品数量透明化，药企与医院之间的采购流程端到端化，药品从生产的销售的流程变的一清二楚。医保资金对集采药企直接结算，回款速度仅为原来的六分之一。公开透明的药品谈判流程和续约规则，也让医保基金的调控更加科学高效。</p>
+                    </div>
+                </main>
+
+                <footer class="page-footer">
+                    推动规则模式高效透明化
+                </footer>
+            </div>
+        </section>
+        <!-- ▲▲▲ PAGE15 HTML CONTENT END ▲▲▲ -->
+
+        <!-- ▼▼▼ PAGE16 HTML CONTENT START ▼▼▼ -->
+        <!-- 页面16 - 推动规则创新 -->
+        <section id="page16-container" class="page-section">
+            <div class="page-indicator">Page 16</div>
+            <div class="page-container">
+                <aside class="sidebar">
+                    <div class="sidebar-item">患者</div>
+                    <div class="sidebar-item">业界</div>
+                    <div class="sidebar-item active">社会</div>
+                </aside>
+
+                <main class="main-content">
+                    <!-- 上 3/4 部分 -->
+                    <div class="top-section">
+                        <!-- 左部 -->
+                        <div class="chart-container">
+                            <div class="chart-controls">
+                                <button id="btn-chart-a" class="active">各省参加联盟数量</button>
+                                <button id="btn-chart-b">参与联盟数量对应省份数</button>
+                            </div>
+                            <div class="chart-display-area">
+                                <img id="chart-a-img" src="https://youke1.picui.cn/s1/2025/08/19/68a45d3e2fa9c.png" alt="各省参加联盟数量分布图">
+                                <div id="chart-b-container"></div>
+                            </div>
+                        </div>
+                        <!-- 右部 -->
+                        <div class="chart-container">
+                            <div id="right-chart" style="width: 100%; height: 100%;"></div>
+                        </div>
+                    </div>
+
+                    <!-- 下 1/4 部分 -->
+                    <div class="bottom-section">
+                        <div class="panel">
+                            <p><strong class="highlight-text">地方联盟</strong>，并不是对单一主体的称呼，而是对集采体系之下，由<strong class="highlight-text">多个省份或地区自发组建的跨区域采购协作组织</strong>。他们具有规模大、数量多的特点，一般是以采购需求为宗旨组成的，比如山东省牵头的中药饮片联盟覆盖全国，江西省牵头的生化试剂集采联盟覆盖27个省，新疆"南北中"区域联盟覆盖全疆医疗机构。</p>
+                            <p>如果说国家药品集采是"家常菜窗口"主管吃饱，那么地方联盟药品集采就是<strong class="highlight-text">"零点菜窗口"</strong>主管吃好。地方联盟的药品集采更多是对国家药品集采的补充，填补国家集采中的空白区域。</p>
+                            <p>地方联盟的出现一方面是对国家药品集采空白领域的填补，另一方面也是机制再创新的试验田。地方联盟由于其灵活性和及时性，可以说是走在<strong class="highlight-text">集采前列的侦察兵</strong>，对于市场的风吹草动，人民群众的客观需要，具有更加真切的体会。也因此，地方联盟能够更快的对集采的机制进行调整，提出意见，促进集采的良性、健康发展。</p>
+                        </div>
+                    </div>
+                </main>
+
+                <footer class="page-footer">
+                    推动规则创新——地方联盟
+                </footer>
+
+                <div class="page-footnote">
+                    "四个地方联盟集采竞争强度与降价幅度"一图数据来自广东联盟双氯芬酸钠等 276 种药品、"八省二区"联盟第三批、河南 14省联盟、重庆8省常用药联盟的采购结果。
+                </div>
+            </div>
+        </section>
+        <!-- ▲▲▲ PAGE16 HTML CONTENT END ▲▲▲ -->
+
+    </main>
+    
+    <!-- =================================================================== -->
+    <!--                            脚本引用区域                             -->
+    <!-- =================================================================== -->
+    <!-- 1. 引用全局通用JS -->
+    <script src="js/main.js"></script>
+
+    <!-- 2. 引用各个页面的独立JS (使用 defer 确保DOM加载完再执行且保持顺序) -->
+    <script src="js/pages/cover.js" defer></script>
+    <script src="js/pages/page1.js" defer></script>
+    <script src="js/pages/page2.js" defer></script>
+    <script src="js/pages/page3.js" defer></script>
+    <script src="js/pages/page4.js" defer></script>
+    <script src="js/pages/page5.js" defer></script>
+    <script src="js/pages/page6.js" defer></script>
+    <script src="js/pages/page7.js" defer></script>
+    <script src="js/pages/page8.js" defer></script>
+    <script src="js/pages/page9.js" defer></script>
+    <script src="js/pages/page10.js" defer></script>
+    <script src="js/pages/page11.js" defer></script>
+    <script src="js/pages/page12.js" defer></script>
+    <script src="js/pages/page13.js" defer></script>
+    <script src="js/pages/page14.js" defer></script>
+    <script src="js/pages/page15.js" defer></script>
+    <script src="js/pages/page16.js" defer></script>
+    <!-- 如果有新页面，在这里继续添加JS链接 -->
+
+</body>
+</html> 

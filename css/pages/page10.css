@@ -1,0 +1,262 @@
+/* =================================================================== */
+/*                            PAGE10 样式                               */
+/*                    药品质量与可及性得到保证页面                        */
+/* =================================================================== */
+
+/* --- 基础与字体设置 --- */
+:root {
+    --bg-color: #FFFBF0;
+    --primary-text-color: #3D405B;
+    --secondary-text-color: #8D99AE;
+    --bar-color-western: #4F7CAC;
+    --bar-color-tcm: #83A9D3;
+}
+
+/* --- 主容器与布局 --- */
+#page10-container .page-container { 
+    display: flex; 
+    width: 100%; 
+    height: 100%; 
+    padding: 3vw 4vw; 
+}
+
+#page10-container .side-panel { 
+    flex: 0 0 10%; 
+    display: flex; 
+    flex-direction: column; 
+    justify-content: flex-start; 
+    padding-top: 15vh; 
+    gap: 6vh; 
+}
+
+#page10-container .main-content { 
+    flex: 1; 
+    display: flex; 
+    flex-direction: column; 
+    height: 100%; 
+}
+
+/* --- 左侧关键词 --- */
+#page10-container .stakeholder-item {
+    font-size: 2vw; 
+    font-weight: 500; 
+    padding-left: 1.5vw;
+    border-left: 3px solid var(--primary-text-color);
+    opacity: 0; 
+    transform: translateX(-20px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+/* --- 内容元素通用样式 --- */
+#page10-container .content-block {
+    opacity: 0; 
+    transform: translateY(20px);
+    transition: opacity 1s ease-out, transform 1s ease-out, filter 0.5s ease-in-out;
+}
+
+/* 焦点管理：非当前焦点的元素会变暗 */
+#page10-container .is-dimmed { 
+    opacity: 0.3 !important; 
+}
+
+/* 图表标题 */
+#page10-container .chart-wrapper h3 {
+    font-size: 1.3vw; 
+    font-weight: 600;
+    margin-bottom: 3.5vh; /* 增加下边距，解决重叠问题 */
+    color: var(--primary-text-color);
+}
+
+/* 图表1: 垂直柱状图 */
+#page10-container .bar-chart-vertical { 
+    display: flex; 
+    justify-content: space-around; 
+    align-items: flex-end; 
+    height: 25vh; 
+    border-bottom: 1px solid #ddd; 
+    padding-bottom: 0.5vh; 
+}
+
+#page10-container .bar-group { 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    width: 6%; 
+    height: 100%; 
+    position: relative; 
+    justify-content: flex-end; 
+}
+
+#page10-container .bar { 
+    width: 70%; 
+    background-color: var(--bar-color-western); 
+    transition: height 1.5s cubic-bezier(0.23, 1, 0.32, 1); 
+    display: flex; 
+    flex-direction: column-reverse; 
+}
+
+#page10-container .bar-tcm { 
+    width: 100%; 
+    background-color: var(--bar-color-tcm); 
+}
+
+#page10-container .bar-value { 
+    position: absolute; 
+    top: -3vh; 
+    font-size: 0.8vw; 
+    font-weight: 600; 
+    opacity: 0; 
+    transition: opacity 0.5s ease 1s; 
+}
+
+#page10-container .bar-label { 
+    margin-top: 1vh; 
+    font-size: 0.8vw; 
+    color: var(--secondary-text-color); 
+}
+
+/* 图表2: 水平条形图 */
+#page10-container .chart-wrapper { 
+    margin-bottom: 4vh; /* 增加图表间距 */
+}
+
+#page10-container .bar-chart-horizontal { 
+    width: 100%; 
+}
+
+#page10-container .bar-row { 
+    display: flex; 
+    align-items: center; 
+    margin-bottom: 1.2vh; 
+    opacity: 0; 
+    transition: opacity 0.5s ease; 
+}
+
+#page10-container .bar-row-label { 
+    width: 25%; 
+    text-align: right; 
+    padding-right: 1.5vw; 
+    font-size: 0.9vw; 
+    color: var(--primary-text-color); 
+    white-space: nowrap; 
+}
+
+#page10-container .bar-horizontal-wrapper { 
+    flex: 1; 
+    height: 1.8vh; 
+    background-color: #EAEAEA; 
+    border-radius: 0.9vh; 
+}
+
+#page10-container .bar-horizontal { 
+    width: 0; 
+    height: 100%; 
+    background-color: var(--bar-color-western); 
+    border-radius: 0.9vh; 
+    position: relative; 
+    transition: width 1.5s cubic-bezier(0.23, 1, 0.32, 1); 
+}
+
+#page10-container .bar-horizontal-value { 
+    position: absolute; 
+    right: -3vw; 
+    top: 50%; 
+    transform: translateY(-50%); 
+    font-size: 0.9vw; 
+    font-weight: 600; 
+}
+
+/* 中间说明文案 */
+#page10-container .summary-text {
+    font-size: 1.1vw; 
+    line-height: 1.8; 
+    color: #555;
+    max-width: 95%; 
+    margin-bottom: 3vh;
+}
+
+#page10-container .summary-text p { 
+    margin-bottom: 1em; 
+}
+
+/* 底部结论 */
+#page10-container .conclusion { 
+    text-align: center; 
+    margin-top: auto; 
+    padding-bottom: 2vh; 
+}
+
+#page10-container .conclusion h1 { 
+    font-size: 3.2vw; 
+    font-weight: 700; 
+    letter-spacing: 0.1em; 
+}
+
+/* 动画触发类 */
+#page10-container .is-visible { 
+    opacity: 1 !important; 
+    transform: none !important; 
+}
+
+#page10-container .is-visible .bar-value { 
+    opacity: 1; 
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    #page10-container .page-container {
+        padding: 2vw 3vw;
+    }
+    
+    #page10-container .side-panel {
+        flex: 0 0 15%;
+        padding-top: 10vh;
+        gap: 4vh;
+    }
+    
+    #page10-container .stakeholder-item {
+        font-size: 3vw;
+        padding-left: 1vw;
+    }
+    
+    #page10-container .chart-wrapper h3 {
+        font-size: 2.5vw;
+        margin-bottom: 2.5vh;
+    }
+    
+    #page10-container .bar-chart-vertical {
+        height: 20vh;
+    }
+    
+    #page10-container .bar-group {
+        width: 8%;
+    }
+    
+    #page10-container .bar-value {
+        font-size: 1.5vw;
+        top: -2.5vh;
+    }
+    
+    #page10-container .bar-label {
+        font-size: 1.5vw;
+    }
+    
+    #page10-container .bar-row-label {
+        width: 30%;
+        font-size: 2vw;
+        padding-right: 2vw;
+    }
+    
+    #page10-container .bar-horizontal-value {
+        font-size: 2vw;
+        right: -4vw;
+    }
+    
+    #page10-container .summary-text {
+        font-size: 2.5vw;
+    }
+    
+    #page10-container .conclusion h1 {
+        font-size: 5vw;
+    }
+} 

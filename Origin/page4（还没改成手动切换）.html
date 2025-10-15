@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page 4 - Refined Chronoscope</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@700&family=Noto+Sans+SC:wght@400;500&display=swap');
+
+        :root {
+            --bg-color: #FFFBF0;
+            --text-color: #3D3D3D;
+            --primary-color: #C74646;
+            --line-color: #E0DCD1;
+            --year-color: #A0988A; /* Darkened for better contrast */
+            --font-serif: 'Noto Serif SC', serif;
+            --font-sans: 'Noto Sans SC', sans-serif;
+        }
+
+        html, body {
+            height: 100%; margin: 0; overflow: hidden;
+            font-family: var(--font-sans); background-color: var(--bg-color); color: var(--text-color);
+        }
+
+        .slide-container {
+            width: 100%; height: 100%; position: relative;
+        }
+
+        .timeline-canvas {
+            position: absolute; top: 50%; left: 50%;
+            width: 1200px; height: 700px;
+            transform: translate(-50%, -50%);
+            transition: transform 1.2s cubic-bezier(0.65, 0, 0.35, 1); /* Faster transition */
+        }
+
+        .timeline-paths {
+            position: absolute; width: 100%; height: 100%;
+        }
+        .timeline-paths path { stroke-width: 3; fill: none; }
+        #path-bg { stroke: var(--line-color); }
+        #path-future { 
+            stroke: var(--line-color);
+            stroke-dasharray: 8 8; /* Dashed line */
+        }
+        #path-progress {
+            stroke: var(--primary-color);
+            stroke-dasharray: 1; stroke-dashoffset: 1;
+            transition: stroke-dashoffset 0.8s ease-in-out; /* Faster progress */
+        }
+        
+        .year-marker {
+            position: absolute;
+            color: var(--year-color);
+            font-size: 16px; /* Bigger */
+            font-weight: 500; /* Bolder */
+            transform-origin: center center;
+            transform: translate(-50%, -35px) rotate(45deg); /* Parallel to the line */
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+        .year-marker.is-visible { opacity: 1; }
+        
+        .timeline-stage { position: absolute; }
+        .node {
+            width: 24px; height: 24px; background: var(--bg-color);
+            border: 3px solid var(--line-color); border-radius: 50%;
+            position: absolute; transform: translate(-50%, -50%);
+            transition: border-color 0.5s, transform 0.5s;
+        }
+        .timeline-stage.is-active .node, .timeline-stage.is-visible .node {
+            border-color: var(--primary-color);
+        }
+        .timeline-stage.is-active .node {
+             transform: translate(-50%, -50%) scale(1.1);
+        }
+
+        .stage-content {
+            position: absolute; width: 400px; opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+            pointer-events: none;
+        }
+        .timeline-stage.is-active .stage-content, .timeline-stage.is-visible .stage-content {
+            opacity: 1; transform: translateY(0);
+        }
+        
+        [data-side="left"] .stage-content { right: 50px; bottom: 0; text-align: right; }
+        [data-side="right"] .stage-content { left: 50px; top: 0; text-align: left; }
+        
+        .stage-content h2 {
+            font-family: var(--font-serif); font-size: 3rem; color: var(--primary-color);
+            margin: 0; line-height: 1.2;
+        }
+        .stage-content .date {
+            font-size: 1.2rem; color: var(--year-color); margin: 5px 0 20px 0; display: block;
+        }
+        .stage-content .details {
+            font-size: 1rem; line-height: 1.9; color: var(--text-color);
+            padding-left: 15px; /* Space for the quote line */
+            border-left: 3px solid var(--primary-color); /* The quote line */
+        }
+        [data-side="left"] .details {
+            padding-left: 0; padding-right: 15px;
+            border-left: none; border-right: 3px solid var(--primary-color);
+        }
+
+        #to-be-continued {
+            position: absolute;
+            color: var(--year-color); font-size: 14px;
+            transform: translate(20px, -50%) rotate(45deg);
+            opacity: 0; transition: opacity 1s;
+        }
+        #to-be-continued.is-visible { opacity: 1; }
+
+        .page-header {
+            position: fixed; top: 5vh; left: 5vw; color: #ccc;
+            opacity: 0; transition: opacity 1s;
+        }
+        .page-header.is-visible { opacity: 1; }
+        .page-header h1 { font-size: 3rem; font-weight: 300; margin: 0; }
+        .page-header p { font-size: 1rem; color: var(--primary-color); margin: 0; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="page-header" id="pageHeader"><h1>Page 4</h1><p>动画: 逐个渐显</p></div>
+        <div class="timeline-canvas" id="timelineCanvas">
+            <svg class="timeline-paths" id="svgPaths">
+                <path id="path-bg"></path>
+                <path id="path-future"></path>
+                <path id="path-progress"></path>
+            </svg>
+        </div>
+    </div>
+
+    <script>
+        // Data and setup logic remains largely the same
+        const STAGES_DATA = [
+            { year: 2018.5, title: '探索试点阶段', date: '2018-2019年', side: 'left', details: '突破传统招标只招不采的弊端，以“量价挂钩”为核心。<br>集采范围从11座试点城市拓展到25省。' },
+            { year: 2020.5, title: '制度建立阶段', date: '2020-2021年', side: 'right', details: '药品覆盖范围显著扩大：覆盖162个品种。<br>规则精细化：“差比价机制”、“多家中标机制”等。' },
+            { year: 2021.5, title: '制度完善阶段', date: '2021年', side: 'left', details: '生物药纳入集采范围，中成药地方试点。<br>建立临床综合评价体系，尊重医疗需求。' },
+            { year: 2022.5, title: '医保治理阶段', date: '2022年至今', side: 'right', details: '覆盖全品类：中成药、化学药、罕见病药。<br>通过DRG、DIP机制完善医保资金调配。' }
+        ];
+
+        const timelineCanvas = document.getElementById('timelineCanvas');
+        const pathBG = document.getElementById('path-bg');
+        const pathFuture = document.getElementById('path-future');
+        const pathProgress = document.getElementById('path-progress');
+        
+        const delay = ms => new Promise(res => setTimeout(res, ms));
+        const mapRange = (v, i_min, i_max, o_min, o_max) => (v - i_min) * (o_max - o_min) / (i_max - i_min) + o_min;
+
+        function setupTimeline() {
+            const start = { x: 100, y: 650 }, end = { x: 1100, y: 50 };
+            const pathData = `M ${start.x} ${start.y} L ${end.x} ${end.y}`;
+            pathBG.setAttribute('d', pathData);
+            pathProgress.setAttribute('d', pathData);
+            const pathLength = pathProgress.getTotalLength();
+            pathProgress.style.strokeDasharray = pathLength;
+            pathProgress.style.strokeDashoffset = pathLength;
+            
+            const startYear = 2018, endYear = 2023;
+            const lastStageYear = STAGES_DATA[STAGES_DATA.length - 1].year;
+            const lastPointP = mapRange(lastStageYear, startYear, endYear, 0.05, 0.95);
+            const lastPoint = pathProgress.getPointAtLength(pathLength * lastPointP);
+            const futurePathData = `M ${lastPoint.x} ${lastPoint.y} L ${end.x} ${end.y}`;
+            pathFuture.setAttribute('d', futurePathData);
+
+            let contentHTML = '';
+            for (let year = startYear; year <= endYear; year++) {
+                const p = mapRange(year, startYear, endYear, 0.05, 0.95);
+                const point = pathProgress.getPointAtLength(pathLength * p);
+                contentHTML += `<div class="year-marker" style="left:${point.x}px; top:${point.y}px;">${year}</div>`;
+            }
+            STAGES_DATA.forEach(data => {
+                const p = mapRange(data.year, startYear, endYear, 0.05, 0.95);
+                const point = pathProgress.getPointAtLength(pathLength * p);
+                contentHTML += `<div class="timeline-stage" data-side="${data.side}" style="left:${point.x}px; top:${point.y}px;"><div class="node"></div><div class="stage-content"><h2>${data.title}</h2><span class="date">${data.date}</span><p class="details">${data.details}</p></div></div>`;
+            });
+            contentHTML += `<div id="to-be-continued" style="left:${end.x}px; top:${end.y}px;">未完待续...</div>`;
+            timelineCanvas.insertAdjacentHTML('beforeend', contentHTML);
+
+            return { pathLength, startYear, endYear };
+        }
+
+        async function playAnimation({ pathLength, startYear, endYear }) {
+            const stages = document.querySelectorAll('.timeline-stage');
+            const yearMarkers = document.querySelectorAll('.year-marker');
+            const pageHeader = document.getElementById('pageHeader');
+            const futureText = document.getElementById('to-be-continued');
+
+            pageHeader.classList.add('is-visible');
+            await delay(300);
+            yearMarkers.forEach((marker, i) => setTimeout(() => marker.classList.add('is-visible'), i * 80));
+            await delay(700);
+
+            for (let i = 0; i < stages.length; i++) {
+                const stage = stages[i], data = STAGES_DATA[i];
+                const p = mapRange(data.year, startYear, endYear, 0.05, 0.95);
+                const targetProgress = pathLength * p;
+                
+                const nodeX = parseFloat(stage.style.left), nodeY = parseFloat(stage.style.top);
+                const scale = 1.6;
+                const translateX = (600 - nodeX) * scale, translateY = (350 - nodeY) * scale;
+                timelineCanvas.style.transform = `translate(calc(-50% + ${translateX}px), calc(-50% + ${translateY}px)) scale(${scale})`;
+                pathProgress.style.strokeDashoffset = pathLength - targetProgress;
+                
+                await delay(1200); // Faster zoom
+                stage.classList.add('is-active');
+                await delay(2500); // Shorter reading time
+                stage.classList.remove('is-active');
+                
+                // Don't zoom out if it's the last item
+                if (i < stages.length - 1) {
+                    timelineCanvas.style.transform = 'translate(-50%, -50%) scale(1)';
+                    await delay(700); // Faster zoom out
+                }
+            }
+            
+            // **NEW**: Final state logic
+            timelineCanvas.style.transform = 'translate(-50%, -50%) scale(1)'; // Ensure zoomed out
+            await delay(1000);
+            stages.forEach(s => s.classList.add('is-visible')); // Show all stages
+            futureText.classList.add('is-visible'); // Show "to be continued"
+        }
+
+        window.addEventListener('load', () => {
+            const config = setupTimeline();
+            playAnimation(config);
+        });
+    </script>
+</body>
+</html>

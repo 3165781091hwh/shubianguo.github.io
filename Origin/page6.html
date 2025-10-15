@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>方案三：集采流程泳道图</title>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap');
+    body {
+        font-family: 'Noto Sans SC', sans-serif;
+        background-color: #FFFBF0;
+        margin: 0;
+        padding: 40px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .title-container { text-align: center; margin-bottom: 40px; }
+    .main-title { font-size: 2.2em; color: #2c3e50; font-weight: 700; }
+    .subtitle { font-size: 1.1em; color: #7f8c8d; }
+    .swimlane-container {
+        width: 95%;
+        max-width: 1400px;
+        position: relative;
+        overflow-x: auto; /* For smaller screens */
+        padding-bottom: 20px;
+    }
+    .swimlane-grid {
+        display: grid;
+        grid-template-columns: 150px repeat(6, minmax(180px, 1fr));
+        grid-template-rows: repeat(4, 1fr);
+        gap: 15px;
+        padding: 20px;
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+        min-width: 1200px;
+    }
+    .lane-header {
+        grid-column: 1;
+        background-color: #34495e;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        border-radius: 8px;
+        font-size: 1.1em;
+        text-align: center;
+    }
+    .task-box {
+        background-color: #fdf5e6;
+        border: 2px solid #f39c12;
+        border-radius: 8px;
+        padding: 15px;
+        text-align: center;
+        font-size: 0.9em;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 60px;
+        box-shadow: 0 3px 8px rgba(0,0,0,0.05);
+    }
+    .task-box.dark {
+        background-color: #3498db;
+        border-color: #2980b9;
+        color: white;
+    }
+    .line-svg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 1;
+    }
+</style>
+</head>
+<body>
+
+<div class="title-container">
+    <h1 class="main-title">国家药品集采流程 · 泳道图</h1>
+    <p class="subtitle">基于角色分工的跨部门协同流程视图</p>
+</div>
+
+<div class="swimlane-container">
+    <div class="swimlane-grid" id="grid">
+        <!-- Headers -->
+        <div class="lane-header" style="grid-row: 1;">国家联采办</div>
+        <div class="lane-header" style="grid-row: 2;">医药企业</div>
+        <div class="lane-header" style="grid-row: 3;">医疗机构</div>
+        <div class="lane-header" style="grid-row: 4;">监管/支付方</div>
+        <!-- Tasks -->
+        <div id="task1-1" class="task-box dark" style="grid-row: 1; grid-column: 2;">发布采购文件</div>
+        <div id="task2-2" class="task-box" style="grid-row: 2; grid-column: 3;">提交报价</div>
+        <div id="task1-3" class="task-box dark" style="grid-row: 1; grid-column: 4;">开标 & 公示</div>
+        <div id="task1-4" class="task-box" style="grid-row: 1; grid-column: 5;">确定中选结果</div>
+        <div id="task2-5" class="task-box" style="grid-row: 2; grid-column: 6;">签订协议</div>
+        <div id="task3-5" class="task-box" style="grid-row: 3; grid-column: 6;">签订协议</div>
+        <div id="task4-6" class="task-box" style="grid-row: 4; grid-column: 7;">医保基金结算</div>
+        
+        <div id="task3-1" class="task-box" style="grid-row: 3; grid-column: 2;">上报采购量</div>
+        <div id="task4-3" class="task-box" style="grid-row: 4; grid-column: 4;">现场监督</div>
+    </div>
+    <svg class="line-svg" id="line-svg"></svg>
+</div>
+
+<script>
+    const connections = [
+        { from: 'task1-1', to: 'task2-2', type: 'solid' },
+        { from: 'task2-2', to: 'task1-3', type: 'solid' },
+        { from: 'task1-3', to: 'task1-4', type: 'solid' },
+        { from: 'task1-4', to: 'task2-5', type: 'solid' },
+        { from: 'task1-4', to: 'task3-5', type: 'solid' },
+        { from: 'task2-5', to: 'task4-6', type: 'solid' },
+        { from: 'task3-5', to: 'task4-6', type: 'solid' },
+        // Dashed lines for feedback/dependency
+        { from: 'task3-1', to: 'task1-1', type: 'dashed' },
+        { from: 'task4-3', to: 'task1-3', type: 'dashed' }
+    ];
+
+    function drawLines() {
+        const svg = document.getElementById('line-svg');
+        const grid = document.getElementById('grid');
+        svg.innerHTML = '';
+        const gridRect = grid.getBoundingClientRect();
+
+        connections.forEach(conn => {
+            const fromEl = document.getElementById(conn.from);
+            const toEl = document.getElementById(conn.to);
+            if (!fromEl || !toEl) return;
+
+            const fromRect = fromEl.getBoundingClientRect();
+            const toRect = toEl.getBoundingClientRect();
+
+            const startX = fromRect.right - gridRect.left;
+            const startY = fromRect.top + fromRect.height / 2 - gridRect.top;
+            const endX = toRect.left - gridRect.left;
+            const endY = toRect.top + toRect.height / 2 - gridRect.top;
+            
+            const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            line.setAttribute('x1', startX);
+            line.setAttribute('y1', startY);
+            line.setAttribute('x2', endX);
+            line.setAttribute('y2', endY);
+            line.setAttribute('stroke', '#555');
+            line.setAttribute('stroke-width', '2');
+            line.setAttribute('marker-end', 'url(#arrow)');
+
+            if (conn.type === 'dashed') {
+                line.setAttribute('stroke-dasharray', '5,5');
+            }
+            
+            // For cross-lane connections, use a path
+            if (fromRect.top !== toRect.top) {
+                const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                const midX = startX + 20;
+                path.setAttribute('d', `M ${startX} ${startY} H ${midX} V ${endY} H ${endX}`);
+                path.setAttribute('stroke', '#555');
+                path.setAttribute('stroke-width', '2');
+                path.setAttribute('fill', 'none');
+                path.setAttribute('marker-end', 'url(#arrow)');
+                if (conn.type === 'dashed') {
+                   path.setAttribute('stroke-dasharray', '5,5');
+                }
+                svg.appendChild(path);
+            } else {
+                svg.appendChild(line);
+            }
+        });
+    }
+
+    // Create arrowhead marker
+    const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+    const marker = document.createElementNS('http://www.w3.org/2000/svg', 'marker');
+    marker.setAttribute('id', 'arrow');
+    marker.setAttribute('viewBox', '0 0 10 10');
+    marker.setAttribute('refX', '8');
+    marker.setAttribute('refY', '5');
+    marker.setAttribute('markerWidth', '6');
+    marker.setAttribute('markerHeight', '6');
+    marker.setAttribute('orient', 'auto-start-reverse');
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.setAttribute('d', 'M 0 0 L 10 5 L 0 10 z');
+    path.setAttribute('fill', '#555');
+    marker.appendChild(path);
+    defs.appendChild(marker);
+    document.getElementById('line-svg').appendChild(defs);
+
+    window.addEventListener('load', drawLines);
+    window.addEventListener('resize', drawLines);
+
+</script>
+</body>
+</html>

@@ -1,0 +1,278 @@
+/* css/pages/page2.css */
+
+/* =================================================================== */
+/*                     页面2专用样式 - 滚动控制版                     */
+/* =================================================================== */
+
+/* 关键修复：让 page2 容器突破全局限制 */
+#page2-container.page-section {
+    max-width: none; /* 移除全局的 1100px 限制 */
+    padding: 0;      /* 移除全局的内边距 */
+}
+
+/* 变量定义 */
+:root {
+    --blueprint-blue: #2980b9;
+    --success-green: #27ae60;
+}
+
+/* 页面主容器与布局 */
+.page2-container {
+    width: 90vw;
+    height: 90vh;
+    max-width: 1400px;
+    max-height: 800px;
+    display: flex;
+    gap: 5vw;
+    align-items: center;
+}
+
+/* 左侧视觉区 (蓝图) - 初始入场动画保留 */
+.visual-section {
+    flex: 1;
+    position: relative;
+    height: 100%;
+    background-image: 
+        linear-gradient(rgba(255, 251, 240, 0.8), rgba(255, 251, 240, 0.8)),
+        linear-gradient(var(--blueprint-blue) 1px, transparent 1px), 
+        linear-gradient(90deg, var(--blueprint-blue) 1px, transparent 1px);
+    background-size: 20px 20px;
+    border: 1px solid var(--blueprint-blue);
+    border-radius: 8px;
+    opacity: 0;
+}
+
+/* 当页面激活时，触发左侧区域的入场动画 */
+#page2-container.is-active .visual-section {
+    animation: fadeIn 1s 0.5s ease-out forwards;
+}
+
+/* SVG 蓝图和组件的样式 (与原版基本一致) */
+.house-blueprint-svg {
+    position: absolute; 
+    width: 60%; 
+    max-width: 350px; 
+    top: 50%; 
+    left: 50%; 
+    transform: translate(-50%, -50%);
+}
+
+.house-blueprint-svg path, 
+.house-blueprint-svg rect, 
+.house-blueprint-svg line, 
+.house-blueprint-svg text {
+    stroke-width: 2; 
+    stroke: var(--blueprint-blue); 
+    fill: none;
+    stroke-dasharray: 500; 
+    stroke-dashoffset: 500; 
+    opacity: 0;
+}
+
+#page2-container.is-active .house-blueprint-svg .foundation { 
+    animation: draw 1s 1s forwards; 
+}
+
+#page2-container.is-active .house-blueprint-svg .walls { 
+    animation: draw 1s 1.5s forwards; 
+}
+
+#page2-container.is-active .house-blueprint-svg .roof { 
+    animation: draw 1s 2s forwards; 
+}
+
+#page2-container.is-active .house-blueprint-svg .label { 
+    animation: typeIn 1s 2.5s forwards; 
+    fill: var(--blueprint-blue); 
+    stroke: none; 
+}
+
+.component { 
+    position: absolute; 
+    display: flex; 
+    align-items: center; 
+    gap: 1.5vw; 
+    opacity: 0; 
+}
+
+#page2-container.is-active .component.worker { 
+    animation: slideIn 0.8s 3s forwards; 
+}
+
+#page2-container.is-active .component.materials { 
+    animation: slideIn 0.8s 3.3s forwards; 
+}
+
+#page2-container.is-active .component.money { 
+    animation: slideIn 0.8s 3.6s forwards; 
+}
+
+.component .icon { 
+    width: clamp(30px, 4vw, 50px); 
+}
+
+.component .label { 
+    font-size: clamp(16px, 1.8vw, 24px); 
+    font-weight: 600; 
+    color: var(--text-color); 
+}
+
+.component .arrow path { 
+    stroke: var(--text-color); 
+    stroke-width: 2; 
+    stroke-dasharray: 100; 
+    stroke-dashoffset: 100; 
+    animation: draw 0.8s 0.2s forwards; 
+    opacity: 1; 
+}
+
+/* 右侧信息区 */
+.info-section {
+    flex: 1; 
+    height: 100%; 
+    position: relative; 
+    display: flex; 
+    flex-direction: column; 
+    justify-content: center;
+}
+
+/* 改造动画：从自动播放改为JS控制 */
+.info-panel {
+    position: absolute;
+    width: 100%;
+    opacity: 0;
+    transform: translateY(20px);
+    font-weight: 300;
+    font-size: clamp(16px, 2.2vw, 28px);
+    line-height: 1.8;
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out; /* 使用 transition 替代 animation */
+    pointer-events: none; /* 隐藏时不可交互 */
+}
+
+/* 当JS添加 .is-visible 类时，场景出现 */
+.info-panel.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+.info-panel strong { 
+    font-weight: 600; 
+    color: var(--primary-red); 
+}
+
+.price-demo { 
+    text-align: center; 
+    margin-top: 2vh; 
+}
+
+.price-tag { 
+    font-size: clamp(24px, 3.5vw, 40px); 
+    font-weight: 700; 
+}
+
+.old-price { 
+    color: #aaa; 
+    text-decoration: line-through; 
+    text-decoration-color: var(--primary-red); 
+    text-decoration-thickness: 3px; 
+}
+
+.new-price { 
+    color: var(--success-green); 
+}
+
+.price-arrow { 
+    margin: 0 1vw; 
+}
+
+.dialogue-bubble { 
+    background: #e9f5ff; 
+    border: 2px solid #bce0fd; 
+    border-radius: .4em; 
+    padding: 2vw; 
+}
+
+.dialogue-bubble .question { 
+    font-style: italic; 
+    color: #555; 
+    display: block; 
+    margin-bottom: 1.5vh; 
+}
+
+.dialogue-bubble .answer { 
+    font-weight: bold; 
+    color: #0056b3; 
+}
+
+/* Keyframes 保持不变，用于入场动画 */
+@keyframes fadeIn { 
+    to { 
+        opacity: 1; 
+    } 
+}
+
+@keyframes draw { 
+    to { 
+        stroke-dashoffset: 0; 
+        opacity: 1; 
+    } 
+}
+
+@keyframes typeIn { 
+    to { 
+        stroke-dashoffset: 0; 
+        opacity: 1; 
+    } 
+}
+
+@keyframes slideIn { 
+    from { 
+        opacity: 0; 
+        transform: translateX(-30px); 
+    } 
+    to { 
+        opacity: 1; 
+        transform: translateX(0); 
+    } 
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .page2-container { 
+        flex-direction: column; 
+        gap: 3vh; 
+        height: auto; 
+        min-height: 90vh; 
+    }
+    
+    .visual-section { 
+        height: 40vh; 
+        min-height: 300px; 
+        width: 100%; 
+    }
+    
+    .info-section { 
+        height: auto; 
+        min-height: 40vh; 
+        width: 100%; 
+    }
+    
+    .house-blueprint-svg { 
+        width: 80%; 
+        max-width: 280px; 
+    }
+    
+    .component { 
+        position: relative; 
+        top: auto; 
+        left: auto; 
+        margin: 1vh 0; 
+    }
+    
+    .info-panel { 
+        font-size: clamp(14px, 4vw, 20px); 
+        position: relative; 
+        margin: 2vh 0; 
+    }
+} 
