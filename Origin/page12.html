@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>医药集采数据新闻 - 推动产业升级</title>
+    <!-- 引入 ECharts 库 -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <style>
+        /* --- 风格标准：完全继承自【白版】文件 --- */
+        :root {
+            --bg-color: #FFFBF0;
+            --font-color: #3D405B;
+            --primary-color-1: #3D405B; /* 颜色1: 深灰蓝 (对照组/实验组) */
+            --primary-color-2: #E07A5F;  /* 颜色2: 珊瑚橙 (实验组/对照组) */
+            --border-color: rgba(0, 0, 0, 0.1);
+            --panel-bg: rgba(255, 255, 255, 0.5);
+            --font-family-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body {
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            background-color: var(--bg-color);
+            font-family: var(--font-family-main);
+            color: var(--font-color);
+        }
+
+        /* --- 页面整体布局 (基于【白版】并按内容提示词调整) --- */
+        .page-container {
+            display: grid;
+            grid-template-columns: 150px 1fr;
+            grid-template-rows: 1fr auto;
+            grid-template-areas:
+                "sidebar main"
+                "footer footer";
+            height: 100vh;
+            padding: 2vw;
+            gap: 2vw;
+        }
+        
+        /* --- 底部大标题 (与【白版】位置、风格相同) --- */
+        .page-footer {
+            grid-area: footer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3.5vw;
+            font-weight: 900;
+            letter-spacing: 0.2em;
+            padding-top: 1vw;
+            opacity: 0;
+            animation: fadeIn 0.8s 0.4s ease-out forwards;
+        }
+
+        /* --- 左侧边栏 (与【白版】位置、风格相同) --- */
+        .sidebar {
+            grid-area: sidebar;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 20px;
+            opacity: 0;
+            animation: slideInLeft 0.8s 0.6s ease-out forwards;
+        }
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 80px;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 1.5vw;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: var(--panel-bg);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        .sidebar-item:hover {
+            transform: translateY(-5px) scale(1.05);
+            border-color: var(--primary-color-2);
+        }
+        .sidebar-item.active {
+            background-color: var(--font-color);
+            color: var(--bg-color);
+            border-color: var(--font-color);
+        }
+        
+        /* --- 主内容区 (遵从内容提示词，创建新布局) --- */
+        .main-content {
+            grid-area: main;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5vw; 
+            opacity: 0;
+            animation: fadeIn 0.8s 0.8s ease-out forwards;
+            min-height: 0;
+        }
+
+        /* 新增：分页按钮容器 */
+        .tab-nav {
+            display: flex;
+            gap: 15px;
+        }
+        .tab-button {
+            padding: 10px 20px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--panel-bg);
+            cursor: pointer;
+            font-size: 1.1vw;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        .tab-button:hover {
+            border-color: var(--primary-color-2);
+            color: var(--primary-color-2);
+        }
+        .tab-button.active {
+            background-color: var(--font-color);
+            color: var(--bg-color);
+            border-color: var(--font-color);
+        }
+
+        /* 新增：分页内容容器 */
+        .tab-content {
+            flex-grow: 1;
+            display: none; /* 默认隐藏 */
+            flex-direction: column;
+            gap: 1.5vw;
+            min-height: 0;
+        }
+        .tab-content.active {
+            display: flex; /* 激活时显示 */
+        }
+        
+        /* 上方图表区 (占4/5) */
+        .top-charts-container {
+            flex: 4;
+            min-height: 0;
+        }
+        
+        /* 下方文本区 (占1/5) */
+        .bottom-text-container {
+            flex: 1;
+            min-height: 0;
+        }
+
+        /* 通用面板/容器样式 (来自【白版】的info-panel) */
+        .panel {
+            width: 100%;
+            height: 100%;
+            padding: 25px;
+            border-radius: 12px;
+            background: var(--panel-bg);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+        }
+        .text-panel {
+            display: flex;
+            flex-direction: column; 
+            justify-content: center;
+            font-size: 1.1vw;
+            line-height: 1.8;
+            padding: 2vw;
+            overflow-y: auto; 
+        }
+
+        /* 新增：图表B的2x2网格布局 */
+        #chart-container-B {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+        }
+        .chart-grid-title {
+            text-align: center;
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+        .chart-grid {
+            flex-grow: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 20px;
+        }
+        .grid-item {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+        .chart-grid-legend {
+            text-align: center;
+            padding-top: 15px;
+            font-size: 16px;
+        }
+        .legend-item {
+            display: inline-block;
+            margin: 0 15px;
+        }
+        .legend-color {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border-radius: 2px;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+
+
+        /* --- 动画 (来自【白版】) --- */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideInLeft { from { opacity: 0; transform: translateX(-50px); } to { opacity: 1; transform: translateX(0); } }
+    </style>
+</head>
+<body>
+
+    <div class="page-container">
+        
+        <aside class="sidebar">
+            <div class="sidebar-item">患者</div>
+            <div class="sidebar-item active">业界</div>
+            <div class="sidebar-item">社会</div>
+            <div class="sidebar-item">其他</div>
+        </aside>
+
+        <main class="main-content">
+            <!-- 分页按钮 -->
+            <div class="tab-nav">
+                <button id="btnA" class="tab-button active">创新药成为增长引擎</button>
+                <button id="btnB" class="tab-button">不同类企业营收差异</button>
+            </div>
+
+            <!-- 正文A -->
+            <div id="contentA" class="tab-content active">
+                <div class="top-charts-container panel">
+                     <div id="chartA" style="width: 100%; height: 100%;"></div>
+                </div>
+                <div class="bottom-text-container">
+                    <div class="panel text-panel">
+                        <p>当仿制药利润被集采机制压缩，企业的增长引擎从销售仿制药转向研发创新药。由此可见，对在中国医药市场寻求收益的药企来说，具有创新能力是至关重要的，药品集采对于产业升级的倒逼作用正在显现。</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 正文B -->
+            <div id="contentB" class="tab-content">
+                <div class="top-charts-container panel">
+                    <div id="chart-container-B">
+                        <div class="chart-grid-title">不同类别企业中选前后销售变化</div>
+                        <div class="chart-grid">
+                            <div class="grid-item" id="chartB1"></div>
+                            <div class="grid-item" id="chartB2"></div>
+                            <div class="grid-item" id="chartB3"></div>
+                            <div class="grid-item" id="chartB4"></div>
+                        </div>
+                         <div class="chart-grid-legend">
+                            <span class="legend-item">
+                                <span class="legend-color" style="background-color: var(--primary-color-1);"></span>集采前销售额(亿元)
+                            </span>
+                             <span class="legend-item">
+                                <span class="legend-color" style="background-color: var(--primary-color-2);"></span>集采后销售额(亿元)
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                 <div class="bottom-text-container">
+                    <div class="panel text-panel">
+                       <p>然而现状下，在集采中收益最高的药企还是以生产仿制药为主。当集采的入门券只发给有能力接受“以量换价”的药企时，望而兴叹的其他企业们便只能无奈的面临退出市场危机。而他们留下的市场份额，便成为了“门内人”的第一波红利。但“大快朵颐”后，仍只会“接人之鱼”的仿制药企业该何去何从？</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="page-footer">
+            推动产业升级
+        </footer>
+
+    </div>
+    
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    // --- 颜色变量 ---
+    const colors = {
+        color1: getComputedStyle(document.documentElement).getPropertyValue('--primary-color-1').trim(),
+        color2: getComputedStyle(document.documentElement).getPropertyValue('--primary-color-2').trim()
+    };
+
+    // --- 初始化 ECharts 实例 ---
+    const chartA = echarts.init(document.getElementById('chartA'));
+    const chartB1 = echarts.init(document.getElementById('chartB1'));
+    const chartB2 = echarts.init(document.getElementById('chartB2'));
+    const chartB3 = echarts.init(document.getElementById('chartB3'));
+    const chartB4 = echarts.init(document.getElementById('chartB4'));
+    const allCharts = [chartA, chartB1, chartB2, chartB3, chartB4];
+
+    // --- 数据准备 ---
+    // 图表A数据
+    const dataA = {
+        names: ['人血白蛋白', '氯化钠注射液', '静注人免疫球蛋白(PH4)', '贝伐珠单抗注射液', '阿托伐他汀钙片', '注射用哌拉西林钠他唑巴坦钠', '葡萄糖注射液', '硫酸氢氯吡格雷片', '达格列净片', '甲磺酸奥希替尼片', '他克莫司胶囊', '苯磺酸氨氯地平片', '注射用头孢哌酮钠舒巴坦钠', '利妥昔单抗注射液', '硝苯地平控释片', '替雷利珠单抗注射液', '丁苯酞氯化钠注射液', '重组人血小板生成素注射液', '司美格鲁肽注射液', '聚乙二醇化重组人粒细胞刺激因子注射液'],
+        growth5Year: [9.29, 6.19, 10.77, 31.88, -4.7, 6.23, 1.67, -10.64, 78.88, 9.53, 3.53, -3.37, 4.65, 3.92, -6.76, 150.15, 6.85, 12.53, 113.85, 7.98],
+        growthYoY: [-2.86, 6.78, -0.27, 28.48, -0.48, 0.4, 0.84, 0.64, 27.44, 2.42, -2.33, -1.21, -16.92, 9.7, -24.51, 36.66, -3.33, 9.72, 43.11, -6.88]
+    };
+    // 图表B数据
+    const dataB = {
+        b1: { title: '未中选 - 原研', batches: ['第一批', '第二批', '第三批', '第四批', '第五批', '第七批', '第八批'], pre: [159, 48, 136, 124, 184, 172, 66], post: [89, 17, 58, 46, 70, 94, 27], change: [-44.4, -65.3, -57.5, -62.8, -61.9, -45.6, -58.3] },
+        b2: { title: '中选 - 原研', batches: ['第一批', '第二批', '第三批', '第四批', '第五批', '第七批', '第八批'], pre: [73, 38, 8, 8, 48, 13, 14], post: [36, 7, 2, 2, 24, 4, 7], change: [-51.4, -81.6, -59.3, -72.3, -50.6, -71.1, -43] },
+        b3: { title: '未中选 - 仿制', batches: ['第一批', '第二批', '第三批', '第四批', '第五批', '第七批', '第八批'], pre: [130, 65, 108, 124, 228, 135, 258], post: [48, 12, 38, 36, 62, 60, 121], change: [-63, -82, -64.8, -71.1, -73.1, -55.3, -53.3] },
+        b4: { title: '中选 - 仿制', batches: ['第一批', '第二批', '第三批', '第四批', '第五批', '第七批', '第八批'], pre: [185, 47, 75, 60, 159, 146, 146], post: [136, 52, 60, 78, 168, 99, 119], change: [-26.3, 9.1, 19.8, 30.2, 5.8, -31.9, -18.2] }
+    };
+    
+    // --- 修改点1：定义需要标红的药品列表 ---
+    const redLabels = ['甲磺酸奥希替尼片', '替雷利珠单抗注射液', '丁苯酞氯化钠注射液', '重组人血小板生成素注射液', '司美格鲁肽注射液'];
+
+    // --- 配置图表A ---
+    const optionA = {
+        title: {
+            text: '2023H2-2024H1中国院内外TOP20药品销售情况',
+            left: 'center',
+            top: '5%',
+            textStyle: { fontSize: 28, fontWeight: 'bold' }
+        },
+        tooltip: { 
+            trigger: 'axis', 
+            axisPointer: { type: 'shadow' },
+            formatter: function (params) {
+                const drugName = dataA.names[params[0].dataIndex];
+                let tooltipString = `${drugName}<br/>`;
+                params.forEach(param => {
+                    tooltipString += `${param.marker} ${param.seriesName}: ${param.value}<br/>`;
+                });
+                return tooltipString;
+            }
+        },
+        legend: { bottom: '2%', textStyle: { fontSize: 14 } },
+        grid: { left: '3%', right: '4%', bottom: '12%', top: '22%', containLabel: true },
+        xAxis: [{
+            type: 'category',
+            data: dataA.names, // 使用完整的药品名称作为数据源
+            axisTick: { show: false },
+            axisLine: { show: false },
+            // --- 修改点2：使用formatter和rich text来高亮特定标签 ---
+            axisLabel: { 
+                interval: 0, 
+                rotate: 30, 
+                fontSize: 11,
+                formatter: function(value) {
+                    let shortenedValue = value.length > 10 ? value.substring(0, 10) + '...' : value;
+                    if (redLabels.includes(value)) {
+                        return `{red|${shortenedValue}}`;
+                    }
+                    return shortenedValue;
+                },
+                rich: {
+                    red: {
+                        color: '#E63946' // 使用一个更醒目的红色
+                    }
+                }
+            }
+        }],
+        yAxis: [{ type: 'value', name: '增速 (%)', show: false }],
+        // --- 修改点3：添加图表注释 ---
+        graphic: {
+            type: 'text',
+            right: '4%',
+            bottom: '3%',
+            style: {
+                text: '*标红药品为独家在售品种',
+                fill: '#888',
+                fontSize: 12,
+                fontWeight: 'normal'
+            }
+        },
+        series: [
+            { 
+                name: '5 年增速（%）', 
+                type: 'bar', 
+                barGap: 0, 
+                emphasis: { focus: 'series' }, 
+                data: dataA.growth5Year, 
+                color: colors.color1,
+                label: { show: true, position: 'top', fontSize: 9, color: colors.color1 }
+            },
+            { 
+                name: '同比增长率（%）', 
+                type: 'bar', 
+                emphasis: { focus: 'series' }, 
+                data: dataA.growthYoY, 
+                color: colors.color2,
+                label: { show: true, position: 'top', fontSize: 9, color: colors.color2 }
+            }
+        ]
+    };
+    chartA.setOption(optionA);
+
+
+    // --- 配置图表B (通用函数) ---
+    const getOptionB = (data) => {
+        const labelData = data.pre.map((val, i) => Math.max(val, data.post[i]) + 5);
+        return {
+            title: {
+                text: data.title,
+                left: 'center',
+                top: '5%',
+                textStyle: { fontSize: 18, fontWeight: 'normal' }
+            },
+            tooltip: { 
+                trigger: 'axis', 
+                axisPointer: { type: 'shadow' },
+                formatter: function (params) {
+                    let tooltipString = `${params[0].axisValueLabel}<br/>`;
+                    params.forEach(param => {
+                        if (param.seriesName !== '变化率') {
+                            tooltipString += `${param.marker} ${param.seriesName}: ${param.value}<br/>`;
+                        }
+                    });
+                    return tooltipString;
+                }
+            },
+            grid: { left: '5%', right: '5%', bottom: '10%', top: '25%', containLabel: true },
+            xAxis: {
+                type: 'category',
+                data: data.batches,
+                axisTick: { show: false },
+                axisLine: { show: false },
+            },
+            yAxis: { type: 'value', show: false },
+            series: [
+                { name: '集采前销售额(亿元)', type: 'bar', barWidth: '30%', data: data.pre, color: colors.color1, barGap: '10%' },
+                { name: '集采后销售额(亿元)', type: 'bar', barWidth: '30%', data: data.post, color: colors.color2 },
+                {
+                    name: '变化率',
+                    type: 'pictorialBar',
+                    symbol: 'circle',
+                    symbolSize: [0, 0], 
+                    itemStyle: { color: 'transparent' },
+                    label: {
+                        show: true,
+                        position: 'top',
+                        formatter: (params) => `${data.change[params.dataIndex]}%`,
+                        fontSize: 12,
+                        fontWeight: 'bold',
+                        color: '#fff',
+                        backgroundColor: data.change[0] > -50 ? 'rgba(61, 64, 91, 0.7)' : 'rgba(224, 122, 95, 0.7)',
+                        padding: [4, 6],
+                        borderRadius: 20,
+                    },
+                    data: labelData,
+                    z: 10
+                }
+            ]
+        };
+    };
+    chartB1.setOption(getOptionB(dataB.b1));
+    chartB2.setOption(getOptionB(dataB.b2));
+    chartB3.setOption(getOptionB(dataB.b3));
+    chartB4.setOption(getOptionB(dataB.b4));
+
+
+    // --- 分页切换逻辑 ---
+    const btnA = document.getElementById('btnA');
+    const btnB = document.getElementById('btnB');
+    const contentA = document.getElementById('contentA');
+    const contentB = document.getElementById('contentB');
+
+    btnA.addEventListener('click', () => {
+        btnA.classList.add('active');
+        btnB.classList.remove('active');
+        contentA.classList.add('active');
+        contentB.classList.remove('active');
+        chartA.resize();
+    });
+
+    btnB.addEventListener('click', () => {
+        btnB.classList.add('active');
+        btnA.classList.remove('active');
+        contentB.classList.add('active');
+        contentA.classList.remove('active');
+        [chartB1, chartB2, chartB3, chartB4].forEach(chart => chart.resize());
+    });
+
+
+    // --- 窗口大小调整 ---
+    window.addEventListener('resize', function () {
+        allCharts.forEach(chart => chart.resize());
+    });
+});
+</script>
+
+</body>
+</html>

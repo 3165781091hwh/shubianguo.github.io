@@ -1,0 +1,166 @@
+/*
+ * ===================================================================
+ *                          css/pages/cover.css
+ *                 封面页样式（V5.0 标准注释版）
+ * -------------------------------------------------------------------
+ * 目标：遵循《项目前端开发与维护黄金标准》，实现样式完全沙箱化、
+ *      注释结构化分层，并在关键参数处提供可调节说明与影响分析。
+ * 适用范围：仅作用于 #pageCover-container 内部元素，避免全局污染。
+ * ===================================================================
+ */
+
+/*
+ * ===================================================================
+ *                      1. 沙箱与页面容器约定
+ * -------------------------------------------------------------------
+ * - 所有选择器均以 #pageCover-container 开头，确保作用域限定在封面页。
+ * - 页面内部包裹层使用 .pageCover-wrapper，承担布局与滚动控制职责。
+ * - 禁止直接给 body/h1/p 等标签设样式；必须通过带前缀的类选择器。
+ * - 动画命名建议加前缀（如 pageCover-bounce），避免与其他页面冲突。
+ * ===================================================================
+ */
+
+/* 2. 页面容器（Wrapper）
+ * 职责：封面页的沙箱根内层容器，负责填满视口并阻止内部溢出滚动条。
+ * 关键参数：
+ *   - width/height: 统一使用 100%，确保与父容器（page-section）等高等宽。
+ *   - overflow: hidden 防止内部绝对定位或大元素造成滚动条出现。
+ *   - font-family: UI 友好字体栈，确保在不同平台呈现稳定。
+ * 调节建议：
+ *   - 如需内部滚动，请改为 overflow: auto，并在内部再设一个内容滚动容器。
+ */
+#pageCover-container .pageCover-wrapper {
+    width: 100%;
+    height: 100%;
+    overflow: hidden; /* 防止内部元素导致滚动条 */
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+/* 3. 背景容器（Background）
+ * 职责：承载封面背景图并提供底部对齐的内容布局。
+ * 关键参数与影响：
+ *   - height: 100vh / width: 100vw 使背景填满视口（与 page-section 一致）。
+ *   - background-image: 背景图路径；根据项目资源路径设置。
+ *   - background-size: cover 覆盖容器，可能裁剪；可改为 contain 保留全图但可能留白。
+ *   - background-position: center 居中显示；可调为 top/left/right 以适配视觉焦点。
+ *   - display: flex + align-items: flex-end，将子元素对齐到底部，适合放置滚动提示。
+ *   - position: relative 作为绝对定位参照面，便于内部元素定位。
+ * 调节建议：
+ *   - 若需在不同尺寸下保持关键视觉不被裁剪，可结合 object-fit/多媒体查询优化。
+ */
+#pageCover-container .pageCover-wrapper .background-container {
+    height: 100vh; /* 占满整个视口高度 */
+    width: 100vw;  /* 占满整个视口宽度 */
+    /* 【说明】背景图链接根据当前资源目录设置 */
+    background-image: url('../../image/（cover）68a5cfb8d19a9.png');
+    background-size: cover; /* 覆盖整个容器，可能裁剪图片 */
+    background-position: center; /* 图片居中显示 */
+    background-repeat: no-repeat;
+    position: relative; /* 作为内部绝对定位元素的参照 */
+    display: flex;
+    justify-content: center;
+    align-items: flex-end; /* 将子元素对齐到底部 */
+}
+
+/* 4. 滚动提示容器（Scroll Indicator Wrapper）
+ * 职责：承载交互提示（箭头与文字），在背景底部居中展示。
+ * 关键参数与影响：
+ *   - position: absolute 使其相对背景容器定位。
+ *   - bottom: 10% 决定距底部的相对距离；数值增大则更靠上，减小更靠下。
+ *   - left: 50% + transform: translateX(-50%) 实现水平居中。
+ *   - flex-direction: column 垂直排列箭头与文字；可改为 row 水平排列。
+ * 调节建议：
+ *   - 通过媒体查询在小屏上增大 bottom（如 12%-15%），避免与底部安全区重叠。
+ */
+#pageCover-container .pageCover-wrapper .scroll-indicator {
+    position: absolute;
+    bottom: 10%;
+    left: 50%;
+    transform: translateX(-50%); /* 水平居中 */
+    text-align: center;
+    display: flex;
+    flex-direction: column; /* 垂直排列箭头和文字 */
+    align-items: center;
+}
+
+/* 5. 向下跳动的箭头（Arrow）
+ * 职责：通过CSS边框绘制的倒三角，配合动画形成“下滑提示”。
+ * 关键参数与影响：
+ *   - border-left/right/top 控制箭头大小与颜色；三角尺寸由边框宽度决定。
+ *   - margin-bottom 调节与文字间距。
+ *   - animation: bounce 2s infinite 控制动画名称、时长与循环。
+ * 调节建议：
+ *   - 调整 border-top 的像素可改变箭头大小；颜色可根据主题变量切换。
+ *   - 动画节奏可通过 1.5s/2.5s 改变速度；名称建议前缀化（如 pageCover-bounce）。
+ */
+#pageCover-container .pageCover-wrapper .arrow {
+    width: 0;
+    height: 0;
+    /* 使用边框创建倒三角形 */
+    border-left: 12px solid transparent;
+    border-right: 12px solid transparent;
+    border-top: 15px solid black; /* 三角形的颜色和大小 */
+    margin-bottom: 15px; /* 与文字之间的间距 */
+    animation: bounce 2s infinite; /* 应用跳动动画 */
+}
+
+/* 6. 提示文字（Text）
+ * 职责：为用户提供“向下滚动”提示文案。
+ * 关键参数与影响：
+ *   - color 字体颜色；可根据主题色板（如 var(--text-color)）切换。
+ *   - font-size 文号；建议采用相对单位 rem 以适配不同根字体大小。
+ *   - font-weight 500 中等加粗，提升可读性。
+ * 调节建议：
+ *   - 在暗色背景上适当提高对比度（如使用 #fff 或主题浅色）。
+ */
+#pageCover-container .pageCover-wrapper .scroll-text {
+    color: black;
+    font-size: 1rem; /* 字体大小 */
+    font-weight: 500;
+}
+
+/*
+ * ===================================================================
+ *                          7. 动画定义（Keyframes）
+ * -------------------------------------------------------------------
+ * - Keyframes 为全局声明；名称可能与其他页面冲突，建议前缀化（例如：
+ *   @keyframes pageCover-bounce 并在 .arrow 中使用 animation: pageCover-bounce ...）。
+ * - 节奏说明：40% 与 60% 两个关键帧实现两次上抬，形成“弹跳”效果。
+ * - 参数调节：改变 translateY 的像素可增大/减小跳动幅度；
+ *   调整百分比位置可改变节奏（如 35%/55% 更快）。
+ * ===================================================================
+ */
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-20px); /* 向上跳动的高度 */
+    }
+    60% {
+        transform: translateY(-10px);
+    }
+}
+
+/*
+ * ===================================================================
+ *                          8. 使用与调节指南
+ * -------------------------------------------------------------------
+ * - 若背景图需保留完整不被裁剪，改用 background-size: contain，并考虑添加背景色以防留白。
+ * - 在超高屏或刘海屏设备，适当增大 scroll-indicator 的 bottom 以避开安全区。
+ * - 统一主题：箭头颜色与文字 color 建议与 :root 变量或页面主题保持一致。
+ * - 动画统一：建议统一采用前缀动画名称，避免跨页重名导致不可预期效果。
+ * ===================================================================
+ */
+
+/*
+ * ===================================================================
+ *                          9. 合规性自检（SOP）
+ * -------------------------------------------------------------------
+ * - CSS 沙箱化：已全部使用 #pageCover-container 前缀（符合法则二第1条）。
+ * - 禁止标签选择器：未对 body/h1/p 等标签直接设样式（符合法则二第3条）。
+ * - 动画命名：当前使用 bounce（未前缀）；根据 SOP“推荐前缀”可优化为 pageCover-bounce。
+ * - 结构角色：.pageCover-wrapper 作为页面内层包装器，职责清晰（符合法则一）。
+ * - 综述：整体遵循 SOP 要求，建议后续将动画名称与引用统一前缀以进一步降低冲突风险。
+ * ===================================================================
+ */

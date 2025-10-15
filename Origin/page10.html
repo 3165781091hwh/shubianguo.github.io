@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page 10 - 药品质量与可及性得到保证 (v2)</title>
+    <style>
+        /* --- 基础与字体设置 --- */
+        :root {
+            --bg-color: #FFFBF0;
+            --primary-text-color: #3D405B;
+            --secondary-text-color: #8D99AE;
+            --bar-color-western: #4F7CAC;
+            --bar-color-tcm: #83A9D3;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html, body {
+            width: 100%; height: 100vh; overflow: hidden;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-color); color: var(--primary-text-color);
+        }
+
+        /* --- 主容器与布局 --- */
+        .page-container { display: flex; width: 100%; height: 100%; padding: 3vw 4vw; }
+        .side-panel { flex: 0 0 10%; display: flex; flex-direction: column; justify-content: flex-start; padding-top: 15vh; gap: 6vh; }
+        .main-content { flex: 1; display: flex; flex-direction: column; height: 100%; }
+
+        /* --- 左侧关键词 --- */
+        .stakeholder-item {
+            font-size: 2vw; font-weight: 500; padding-left: 1.5vw;
+            border-left: 3px solid var(--primary-text-color);
+            opacity: 0; transform: translateX(-20px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+
+        /* --- 内容元素通用样式 --- */
+        .content-block {
+            opacity: 0; transform: translateY(20px);
+            transition: opacity 1s ease-out, transform 1s ease-out, filter 0.5s ease-in-out;
+        }
+
+        /* 焦点管理：非当前焦点的元素会变暗 */
+        .is-dimmed { opacity: 0.3 !important; }
+        
+        /* 图表标题 */
+        .chart-wrapper h3 {
+            font-size: 1.3vw; font-weight: 600;
+            margin-bottom: 3.5vh; /* 增加下边距，解决重叠问题 */
+            color: var(--primary-text-color);
+        }
+
+        /* 图表1: 垂直柱状图 */
+        .bar-chart-vertical { display: flex; justify-content: space-around; align-items: flex-end; height: 25vh; border-bottom: 1px solid #ddd; padding-bottom: 0.5vh; }
+        .bar-group { display: flex; flex-direction: column; align-items: center; width: 6%; height: 100%; position: relative; justify-content: flex-end; }
+        .bar { width: 70%; background-color: var(--bar-color-western); transition: height 1.5s cubic-bezier(0.23, 1, 0.32, 1); display: flex; flex-direction: column-reverse; }
+        .bar-tcm { width: 100%; background-color: var(--bar-color-tcm); }
+        .bar-value { position: absolute; top: -3vh; font-size: 0.8vw; font-weight: 600; opacity: 0; transition: opacity 0.5s ease 1s; }
+        .bar-label { margin-top: 1vh; font-size: 0.8vw; color: var(--secondary-text-color); }
+        
+        /* 图表2: 水平条形图 */
+        .chart-wrapper { margin-bottom: 4vh; } /* 增加图表间距 */
+        .bar-chart-horizontal { width: 100%; }
+        .bar-row { display: flex; align-items: center; margin-bottom: 1.2vh; opacity: 0; transition: opacity 0.5s ease; }
+        .bar-row-label { width: 25%; text-align: right; padding-right: 1.5vw; font-size: 0.9vw; color: var(--primary-text-color); white-space: nowrap; }
+        .bar-horizontal-wrapper { flex: 1; height: 1.8vh; background-color: #EAEAEA; border-radius: 0.9vh; }
+        .bar-horizontal { width: 0; height: 100%; background-color: var(--bar-color-western); border-radius: 0.9vh; position: relative; transition: width 1.5s cubic-bezier(0.23, 1, 0.32, 1); }
+        .bar-horizontal-value { position: absolute; right: -3vw; top: 50%; transform: translateY(-50%); font-size: 0.9vw; font-weight: 600; }
+
+        /* 中间说明文案 */
+        .summary-text {
+            font-size: 1.1vw; line-height: 1.8; color: #555;
+            max-width: 95%; margin-bottom: 3vh;
+        }
+        .summary-text p { margin-bottom: 1em; }
+
+        /* 底部结论 */
+        .conclusion { text-align: center; margin-top: auto; padding-bottom: 2vh; }
+        .conclusion h1 { font-size: 3.2vw; font-weight: 700; letter-spacing: 0.1em; }
+
+        /* 动画触发类 */
+        .is-visible { opacity: 1 !important; transform: none !important; }
+        .is-visible .bar-value { opacity: 1; }
+    </style>
+</head>
+<body>
+
+    <div class="page-container">
+        <div class="side-panel">
+            <div id="st-patient" class="stakeholder-item">患者</div>
+            <div id="st-industry" class="stakeholder-item">业界</div>
+            <div id="st-society" class="stakeholder-item">社会</div>
+        </div>
+        <div class="main-content">
+            <div id="chart1" class="content-block chart-wrapper">
+                <h3>2000-2024医保目录药品数量</h3>
+                <div class="bar-chart-vertical"><!-- Chart 1 content --></div>
+            </div>
+            <div id="chart2" class="content-block chart-wrapper">
+                <h3>2024医保新增药品分类</h3>
+                <div class="bar-chart-horizontal"><!-- Chart 2 content --></div>
+            </div>
+            <div id="summary" class="content-block summary-text">
+                <p>通过仿制药一致性评价和长期监管体系，国家药品集采保障了采购药品的质量。从发布采购意见到中标名单，再到将违规企业列入黑名单，国家药品集采大胆探索、小心求证，寻求价格机制和药品疗效之间的微妙平衡。</p>
+                <p>通过国家医保、药品集采和市场调控的组合拳，药品的可及性得到保障。十轮集采覆盖430余种药品，让老百姓用得到的药价格全被“打下来”。</p>
+            </div>
+            <div id="conclusion" class="content-block conclusion">
+                <h1>药品质量与可及性得到保证</h1>
+            </div>
+        </div>
+    </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const chart1Data = [ { year: 2000, total: 1488, tcm: 913 }, { year: 2009, total: 2127, tcm: 987 }, { year: 2017, total: 2535, tcm: 1238 }, { year: 2019, total: 2643, tcm: 1321 }, { year: 2020, total: 2800, tcm: 1374 }, { year: 2021, total: 2860, tcm: 1374 }, { year: 2022, total: 2967, tcm: 1381 }, { year: 2023, total: 3088, tcm: 1390 }, { year: 2024, total: 3159, tcm: 1394 } ];
+    const chart2Data = [ { label: '抗肿瘤药和免疫机能调节药物', value: 29 }, { label: '神经系统药物', value: 15 }, { label: '消化系统与代谢药物', value: 15 }, { label: '系统用抗感染药物', value: 7 }, { label: '心血管系统药物', value: 7 }, { label: '呼吸系统药物', value: 5 }, { label: '血液和造血系统药物', value: 5 } ];
+
+    const chart1Container = document.querySelector('#chart1 .bar-chart-vertical');
+    const maxTotal = Math.max(...chart1Data.map(d => d.total));
+    chart1Data.forEach(d => {
+        const heightPercent = (d.total / maxTotal) * 100;
+        const tcmHeightPercent = (d.tcm / d.total) * 100;
+        chart1Container.innerHTML += `<div class="bar-group"><div class="bar" style="height: 0%;" data-height="${heightPercent}%"><div class="bar-tcm" style="height: ${tcmHeightPercent}%;"></div><div class="bar-value" data-value="${d.total}">0</div></div><div class="bar-label">${d.year}</div></div>`;
+    });
+
+    const chart2Container = document.querySelector('#chart2 .bar-chart-horizontal');
+    const maxValue = Math.max(...chart2Data.map(d => d.value));
+    chart2Data.forEach(d => {
+        const widthPercent = (d.value / maxValue) * 100;
+        chart2Container.innerHTML += `<div class="bar-row"><div class="bar-row-label">${d.label}</div><div class="bar-horizontal-wrapper"><div class="bar-horizontal" style="width: 0%;" data-width="${widthPercent}%"><span class="bar-horizontal-value" data-value="${d.value}">0</span></div></div></div>`;
+    });
+
+    // 数字滚动动画函数
+    function animateValue(element, start, end, duration) {
+        let startTimestamp = null;
+        const step = (timestamp) => {
+            if (!startTimestamp) startTimestamp = timestamp;
+            const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+            element.innerHTML = Math.floor(progress * (end - start) + start).toLocaleString();
+            if (progress < 1) {
+                window.requestAnimationFrame(step);
+            }
+        };
+        window.requestAnimationFrame(step);
+    }
+    
+    // 动画序列编排
+    const runAnimations = () => {
+        const stPatient = document.querySelector('#st-patient');
+        const stIndustry = document.querySelector('#st-industry');
+        const stSociety = document.querySelector('#st-society');
+        const chart1 = document.querySelector('#chart1');
+        const chart2 = document.querySelector('#chart2');
+        const summary = document.querySelector('#summary');
+        const conclusion = document.querySelector('#conclusion');
+
+        const sequence = [
+            // 1. 场景建立: 左侧关键词
+            () => { stPatient.classList.add('is-visible'); },
+            () => { stIndustry.classList.add('is-visible'); },
+            () => { stSociety.classList.add('is-visible'); },
+            
+            // 2. 焦点1: 医保目录数量图表
+            () => {
+                chart1.classList.add('is-visible');
+                Array.from(chart1.querySelectorAll('.bar')).forEach((el, i) => {
+                    setTimeout(() => {
+                        el.style.height = el.dataset.height;
+                        const valueEl = el.querySelector('.bar-value');
+                        animateValue(valueEl, 0, parseInt(valueEl.dataset.value), 1200);
+                    }, i * 80);
+                });
+            },
+
+            // 3. 焦点2: 新增药品分类图表
+            () => {
+                chart1.classList.add('is-dimmed'); // 将上一个焦点变暗
+                chart2.classList.add('is-visible');
+                Array.from(chart2.querySelectorAll('.bar-row')).forEach((el, i) => {
+                    setTimeout(() => {
+                        el.classList.add('is-visible');
+                        const bar = el.querySelector('.bar-horizontal');
+                        bar.style.width = bar.dataset.width;
+                        const valueEl = el.querySelector('.bar-horizontal-value');
+                        animateValue(valueEl, 0, parseInt(valueEl.dataset.value), 1200);
+                    }, i * 120);
+                });
+            },
+
+            // 4. 焦点3: 说明文案
+            () => {
+                chart2.classList.add('is-dimmed'); // 将上一个焦点变暗
+                summary.classList.add('is-visible');
+            },
+
+            // 5. 最终结论
+            () => {
+                summary.classList.add('is-dimmed');
+                conclusion.classList.add('is-visible');
+            }
+        ];
+
+        const delays = [200, 400, 600, 1000, 3500, 5500, 6800];
+        sequence.forEach((action, index) => {
+            setTimeout(action, delays[index]);
+        });
+    };
+
+    runAnimations();
+});
+</script>
+
+</body>
+</html>

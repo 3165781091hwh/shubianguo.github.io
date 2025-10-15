@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>医药集采数据新闻 - 节约医保开支</title>
+    <!-- 引入 ECharts 库 -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+
+    <style>
+        /* --- 风格标准：继承自【白版】文件 --- */
+        :root {
+            --bg-color: #FFFBF0;
+            --font-color: #3D405B;
+            --primary-color-1: #3D405B; /* 深灰蓝 */
+            --primary-color-2: #E07A5F;  /* 珊瑚橙 */
+            --accent-color-green: #81B29A; /* 强调色-绿 (节约) */
+            --accent-color-red: #E07A5F;   /* 强调色-红 (开支) */
+            --border-color: rgba(0, 0, 0, 0.1);
+            --panel-bg: rgba(255, 255, 255, 0.5); /* 半透明面板背景 */
+            --font-family-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body {
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            font-family: var(--font-family-main);
+            color: var(--font-color);
+            background-image: url('https://youke1.picui.cn/s1/2025/08/19/68a3f53e156c5.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .page-container {
+            display: grid;
+            grid-template-columns: 150px 1fr;
+            grid-template-rows: 1fr auto;
+            grid-template-areas:
+                "sidebar main"
+                "footer footer";
+            height: 100vh;
+            padding: 2vw;
+            gap: 2vw;
+        }
+        
+        .page-footer {
+            grid-area: footer;
+            text-align: center;
+            font-size: 3.5vw;
+            font-weight: 900;
+            letter-spacing: 0.2em;
+            padding-top: 1vw;
+            text-shadow: 0 0 15px rgba(255,255,255,0.7);
+            opacity: 0;
+            animation: fadeIn 0.8s 0.4s ease-out forwards;
+        }
+
+        .sidebar {
+            grid-area: sidebar;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 20px;
+            opacity: 0;
+            animation: slideInLeft 0.8s 0.6s ease-out forwards;
+        }
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 80px;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 1.5vw;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: var(--panel-bg);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        .sidebar-item:hover {
+            transform: translateY(-5px) scale(1.05);
+            border-color: var(--primary-color-2);
+        }
+        .sidebar-item.active {
+            background-color: var(--font-color);
+            color: var(--bg-color);
+            border-color: var(--font-color);
+        }
+        
+        .main-content {
+            grid-area: main;
+            display: grid;
+            grid-template-columns: 3fr 2fr;
+            gap: 2vw; 
+            opacity: 0;
+            animation: fadeIn 0.8s 0.8s ease-out forwards;
+            min-height: 0;
+        }
+
+        .left-column {
+            display: grid;
+            grid-template-rows: 2fr 1fr;
+            gap: 2vw;
+            min-height: 0;
+        }
+
+        .right-column .panel {
+             height: 100%;
+             padding: 2vw;
+             font-size: 1.0vw; 
+             line-height: 1.8;
+             overflow-y: auto;
+        }
+        
+        .right-column .panel p {
+            margin-bottom: 1.5em;
+        }
+
+        .highlight-text {
+            font-weight: bold;
+            color: var(--primary-color-2);
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            border-radius: 12px;
+            background: var(--panel-bg);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+        }
+        .chart-controls {
+            flex-shrink: 0;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .chart-controls button {
+            padding: 8px 20px;
+            margin: 0 10px;
+            border: 1px solid var(--border-color);
+            background-color: transparent;
+            color: var(--font-color);
+            border-radius: 20px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .chart-controls button.active,
+        .chart-controls button:hover {
+            background-color: var(--font-color);
+            color: var(--bg-color);
+            border-color: var(--font-color);
+        }
+
+        #main-chart {
+            flex-grow: 1;
+            width: 100%;
+            height: 100%;
+            transition: opacity 0.4s ease-in-out;
+        }
+
+        /* --- 左下图片容器 --- */
+        .art-text {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+
+        /* --- 图片样式 --- */
+        .art-text img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain; /* 保证图片完整显示且不变形 */
+            transform: translateY(-10%);
+        }
+        
+        .panel {
+            border-radius: 12px;
+            background: var(--panel-bg);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideInLeft { from { opacity: 0; transform: translateX(-50px); } to { opacity: 1; transform: translateX(0); } }
+    </style>
+</head>
+<body>
+
+    <div class="page-container">
+        
+        <aside class="sidebar">
+            <div class="sidebar-item">患者</div>
+            <div class="sidebar-item">业界</div>
+            <div class="sidebar-item active">社会</div>
+        </aside>
+
+        <main class="main-content">
+            <div class="left-column">
+                <div class="chart-container">
+                    <div class="chart-controls">
+                        <button id="btn-chart-a" class="active">集采前市场分布</button>
+                        <button id="btn-chart-b">集采后销售额变化</button>
+                    </div>
+                    <div id="main-chart"></div>
+                </div>
+                <div class="art-text">
+                   <!-- 改动：更新图片链接 -->
+                   <img src="https://youke1.picui.cn/s1/2025/08/19/68a4404965f46.png" alt="医保基金节约数据">
+                </div>
+            </div>
+            <div class="right-column">
+                <div class="panel">
+                    <p><strong class="highlight-text">医保资金在药品上的费用=药品单价*药品销售量</strong>。集采改革如何节约医保开支，便应当从单价如何降低和药品销售量如何减少上入手。</p>
+                    <p>一、<strong class="highlight-text">药品价格降低</strong>。这个话题似乎在前文已经多次提到，也阐释了其原因，但那解释的是单一药品价格下降的原理，对于消费端来讲其背后还有一个绕不开的话题是，患者消费药品均价如何降低？这就是集采药和非集采药之间的竞争了。国家医保通过对集采药品的政策倾斜，将集采药药品更多的列入医保报销名单的方法，让集采药品在消费端占据更大市场，获得更多入准空间，让常见消费药品尽量由集采药品组成，降低药品的平均价格。</p>
+                    <p>二、<strong class="highlight-text">药品销售量降低</strong>。乍一看，似乎有些难以理解，难道说，医保节省开支的方式是给患者“不开药、少开药”？对，但不全对。对是因为，药品销售量的下降必然是因为临床开药量的下降，这也就是说，医生开药的量确实较集采之前有所下降。但不全对是因为，少开或不开的这部分药，是为了解决“过度医疗”的问题。在原有药品“带金销售”，药品提成与医生收入挂钩的机制下，临床治疗过程中，难免会存在“开药量大于实际需求量”的情况。而新的集采机制建立后，“带金销售”被取缔，“钱药”挂钩的模式被废止，过度医疗的问题自然被解决。所以药品销售量降低，其实是拧干了开药流程中的水分，是药品销售量归于理性空间。</p>
+                    <p>由此，<strong class="highlight-text">更低的药品价格*更低的药品销售量=更少的医保资金</strong>。</p>
+                </div>
+            </div>
+        </main>
+
+        <footer class="page-footer">
+            节约医保开支
+        </footer>
+
+    </div>
+    
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const chartDom = document.getElementById('main-chart');
+    let myChart = echarts.init(chartDom);
+    const btnA = document.getElementById('btn-chart-a');
+    const btnB = document.getElementById('btn-chart-b');
+
+    const optionA = {
+        title: [
+            {
+                text: '全国范围集采前院内药品市场各批次销售额分布',
+                left: 'center',
+                top: '2%', 
+                textStyle: { fontSize: 18, fontWeight: 'bold', color: '#3D405B' }
+            },
+            {
+                text: '院内医疗\n机构合计',
+                left: '50%',
+                top: '57%', 
+                textAlign: 'center',
+                textStyle: {
+                    fontSize: 20, 
+                    color: '#666', 
+                    fontWeight: 'normal' 
+                }
+            }
+        ],
+        tooltip: { show: false },
+        legend: { orient: 'vertical', left: 'left', top: 'center', textStyle: { fontSize: 14 } },
+        series: [
+            {
+                name: '销售额分布',
+                type: 'pie',
+                radius: ['50%', '75%'],
+                center: ['50%', '60%'], 
+                avoidLabelOverlap: true,
+                label: {
+                    show: true,
+                    formatter: '{b}\n{d}%',
+                    fontSize: 13,
+                    minMargin: 5,
+                    edgeDistance: 10,
+                    lineHeight: 15
+                },
+                labelLine: { show: true, length: 15, length2: 10 },
+                data: [
+                    { value: 6.10, name: '第1批' }, { value: 2.80, name: '第2批' },
+                    { value: 3.80, name: '第3批' }, { value: 3.20, name: '第4批' },
+                    { value: 6.90, name: '第5批' }, { value: 2.00, name: '第6批' },
+                    { value: 5.50, name: '第7批' }, { value: 4.50, name: '第8批' },
+                    { value: 2.00, name: '第9批' }, { value: 63.10, name: '非集采' }
+                ]
+            }
+        ],
+        color: ['#8ECFC9', '#FFBE7A', '#FA7F6F', '#82B0D2', '#BEB8DC', '#E7DAD2', '#96C37D', '#F4A460', '#C0C0C0', '#D3D3D3']
+    };
+
+    const optionB = {
+        title: {
+            text: '1~8批集采品种院内渠道销售额变化（亿元）',
+            left: 'center',
+            textStyle: {
+                fontSize: 16
+            }
+        },
+        grid: {
+            left: '3%',
+            right: '5%',
+            bottom: '3%',
+            containLabel: true
+        },
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: { type: 'shadow' }
+        },
+        xAxis: {
+            type: 'category',
+            data: ['2019年', '第1批', '第2批', '第3批', '第4批', '第5批', '第6批', '第7批', '2023年-第8批'],
+            axisLabel: {
+                interval: 0,
+                rotate: 30
+            }
+        },
+        yAxis: {
+            type: 'value',
+            name: '销售额 (亿元)'
+        },
+        series: [{
+            name: '销售额',
+            type: 'bar',
+            data: [4623.4, 4165, 3913.8, 3641.8, 3433.5, 3106.6, 2992.2, 2617.8, 2547.6],
+            barWidth: '60%',
+            itemStyle: {
+                color: 'var(--primary-color-1)'
+            }
+        }],
+        graphic: {
+            elements: [
+                {
+                    type: 'group',
+                    right: '5%',
+                    top: '12%',
+                    children: [
+                        {
+                            type: 'ellipse',
+                            shape: { cx: 0, cy: 0, rx: 105, ry: 25 },
+                            style: { fill: '#81B29A' }
+                        },
+                        {
+                            type: 'text',
+                            style: {
+                                text: '累计-2076（-44.9%）',
+                                fill: '#fff',
+                                font: 'bold 14px sans-serif'
+                            },
+                            left: 'center',
+                            top: 'middle'
+                        }
+                    ]
+                }
+            ]
+        }
+    };
+
+    function renderChart(type) {
+        chartDom.style.opacity = 0;
+        setTimeout(() => {
+            myChart.dispose();
+            myChart = echarts.init(chartDom);
+            
+            if (type === 'A') {
+                myChart.setOption(optionA);
+                btnA.classList.add('active');
+                btnB.classList.remove('active');
+            } else {
+                myChart.setOption(optionB);
+                btnB.classList.add('active');
+                btnA.classList.remove('active');
+            }
+            chartDom.style.opacity = 1;
+        }, 300);
+    }
+
+    btnA.addEventListener('click', () => renderChart('A'));
+    btnB.addEventListener('click', () => renderChart('B'));
+
+    renderChart('A');
+
+    window.addEventListener('resize', function () {
+        if (myChart) {
+            myChart.resize();
+        }
+    });
+});
+</script>
+
+</body>
+</html>

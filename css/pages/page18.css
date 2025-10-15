@@ -1,0 +1,266 @@
+/* css/pages/page18.css - 复杂全屏布局 (V5.0 标准) */
+
+/* 1. 定义沙箱容器的基础属性 */
+#page18-container .page18-wrapper {
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    
+    /* 将原始 <body> 的样式移到这里 */
+    --bg-color: #FFFBF0;
+    --font-color: #3D405B;
+    --primary-color-1: #3D405B; /* 深灰蓝 */
+    --primary-color-2: #E07A5F;  /* 珊瑚橙 */
+    --accent-color-green: #81B29A; /* 强调色-绿 */
+    --accent-color-red: #E07A5F;   /* 强调色-红 */
+    --border-color: rgba(0, 0, 0, 0.1);
+    --panel-bg: rgba(255, 255, 255, 0.65); /* 半透明面板背景 */
+    --font-family-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    
+    font-family: var(--font-family-main);
+    color: var(--font-color);
+    background-image: url('../../image/（问题）68a50c3d7aaac.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+/* 2. 将原始CSS中所有规则，全部加上沙箱前缀 */
+#page18-container .page18-wrapper * { 
+    margin: 0; 
+    padding: 0; 
+    box-sizing: border-box; 
+}
+
+#page18-container .page18-wrapper .page-container {
+    position: relative; 
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr auto;
+    grid-template-areas:
+        "main"
+        "footer";
+    height: 100vh; /* 确保内部顶层容器撑满视口 */
+    width: 100vw;   /* 确保内部顶层容器撑满视口 */
+    padding: 2vw;
+    gap: 2vw;
+}
+
+#page18-container .page18-wrapper .page-footer {
+    grid-area: footer;
+    text-align: center;
+    font-size: 3.5vw;
+    font-weight: 900;
+    letter-spacing: 0.2em;
+    padding-top: 1vw;
+    text-shadow: 0 0 15px rgba(255,255,255,0.7);
+    opacity: 0;
+    animation: fadeIn 0.8s 0.4s ease-out forwards;
+}
+
+#page18-container .page18-wrapper .sidebar {
+    grid-area: sidebar;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 20px;
+    opacity: 0;
+    animation: slideInLeft 0.8s 0.6s ease-out forwards;
+}
+
+#page18-container .page18-wrapper .sidebar-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 80px;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    font-size: 1.5vw;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: var(--panel-bg);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+#page18-container .page18-wrapper .sidebar-item:hover {
+    transform: translateY(-5px) scale(1.05);
+    border-color: var(--primary-color-2);
+}
+
+#page18-container .page18-wrapper .sidebar-item.active {
+    background-color: var(--font-color);
+    color: var(--bg-color);
+    border-color: var(--font-color);
+}
+
+#page18-container .page18-wrapper .main-content {
+    grid-area: main;
+    display: grid;
+    grid-template-rows: 0.8fr 2.2fr; 
+    grid-template-columns: 1fr;
+    gap: 2vw; 
+    opacity: 0;
+    animation: fadeIn 0.8s 0.8s ease-out forwards;
+    min-height: 0;
+    margin-top: 2vh;
+}
+
+#page18-container .page18-wrapper .panel {
+    border-radius: 12px;
+    background: var(--panel-bg);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    border: 1px solid var(--border-color);
+    padding: 1.5vw 2vw;
+    overflow-y: auto;
+    font-size: 1.2vw; 
+    line-height: 1.8;
+}
+
+#page18-container .page18-wrapper .panel p + p {
+    margin-top: 1.2em;
+}
+
+#page18-container .page18-wrapper .top-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2vw;
+    min-height: 0;
+}
+
+#page18-container .page18-wrapper .bottom-section .panel {
+     height: 100%;
+}
+
+#page18-container .page18-wrapper .embedded-chart-panel {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    overflow: hidden;
+}
+
+#page18-container .page18-wrapper .embedded-chart-panel h3 {
+    text-align: center;
+    margin-bottom: 15px;
+    font-size: 1.2vw;
+    color: var(--font-color);
+    flex-shrink: 0;
+}
+
+#page18-container .page18-wrapper .embedded-chart-content {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+}
+
+#page18-container .page18-wrapper .text-highlight {
+    font-weight: 900;
+    color: var(--primary-color-2);
+}
+
+#page18-container .page18-wrapper #chart-22-wrapper {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    box-sizing: border-box;
+    padding: 10px 10px 40px 50px;
+    display: flex;
+    flex-direction: column;
+}
+
+#page18-container .page18-wrapper #chart-22-wrapper .chart-area {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    border-left: 2px solid #333;
+    border-bottom: 2px solid #333;
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-end;
+    padding: 0 15px;
+    box-sizing: border-box;
+}
+
+#page18-container .page18-wrapper #chart-22-wrapper .y-axis-labels {
+    position: absolute;
+    left: -10px; top: 0; bottom: 0;
+    width: 0;
+    list-style: none;
+    margin: 0; padding: 0;
+}
+
+#page18-container .page18-wrapper #chart-22-wrapper .y-axis-labels li {
+    position: absolute;
+    left: -40px;
+    width: 35px;
+    text-align: right;
+    transform: translateY(50%);
+    color: #555;
+    font-size: 0.8em;
+}
+
+#page18-container .page18-wrapper #chart-22-wrapper .y-axis-labels li::after {
+    content: '';
+    position: absolute;
+    right: -10px; top: 50%;
+    width: 8px; height: 1px;
+    background: #333;
+}
+
+#page18-container .page18-wrapper #chart-22-wrapper .bar-group {
+    width: 12%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    position: relative;
+}
+
+#page18-container .page18-wrapper #chart-22-wrapper .bar {
+    width: 100%;
+    background-color: var(--primary-color-1);
+    position: relative;
+    color: black;
+    font-weight: bold;
+    font-size: 0.9em;
+    transition: background-color 0.3s ease;
+}
+
+#page18-container .page18-wrapper #chart-22-wrapper .bar:hover {
+    background-color: var(--primary-color-2);
+}
+
+#page18-container .page18-wrapper #chart-22-wrapper .bar-value {
+    position: absolute;
+    top: -28px;
+    width: 100%;
+    text-align: center;
+}
+
+#page18-container .page18-wrapper #chart-22-wrapper .group-label {
+    position: absolute;
+    bottom: -30px;
+    width: 100%;
+    text-align: center;
+    font-size: 1em;
+}
+
+
+/* 3. @规则（如@keyframes）必须放在沙箱外部 */
+@keyframes fadeIn { 
+    from { opacity: 0; transform: translateY(10px); } 
+    to { opacity: 1; transform: translateY(0); } 
+}
+
+@keyframes slideInLeft { 
+    from { opacity: 0; transform: translateX(-50px); } 
+    to { opacity: 1; transform: translateX(0); } 
+}

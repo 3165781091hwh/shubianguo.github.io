@@ -1,0 +1,173 @@
+/*
+ * ===================================================================
+ *                          css/pages/page5.css
+ *                     页面5样式（V5.0 标准注释版）
+ * -------------------------------------------------------------------
+ * 目标：遵循《项目前端开发与维护黄金标准》，实现样式完全沙箱化、
+ *      注释结构化分层，并在关键参数处提供可调节说明与影响分析。
+ * 适用范围：仅作用于 #page5-container 内部元素，避免全局污染。
+ * ===================================================================
+ */
+
+/*
+ * ===================================================================
+ *                      1. 沙箱与页面容器约定
+ * -------------------------------------------------------------------
+ * - 所有选择器均以 #page5-container 开头，确保作用域限定在页面5。
+ * - 页面内部包装层（.main-container/.chart-wrapper/.tabs 等）承担布局与交互职责。
+ * - 禁止直接给 body/h1/p 等标签设样式；必须通过带前缀的类选择器。
+ * - 动画如需新增，建议采用 page5-* 前缀命名以避免跨页冲突。
+ * ===================================================================
+ */
+
+/* 2. 页面根容器（Root Container）
+ * 职责：提供背景与排版上下文，并居中承载主容器。
+ * 关键参数与影响：
+ *   - background-image/size/position 控制背景图；cover 可能裁剪，contain 可保留全图但或有留白；
+ *   - display:flex + 居中 将主内容居中；
+ *   - overflow:hidden 防止内部绝对定位溢出滚动条。
+ */
+#page5-container {
+    background-color: #FFFBF0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    overflow: hidden;
+    /* 兜底：当 .page5-wrapper 未生效时，也保证背景与居中 */
+    background-image: url('../../image/（1-6）68a725b2d3e64.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+}
+
+/* 3. 主容器（Main Container）
+ * 职责：约束页面可视区域，提供内部相对定位上下文。
+ * 关键参数与影响：
+ *   - max-width/max-height 在大屏下防止过度伸展；
+ *   - position:relative 为头部/按钮等绝对定位元素提供参照。
+ */
+#page5-container .main-container {
+    width: 95%;
+    height: 95%;
+    max-width: 1600px;
+    max-height: 900px;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    position: relative;
+}
+
+/* 4. 头部（Header）与 Logo 提示（Tooltip）
+ * 职责：展示品牌 Logo 并在悬停时显示说明。
+ * 关键参数与影响：
+ *   - z-index 确保在图表层之上；
+ *   - tooltip 的 visibility/opacity 控制淡入；
+ *   - img 尺寸可在响应式中调整。
+ */
+#page5-container .header { position: absolute; top: 10px; left: 20px; z-index: 100; }
+#page5-container .logo-container { position: relative; display: inline-block; }
+#page5-container .logo-container img { width: 60px; height: auto; cursor: pointer; }
+#page5-container .logo-tooltip {
+    visibility: hidden; opacity: 0; position: absolute; top: 100%; left: 0; margin-top: 10px; padding: 10px 15px; width: 220px;
+    background-color: rgba(0, 0, 0, 0.8); color: #fff; border-radius: 5px; font-size: 14px; text-align: left; transition: opacity 0.3s, visibility 0.3s; pointer-events: none;
+}
+#page5-container .logo-container:hover .logo-tooltip { visibility: visible; opacity: 1; }
+
+/* 5. 标签页（Tabs）
+ * 职责：切换不同图表视图。
+ * 关键参数与影响：
+ *   - ::after 底部分隔线提升层次与分区感；
+ *   - .tab.active 使用品牌色强调当前选项；
+ *   - transform 轻微抬升增强点击反馈。
+ */
+#page5-container .tabs {
+    width: 100%; flex-shrink: 0; display: flex; justify-content: center; align-items: center;
+    padding-top: 60px; padding-bottom: 15px; margin-bottom: 10px; position: relative;
+}
+#page5-container .tabs::after { content: ''; position: absolute; bottom: 0; left: 10%; width: 80%; height: 1px; background-color: rgba(0, 0, 0, 0.1); }
+#page5-container .tab { padding: 10px 20px; cursor: pointer; font-size: 1.1vw; color: #888; position: relative; transition: all 0.3s ease; font-weight: 500; }
+#page5-container .tab.active { color: #34495e; font-weight: 700; transform: translateY(-2px); }
+#page5-container .tab.active::after { content: ''; position: absolute; bottom: -16px; left: 50%; transform: translateX(-50%); width: 50%; height: 3px; background-color: #5B8FB9; border-radius: 2px; }
+
+/* 6. 图表容器与视图切换（Charts）
+ * 职责：承载各图表视图并通过 active 类控制显隐。
+ * 关键参数与影响：
+ *   - .chart-wrapper 绝对填充并使用 opacity/visibility 切换；
+ *   - .chart-container 提供相对定位上下文。
+ */
+#page5-container .chart-container { flex-grow: 1; width: 100%; position: relative; height: calc(100% - 80px); }
+#page5-container .chart-wrapper { position: absolute; width: 100%; height: 100%; opacity: 0; visibility: hidden; transition: opacity 0.6s ease; }
+#page5-container .chart-wrapper.active { opacity: 1; visibility: visible; }
+
+/* 7. 甘特图切换按钮（Gantt Toggle）
+ * 职责：在右上角提供视图切换入口。
+ * 关键参数与影响：
+ *   - 背景色与悬停色使用品牌色板；
+ *   - 字体大小与内边距在响应式中缩减以适配小屏。
+ */
+#page5-container .gantt-toggle { position: absolute; top: 8px; right: 20px; z-index: 10; padding: 8px 14px; font-size: 0.9vw; color: #fff; background-color: #5B8FB9; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s; }
+#page5-container .gantt-toggle:hover { background-color: #34495e; }
+
+/* 8. 页面指示器覆盖（Page Indicator Override）
+ * 职责：仅在 page5 调整指示器位置，不影响其他页面。
+ * 关键参数与影响：
+ *   - top: 15vh 相比全局 5vh 下移，避免与头部重叠；
+ */
+#page5-container .page-indicator { top: 15vh; }
+
+/* 9. 页面底部正文文字（Footer Text）
+ * 职责：在所有分页底部显示统一的说明文字，保持均衡布局。
+ * 关键参数与影响：
+ *   - position: absolute 确保文字始终显示在底部；
+ *   - width: 100% 和 text-align: center 确保文字居中；
+ *   - padding 提供适当的间距，避免与图表重叠；
+ *   - z-index 确保文字显示在图表之上。
+ */
+#page5-container .page5-footer-text {
+    position: absolute;
+    bottom: 30px;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    font-size: clamp(16px, 1.2vw, 20px);
+    color: #5D6465;
+    font-weight: 500;
+    line-height: 1.6;
+    padding: 0 20px;
+    box-sizing: border-box;
+    z-index: 50;
+    pointer-events: none;
+}
+
+/* 10. 响应式设计（Responsive）
+ * 职责：在不同屏幕下调整字号与控件尺寸提高可读性。
+ * 断点说明：
+ *   - 768px：平板/小型笔记本；缩小字体与控件尺寸；
+ *   - 480px：手机；标签换行与更小字号。
+ */
+@media (max-width: 768px) {
+    #page5-container .tab { font-size: 14px; padding: 8px 15px; }
+    #page5-container .logo-container img { width: 50px; }
+    #page5-container .gantt-toggle { font-size: 12px; padding: 6px 12px; }
+    #page5-container .page5-footer-text { font-size: 14px; bottom: 20px; }
+}
+@media (max-width: 480px) {
+    #page5-container .tabs { flex-wrap: wrap; gap: 5px; }
+    #page5-container .tab { font-size: 12px; padding: 6px 10px; }
+    #page5-container .page5-footer-text { font-size: 12px; bottom: 15px; padding: 0 15px; }
+}
+
+/*
+ * ===================================================================
+ *                          10. 合规性自检（SOP）
+ * -------------------------------------------------------------------
+ * - CSS 沙箱化：全部选择器以 #page5-container 开头（符合法则二第1条）。
+ * - 禁止标签选择器：未对 body/h1/p 等标签直接设样式（符合法则二第3条）。
+ * - 动画命名：当前未定义 @keyframes；若后续添加，建议采用 page5-* 前缀（符合法则二第2条推荐）。
+ * - 包装器职责：.main-container/.chart-wrapper 等布局与职责明确（符合法则一关于内层包装器）。
+ * - 综述：页面5样式总体遵循 SOP 要求，后续扩展请保持前缀与沙箱策略。
+ * ===================================================================
+ */

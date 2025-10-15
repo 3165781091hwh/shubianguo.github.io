@@ -1,0 +1,154 @@
+/*
+ * 文件: css/pages/page11.css
+ * 描述: Page 11 的独立样式文件。 (V3 - 已修复 flex 居中导致的比例问题)
+ */
+
+/* =================================================================== */
+/*               【最终修复】豁免全局限制与 flex 居中规则                 */
+/* =================================================================== */
+/*
+ * 此规则遵循“全局遵从，局部豁免”原则，
+ * 1. 覆盖 max-width 和 padding，允许全屏。
+ * 2. 【新增】覆盖 display: flex，禁用全局居中，让内容自由伸展。
+*/
+#page11-container {
+    max-width: none !important;
+    padding: 0 !important;
+    display: block !important; /* <-- 禁用 flex 居中，解决“紧张感”问题的关键 */
+}
+
+/* =================================================================== */
+/*                      页面专属样式 (无变动)                          */
+/* =================================================================== */
+
+/* 将所有样式（包括变量）限定在 #page11-container 作用域内 */
+#page11-container {
+    /* --- Page 11 专属颜色与字体变量 --- */
+    --font-color: #3D405B;
+    --primary-color-1: #3D405B; /* 颜色1: 深灰蓝 */
+    --primary-color-2: #E07A5F;  /* 颜色2: 珊瑚橙 */
+    --border-color: rgba(0, 0, 0, 0.1);
+    --panel-bg: rgba(255, 255, 255, 0.5);
+    --font-family-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+
+    /* 设定容器内的基础字体和颜色 */
+    font-family: var(--font-family-main);
+    color: var(--font-color);
+}
+
+/* --- 页面整体布局 --- */
+#page11-container .page-container {
+    background-image: url('../../image/（现状）68a3f53e156c5.png');
+    background-size: cover;
+    background-position: center;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr auto;
+    grid-template-areas:
+        "main"
+        "footer";
+    height: 100vh;
+    width: 100%; /* 确保在容器内撑开 */
+    padding: 2vw;
+    gap: 2vw;
+    box-sizing: border-box; /* 添加box-sizing以确保padding不会导致溢出 */
+}
+
+/* --- 底部大标题 --- */
+#page11-container .page-footer {
+    grid-area: footer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3.5vw;
+    font-weight: 900;
+    letter-spacing: 0.2em;
+    padding-top: 1vw;
+    opacity: 0;
+    animation: fadeIn 0.8s 0.4s ease-out forwards;
+}
+
+/* 移除侧边栏相关样式 */
+
+/* --- 主内容区 --- */
+#page11-container .main-content {
+    grid-area: main;
+    display: flex;
+    flex-direction: column;
+    gap: 2vw;
+    opacity: 0;
+    animation: fadeIn 0.8s 0.8s ease-out forwards;
+    min-height: 0;
+    width: 100%; /* 确保主内容占满整个宽度 */
+}
+
+/* 上方图表区 */
+#page11-container .top-charts-container {
+    flex: 2;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2vw;
+    min-height: 0;
+}
+
+/* 下方文本区 */
+#page11-container .bottom-text-container {
+    flex: 1;
+    min-height: 0;
+}
+
+/* 通用面板/容器样式 */
+#page11-container .panel {
+    width: 100%;
+    height: 100%;
+    padding: 25px;
+    border-radius: 12px;
+    background: var(--panel-bg);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    border: 1px solid var(--border-color);
+    box-sizing: border-box;
+}
+
+#page11-container .text-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    font-size: 1vw;
+    line-height: 1.6;
+    padding: 1.5vw;
+    overflow-y: auto;
+}
+
+#page11-container .text-panel p {
+    margin-bottom: 0.3em;
+    /* 重置 main.css 可能带来的影响 */
+    text-align: left;
+    max-width: none;
+}
+
+#page11-container .text-panel strong {
+    color: var(--primary-color-2);
+}
+
+#page11-container .text-panel p:last-child {
+    margin-bottom: 0;
+}
+
+/* 页面全局注释样式 */
+#page11-container .page-annotation {
+    position: absolute; /* 修改为 absolute，使其相对于 page-section 定位 */
+    bottom: 2vw;
+    right: 3vw;
+    font-size: 13px;
+    color: #888;
+    max-width: 450px;
+    text-align: right;
+    line-height: 1.5;
+    pointer-events: none;
+    z-index: 100;
+}
+
+/* --- 动画 --- */
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slideInLeft { from { opacity: 0; transform: translateX(-50px); } to { opacity: 1; transform: translateX(0); } }

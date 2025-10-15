@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page 9 - 药品集采效果展示</title>
+    <!-- 引入 ECharts.js -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <style>
+        /* --- 全局与基础样式 --- */
+        :root {
+            --bg-color: #FFFBF0;
+            --text-color: #333;
+            --primary-color: #c0392b; /* 主题红，用于标题等 */
+            --green-color: #27ae60;
+            --yellow-color: #f1c40f;
+            --card-bg: rgba(255, 255, 255, 0.6);
+            --border-color: rgba(0, 0, 0, 0.1);
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            overflow: hidden; /* 核心：禁止滚动 */
+            background-color: var(--bg-color);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            color: var(--text-color);
+        }
+
+        /* --- 页面整体布局 --- */
+        .page-container {
+            display: flex;
+            height: 100vh;
+            padding: 3vw;
+            box-sizing: border-box;
+            gap: 2.5vw;
+        }
+
+        /* --- 左侧导航栏 --- */
+        .side-nav {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 2vw;
+            flex-shrink: 0;
+            animation: slideInLeft 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        }
+
+        .side-nav-item {
+            writing-mode: vertical-lr;
+            padding: 1.5vw 0.8vw;
+            font-size: 1.8vw;
+            font-weight: 500;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-left: 5px solid var(--primary-color);
+            border-radius: 8px;
+            text-align: center;
+            letter-spacing: 0.5vw;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .side-nav-item:hover {
+            transform: translateX(-5px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+        }
+
+        /* --- 右侧主内容区 --- */
+        .main-content {
+            flex-grow: 1;
+            display: flex;
+            gap: 2.5vw;
+        }
+        
+        /* --- 内容卡片通用样式 --- */
+        .content-card {
+            flex: 1;
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            padding: 2vw;
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+            animation: fadeInUp 0.8s 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        }
+        
+        .content-card h2 {
+            font-size: 1.6vw;
+            color: var(--primary-color);
+            margin-top: 0;
+            margin-bottom: 1.5vw;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        /* --- 图六: ECharts 折线图 --- */
+        #chart6-container {
+            height: 100%;
+            width: 100%;
+            flex-grow: 1;
+        }
+
+        .data-source {
+            font-size: 0.7vw;
+            color: #999;
+            text-align: right;
+            margin-top: 1vw;
+        }
+
+        /* --- 图七: 流程图 --- */
+        .flow-container {
+            position: relative;
+            padding-top: 3vw;
+        }
+
+        .timeline {
+            position: relative;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        /* 流程中轴线 */
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 1.2vw;
+            height: 100%;
+            width: 4px;
+            background: linear-gradient(to bottom, #2980b9, #8e44ad);
+            border-radius: 2px;
+            animation: drawLine 1s 0.5s ease-out forwards;
+            transform-origin: top;
+            transform: scaleY(0);
+        }
+
+        .timeline-item {
+            margin-bottom: 3vw;
+            position: relative;
+            padding-left: 3.5vw;
+            opacity: 0;
+            animation: fadeInStep 0.6s ease forwards;
+        }
+        /* 交错动画延迟 */
+        .timeline-item:nth-child(1) { animation-delay: 0.8s; }
+        .timeline-item:nth-child(2) { animation-delay: 1.2s; }
+
+        /* 流程节点圆点 */
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 0.6vw;
+            top: 0.3vw;
+            width: 1.2vw;
+            height: 1.2vw;
+            border-radius: 50%;
+            background-color: white;
+            border: 3px solid #2980b9;
+            z-index: 1;
+        }
+        
+        .timeline-item-title {
+            font-weight: 600;
+            font-size: 1.2vw;
+            margin-bottom: 0.5vw;
+        }
+        
+        .timeline-item-text {
+            font-size: 1vw;
+            line-height: 1.6;
+            color: #555;
+        }
+        
+        /* "血药浓度" 气泡 */
+        .bubble-wrapper {
+            position: relative;
+        }
+
+        .bubble {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.5vw 1vw;
+            border-radius: 2vw;
+            font-size: 1vw;
+            font-weight: bold;
+            cursor: pointer;
+            position: relative;
+            animation: pulse 2s infinite;
+        }
+        
+        .bubble-tooltip {
+            visibility: hidden;
+            width: 15vw;
+            background-color: #555;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 1vw;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -7.5vw;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.9vw;
+        }
+        .bubble-tooltip::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #555 transparent transparent transparent;
+        }
+        .bubble-wrapper:hover .bubble-tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* --- 底部结论 --- */
+        .conclusion-banner {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            padding: 1.5vw 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.05), transparent);
+            font-size: 2.2vw;
+            font-weight: 300;
+            opacity: 0;
+            animation: fadeInUp 1s 1.5s forwards;
+        }
+
+        /* --- 页面标题 --- */
+        .page-title {
+            position: absolute;
+            top: 2vw;
+            left: 3vw;
+            font-size: 2.5vw;
+            font-weight: bold;
+            color: #aaa;
+            opacity: 0;
+            animation: fadeIn 1s 0.1s forwards;
+        }
+
+        /* --- 动画定义 --- */
+        @keyframes slideInLeft {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes fadeInUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes drawLine {
+            from { transform: scaleY(0); }
+            to { transform: scaleY(1); }
+        }
+        
+        @keyframes fadeInStep {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(192, 57, 43, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(192, 57, 43, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(192, 57, 43, 0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="page-container">
+        <h1 class="page-title">Page 9</h1>
+
+        <!-- 左侧导航 -->
+        <aside class="side-nav">
+            <div class="side-nav-item">患者</div>
+            <div class="side-nav-item">企业</div>
+            <div class="side-nav-item">社会</div>
+            <div class="side-nav-item">其他</div>
+        </aside>
+
+        <!-- 主内容区 -->
+        <main class="main-content">
+            <!-- 图六: 折线图 -->
+            <section class="content-card" id="chart6-wrapper">
+                <h2>政策实施后门诊患者换药人数趋势</h2>
+                <div id="chart6-container"></div>
+                 <p class="data-source">数据来源：申芳丽,刘璐,宋沧桑,等.国家药品集采实施效果与评价[J].中国医疗保险,2021,(08):57-60.</p>
+            </section>
+
+            <!-- 图七: 流程图 -->
+            <section class="content-card" id="chart7-wrapper">
+                <h2>仿制药一致性评价核心规则</h2>
+                <div class="flow-container">
+                    <ul class="timeline">
+                        <li class="timeline-item">
+                            <h3 class="timeline-item-title">“首家”通过原则</h3>
+                            <p class="timeline-item-text">一家药企首次通过一致性评价，市场竞争格局开始确立。</p>
+                        </li>
+                        <li class="timeline-item">
+                            <h3 class="timeline-item-title">“生死时速”：两年窗口期</h3>
+                            <p class="timeline-item-text">其他同品种药企若在两年内未通过评价，将**永久不许准入**。这极大地加速了行业优胜劣汰。</p>
+                            <div class="bubble-wrapper">
+                                <span class="bubble">核心指标：血药浓度</span>
+                                <span class="bubble-tooltip">仿制药需证明其在人体内的吸收速度和程度与原研药相当，即生物等效性。血药浓度是衡量此指标的关键。</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+        </main>
+
+        <!-- 底部结论 -->
+        <footer class="conclusion-banner">
+            <p>药品质量得到保证</p>
+        </footer>
+    </div>
+
+    <script>
+        // --- ECharts 图表初始化 ---
+        var chartDom = document.getElementById('chart6-container');
+        var myChart = echarts.init(chartDom);
+        var option;
+
+        option = {
+            tooltip: {
+                trigger: 'axis'
+            },
+            legend: {
+                data: ['“换”人数', '“2换”人数'],
+                textStyle: {
+                    fontSize: '1vw'
+                }
+            },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+            },
+            xAxis: {
+                type: 'category',
+                boundaryGap: false,
+                data: ['第一季度', '第二季度', '第三季度', '第四季度']
+            },
+            yAxis: {
+                type: 'value'
+            },
+            series: [
+                {
+                    name: '“换”人数',
+                    type: 'line',
+                    smooth: true,
+                    data: [1951, 1911, 1398, 1336],
+                    color: 'var(--green-color)',
+                    label: {
+                        show: true,
+                        position: 'top',
+                        fontSize: '0.9vw'
+                    },
+                    lineStyle: {
+                        width: 3
+                    },
+                    emphasis: {
+                      focus: 'series'
+                    },
+                },
+                {
+                    name: '“2换”人数',
+                    type: 'line',
+                    smooth: true,
+                    data: [19, 0, 0, 2],
+                    color: 'var(--yellow-color)',
+                    label: {
+                        show: true,
+                        position: 'bottom',
+                         fontSize: '0.9vw'
+                    },
+                     lineStyle: {
+                        width: 3
+                    },
+                    emphasis: {
+                      focus: 'series'
+                    },
+                }
+            ]
+        };
+
+        myChart.setOption(option);
+
+        // --- 使图表响应窗口大小变化 ---
+        window.addEventListener('resize', function() {
+            myChart.resize();
+        });
+    </script>
+</body>
+</html>

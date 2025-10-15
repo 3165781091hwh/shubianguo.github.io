@@ -1,0 +1,131 @@
+/* css/pages/transitions.css - 沙箱化过渡页样式 */
+
+/* 过渡页外层容器（保持为普通100vh页面，由全局 .page-section 控制） */
+#transition-benefits,
+#transition-problems,
+#transition-solutions {
+    padding: 0 !important;
+    overflow: visible !important;
+}
+
+/* 内部滚动容器，提供 200vh 的滚动空间，交给浏览器原生滚动 */
+#transition-benefits .scroll-container,
+#transition-problems .scroll-container,
+#transition-solutions .scroll-container {
+    height: 200vh;
+    position: relative;
+    z-index: 2;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* 粘性动画画布，固定在视口，随内部滚动驱动动画 */
+#transition-benefits .transition-wrapper,
+#transition-problems .transition-wrapper,
+#transition-solutions .transition-wrapper {
+    position: sticky;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* A/B 面统一样式（ID前缀确保不污染其他页面） */
+#transition-benefits .a-side,
+#transition-benefits .b-side,
+#transition-problems .a-side,
+#transition-problems .b-side,
+#transition-solutions .a-side,
+#transition-solutions .b-side {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+#transition-benefits .a-side,
+#transition-problems .a-side,
+#transition-solutions .a-side { z-index: 2; }
+
+#transition-benefits .b-side,
+#transition-problems .b-side,
+#transition-solutions .b-side { 
+    z-index: 1; 
+    background-size: cover; 
+    background-position: center; 
+    display: flex; 
+    flex-direction: column;
+    justify-content: center; 
+    align-items: center; 
+}
+
+#transition-benefits .a-side img,
+#transition-problems .a-side img,
+#transition-solutions .a-side img { 
+    position: absolute; 
+    width: 100%; 
+    height: 55%; 
+    transition: transform 0.5s ease-out, opacity 0.5s ease-out; 
+    object-fit: cover; 
+}
+#transition-benefits .a-side img[id$='-a1'],
+#transition-problems .a-side img[id$='-a1'],
+#transition-solutions .a-side img[id$='-a1'] { top: 0; left: 0; object-position: bottom; }
+
+#transition-benefits .a-side img[id$='-a2'],
+#transition-problems .a-side img[id$='-a2'],
+#transition-solutions .a-side img[id$='-a2'] { bottom: 0; left: 0; object-position: top; }
+
+#transition-benefits .b-side img,
+#transition-problems .b-side img,
+#transition-solutions .b-side img { max-width: 80%; max-height: 80%; transition: opacity 0.5s ease-in; }
+
+/* 页面特定背景图 */
+#transition-benefits .b-side {
+    background-image: url('../../image/（现状）68a3f53e156c5.png');
+}
+#transition-problems .b-side {
+    background-image: url('../../image/（问题）68a50c3d7aaac.png');
+}
+#transition-solutions .b-side {
+    background-image: url('../../image/（措施）68a54c3134aff.png');
+}
+
+/* 过渡页面标题样式 */
+#transition-benefits .transition-titles,
+#transition-problems .transition-titles,
+#transition-solutions .transition-titles {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    text-align: center;
+    color: white;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
+    width: 90%;
+    max-width: 800px;
+}
+
+#transition-benefits .transition-main-title,
+#transition-problems .transition-main-title,
+#transition-solutions .transition-main-title {
+    font-size: 3.5em;
+    font-weight: 700;
+    margin-bottom: 20px;
+    line-height: 1.2;
+    font-family: 'Noto Sans SC', sans-serif;
+}
+
+#transition-benefits .transition-subtitle,
+#transition-problems .transition-subtitle,
+#transition-solutions .transition-subtitle {
+    font-size: 2.2em;
+    font-weight: 700;
+    font-style: italic;
+    line-height: 1.4;
+    color: rgb(72, 72, 72);
+    font-family: 'SimHei', 'Microsoft YaHei', sans-serif;
+    text-align: center;
+    margin-top: 40px;
+}

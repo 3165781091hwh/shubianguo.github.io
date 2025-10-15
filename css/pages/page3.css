@@ -1,0 +1,141 @@
+/*
+ * ===================================================================
+ *                          css/pages/page3.css
+ *                     页面3样式（V5.0 标准注释版）
+ * -------------------------------------------------------------------
+ * 目标：遵循《项目前端开发与维护黄金标准》，实现样式完全沙箱化、
+ *      注释结构化分层，并在关键参数处提供可调节说明与影响分析。
+ * 适用范围：仅作用于 #page3-container 内部元素，避免全局污染。
+ * ===================================================================
+ */
+
+/*
+ * ===================================================================
+ *                      1. 沙箱与页面容器约定
+ * -------------------------------------------------------------------
+ * - 所有选择器均以 #page3-container 开头，确保作用域限定在页面3。
+ * - 页面内部包装层 .page3-wrapper 承担布局与滚动控制职责。
+ * - 禁止直接给 body/h1/p 等标签设样式；必须通过带前缀的类选择器。
+ * - 如需动画，建议采用 page3-* 前缀命名以避免跨页冲突。
+ * ===================================================================
+ */
+
+/* Page 3 styles (SOP sandboxed). Keep everything under #page3-container */
+
+/* 2. 页面根容器（Root Container）
+ * 职责：仅在本页范围内设置背景色或主题参数。
+ * 关键参数与影响：
+ *   - background-color: 使用 CSS 变量 --bg-color 以便主题统一管理；
+ *     若未在 :root 或页面内定义该变量，将回退为默认浏览器值。
+ * 调节建议：
+ *   - 可以在 HTML 的 #page3-container 上通过 style 或变量注入调整主题。
+ */
+#page3-container {
+    --base-color: #5D6465;
+    --accent-color: #D9534F;
+    --bg-color: #FFFBF0;
+    --text-color: #594545;
+    
+    /* Keep background scoped to this page only. Adjust if needed. */
+    background-color: var(--bg-color);
+    background-image: url('../../image/（1-6）68a725b2d3e64.png');
+    background-size: cover;
+    background-position: center;
+    color: var(--text-color);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* 3. 页面包装器（Wrapper）
+ * 职责：作为内部布局与滚动控制的唯一承载层。
+ * 关键参数与影响：
+ *   - position: relative 为绝对定位子元素提供参照上下文。
+ *   - width/height: 100% 使包装器与其父容器等宽等高，便于铺满视口。
+ *   - overflow: hidden 防止内部元素造成滚动条；如需滚动请改为 auto 并建立内层滚动容器。
+ */
+#page3-container .page3-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    /* Internal scrolling, spacing, etc., should live here */
+    overflow: hidden;
+}
+
+/* 目录标题样式 */
+#page3-container .directory-title {
+    position: absolute;
+    top: 15%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: clamp(36px, 4vw, 60px);
+    font-weight: bold;
+    color: var(--base-color);
+    font-family: 'Noto Serif SC', serif;
+    z-index: 10;
+    text-align: center;
+    width: 100%;
+}
+
+/* 目录内容容器 */
+#page3-container .directory-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    max-width: 800px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 目录列表样式 */
+#page3-container .directory-list {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+/* 目录项样式 */
+#page3-container .directory-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 30px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    border-left: 5px solid var(--accent-color);
+}
+
+/* 目录项文字样式 */
+#page3-container .item-text {
+    font-size: clamp(18px, 2vw, 28px);
+    font-weight: 600;
+    color: var(--text-color);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* 页码样式 */
+#page3-container .page-number {
+    font-size: clamp(16px, 1.8vw, 24px);
+    color: var(--accent-color);
+    font-weight: bold;
+    background-color: rgba(217, 83, 79, 0.1);
+    padding: 8px 16px;
+    border-radius: 20px;
+}
+
+/*
+ * ===================================================================
+ *                          4. 合规性自检（SOP）
+ * -------------------------------------------------------------------
+ * - CSS 沙箱化：全部选择器以 #page3-container 开头（符合法则二第1条）。
+ * - 禁止标签选择器：未对 body/h1/p 等标签直接设样式（符合法则二第3条）。
+ * - 动画命名：当前未定义 @keyframes；若后续添加，建议采用 page3-* 前缀（符合法则二第2条推荐）。
+ * - 包装器职责：.page3-wrapper 作为内层唯一包装器，布局与滚动职责明确（符合法则一）。
+ * - 综述：页面3样式现阶段完全遵循 SOP 要求，后续扩展请保持前缀与沙箱策略。
+ * ===================================================================
+ */
+
+

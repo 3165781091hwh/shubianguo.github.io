@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page 8 - 集采前后医疗费用变化</title>
+    <!-- 引入 ECharts 库 -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <style>
+        /* --- 全局与字体设置 --- */
+        :root {
+            --bg-color: #FFFBF0;
+            --font-color: #3D405B;
+            --primary-color-before: #3D405B; /* 深灰蓝 - 集采前 */
+            --primary-color-after: #E07A5F;  /* 珊瑚橙 - 集采后 */
+            --border-color: rgba(0, 0, 0, 0.1);
+            --panel-bg: rgba(255, 255, 255, 0.5);
+            --font-family-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            width: 100%;
+            overflow: hidden; /* 禁止滚动 */
+            background-color: var(--bg-color);
+            font-family: var(--font-family-main);
+            color: var(--font-color);
+        }
+
+        /* --- 页面整体布局 --- */
+        .page-container {
+            display: grid;
+            grid-template-columns: 120px 1fr 300px;
+            grid-template-rows: 80px 1fr 100px;
+            grid-template-areas:
+                "header header header"
+                "sidebar main infobar"
+                "footer footer footer";
+            height: 100vh;
+            padding: 2vw;
+            gap: 2vw;
+        }
+
+        /* --- 顶部标题 --- */
+        .page-header {
+            grid-area: header;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 2vw;
+            font-size: 1.2vw;
+            font-weight: 300;
+            opacity: 0;
+            animation: fadeIn 0.8s 0.2s ease-out forwards;
+        }
+        .page-header span {
+            font-weight: 600;
+            margin-left: 0.5em;
+            color: var(--primary-color-after);
+        }
+
+        /* --- 底部大标题 --- */
+        .page-footer {
+            grid-area: footer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3.5vw;
+            font-weight: 900;
+            letter-spacing: 0.2em;
+            opacity: 0;
+            animation: fadeIn 0.8s 0.4s ease-out forwards;
+        }
+
+        /* --- 左侧边栏 --- */
+        .sidebar {
+            grid-area: sidebar;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            opacity: 0;
+            animation: slideInLeft 0.8s 0.6s ease-out forwards;
+        }
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 80px;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 1.5vw;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: var(--panel-bg);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        .sidebar-item:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            border-color: var(--primary-color-after);
+        }
+        .sidebar-item.active {
+            background-color: var(--font-color);
+            color: var(--bg-color);
+            border-color: var(--font-color);
+        }
+        
+        /* --- 右侧信息栏 --- */
+        .info-panel {
+            grid-area: infobar;
+            padding: 25px;
+            border-radius: 12px;
+            background: var(--panel-bg);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+            font-size: 0.9vw;
+            line-height: 1.8;
+            opacity: 0;
+            animation: slideInRight 0.8s 0.6s ease-out forwards;
+        }
+        .info-panel h3 {
+            font-size: 1.2vw;
+            margin-bottom: 15px;
+            border-bottom: 2px solid var(--primary-color-after);
+            padding-bottom: 10px;
+        }
+        .info-panel p {
+            margin-bottom: 1em;
+        }
+        .info-panel .highlight {
+            font-weight: 600;
+            color: var(--primary-color-after);
+        }
+
+        /* --- 主内容区：图表 --- */
+        .main-content {
+            grid-area: main;
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+            animation: fadeIn 0.8s 0.8s ease-out forwards;
+        }
+        .chart-controls {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 15px;
+            gap: 10px;
+        }
+        .control-btn {
+            padding: 8px 20px;
+            font-size: 0.9vw;
+            font-family: var(--font-family-main);
+            border: 1px solid var(--border-color);
+            background: transparent;
+            color: var(--font-color);
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .control-btn:hover {
+            background-color: var(--panel-bg);
+            border-color: var(--font-color);
+        }
+        .control-btn.active {
+            background-color: var(--font-color);
+            color: var(--bg-color);
+            border-color: var(--font-color);
+            font-weight: 600;
+        }
+
+        #chart-container {
+            flex-grow: 1;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* --- 动画 --- */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+    </style>
+</head>
+<body>
+
+    <div class="page-container">
+        <header class="page-header">
+            Page<span>8</span>
+        </header>
+        
+        <aside class="sidebar">
+            <div class="sidebar-item active" id="btn-patient">患者</div>
+            <div class="sidebar-item" id="btn-corp">企业</div>
+            <div class="sidebar-item" id="btn-society">社会</div>
+            <div class="sidebar-item" id="btn-other">其他</div>
+        </aside>
+
+        <main class="main-content">
+            <div class="chart-controls">
+                <button id="show-avg" class="control-btn active">费用均值对比 (元)</button>
+                <button id="show-ratio" class="control-btn">费用构成对比 (%)</button>
+            </div>
+            <div id="chart-container"></div>
+        </main>
+
+        <aside class="info-panel">
+            <h3>图表解读</h3>
+            <div id="info-text">
+                <p>此图表展示了药品集中采购政策实施前后，样本医院患者医疗费用的<span class="highlight">均值变化</span>情况。</p>
+                <p>整体来看，药品费用、中药类费用等均有显著下降。而综合服务、耗材等费用有小幅上升，可能与医疗服务价值的重新体现有关。</p>
+                <p><strong>请将鼠标悬停在图表上以查看具体数值。</strong></p>
+            </div>
+        </aside>
+
+        <footer class="page-footer">
+            降低患者负担
+        </footer>
+    </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // --- 1. 数据准备 ---
+        // 原始数据来自“表3”
+        const sourceData = [
+            { category: '综合服务类', before_avg: 1876.66, before_ratio: 10.92, after_avg: 1973.92, after_ratio: 11.93 },
+            { category: '治疗类', before_avg: 4191.03, before_ratio: 24.38, after_avg: 3786.21, after_ratio: 22.88 },
+            { category: '诊断类', before_avg: 2095.45, before_ratio: 12.19, after_avg: 1991.67, after_ratio: 12.04 },
+            { category: '康复类', before_avg: 39.61, before_ratio: 0.23, after_avg: 28.93, after_ratio: 0.17 },
+            { category: '中医类', before_avg: 765.42, before_ratio: 4.45, after_avg: 702.46, after_ratio: 4.25 },
+            { category: '药品类', before_avg: 5127.07, before_ratio: 29.82, after_avg: 4651.43, after_ratio: 28.11 },
+            { category: '西药类', before_avg: 4101.31, before_ratio: 23.86, after_avg: 3801.12, after_ratio: 22.97 },
+            { category: '中药类', before_avg: 1025.76, before_ratio: 5.97, after_avg: 850.31, after_ratio: 5.14 },
+            { category: '血液及血液制品类', before_avg: 263.26, before_ratio: 1.53, after_avg: 242.18, after_ratio: 1.46 },
+            { category: '耗材类', before_avg: 2730.57, before_ratio: 15.88, after_avg: 3136.03, after_ratio: 18.95 },
+            { category: '其他类', before_avg: 102.94, before_ratio: 0.60, after_avg: 34.59, after_ratio: 0.21 }
+        ];
+
+        const categories = sourceData.map(item => item.category);
+        const beforeAvgData = sourceData.map(item => item.before_avg);
+        const afterAvgData = sourceData.map(item => item.after_avg);
+
+        // --- 2. ECharts 初始化 ---
+        const chartDom = document.getElementById('chart-container');
+        const myChart = echarts.init(chartDom);
+        
+        const colors = {
+            before: '#3D405B',
+            after: '#E07A5F'
+        };
+
+        // --- 3. 图表配置项 ---
+
+        // 配置项1：费用均值对比 (分组柱状图)
+        const optionAvg = {
+            title: {
+                text: '图五：集采前后样本医院患者医疗费用变化情况',
+                textStyle: {
+                    fontSize: '1.2vw',
+                    fontWeight: 'normal'
+                },
+                left: 'center'
+            },
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'shadow'
+                },
+                formatter: function (params) {
+                    let res = `${params[0].name}<br/>`;
+                    params.forEach(item => {
+                        res += `${item.marker} ${item.seriesName}: ${item.value.toFixed(2)} 元<br/>`;
+                    });
+                    const diff = params[1].value - params[0].value;
+                    const diffSign = diff > 0 ? '+' : '';
+                    res += `<strong>变化值: <span style="color:${diff > 0 ? colors.after : 'green'}">${diffSign}${diff.toFixed(2)} 元</span></strong>`;
+                    return res;
+                }
+            },
+            legend: {
+                data: ['使用集采药品前', '使用集采药品后'],
+                bottom: 10,
+                textStyle: {
+                    fontSize: '0.9vw'
+                }
+            },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '10%',
+                containLabel: true
+            },
+            xAxis: [{
+                type: 'category',
+                data: categories,
+                axisLabel: {
+                   interval: 0,
+                   rotate: 30 
+                }
+            }],
+            yAxis: [{
+                type: 'value',
+                name: '费用均值 (元)',
+                nameTextStyle: {
+                    fontSize: '1vw'
+                }
+            }],
+            series: [
+                {
+                    name: '使用集采药品前',
+                    type: 'bar',
+                    barGap: 0,
+                    emphasis: {
+                        focus: 'series'
+                    },
+                    data: beforeAvgData,
+                    color: colors.before
+                },
+                {
+                    name: '使用集采药品后',
+                    type: 'bar',
+                    emphasis: {
+                        focus: 'series'
+                    },
+                    data: afterAvgData,
+                    color: colors.after
+                }
+            ]
+        };
+
+        // 配置项2：费用构成对比 (100%堆叠柱状图)
+        const optionRatio = {
+             title: {
+                text: '图五：集采前后样本医院患者医疗费用构成变化',
+                textStyle: {
+                    fontSize: '1.2vw',
+                    fontWeight: 'normal'
+                },
+                left: 'center'
+            },
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'shadow'
+                },
+                 formatter: function (params) {
+                    let res = `${params[0].name}<br/>`;
+                    params.forEach(item => {
+                        res += `${item.marker} ${item.seriesName}: ${item.value.toFixed(2)} %<br/>`;
+                    });
+                    return res;
+                }
+            },
+            legend: {
+                data: categories,
+                orient: 'vertical',
+                right: 10,
+                top: 'center',
+                textStyle: {
+                    fontSize: '0.8vw'
+                }
+            },
+            grid: {
+                left: '3%',
+                right: '150px', // 为图例留出空间
+                bottom: '3%',
+                containLabel: true
+            },
+            xAxis: {
+                type: 'category',
+                data: ['集采前构成', '集采后构成']
+            },
+            yAxis: {
+                type: 'value',
+                axisLabel: {
+                    formatter: '{value} %'
+                }
+            },
+            // 颜色方案
+            color: ['#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de', '#3ba272', '#fc8452', '#9a60b4', '#ea7ccc'],
+            series: sourceData.map(item => ({
+                name: item.category,
+                type: 'bar',
+                stack: 'total',
+                label: {
+                    show: true,
+                    formatter: '{c}%',
+                    fontSize: '0.7vw',
+                    color: '#fff'
+                },
+                emphasis: {
+                    focus: 'series'
+                },
+                data: [item.before_ratio, item.after_ratio]
+            }))
+        };
+        
+        // --- 4. 事件绑定与图表渲染 ---
+        const btnAvg = document.getElementById('show-avg');
+        const btnRatio = document.getElementById('show-ratio');
+        const infoText = document.getElementById('info-text');
+
+        function renderAvgChart() {
+            myChart.setOption(optionAvg, true);
+            btnAvg.classList.add('active');
+            btnRatio.classList.remove('active');
+            infoText.innerHTML = `
+                <p>此图表展示了药品集中采购政策实施前后，样本医院患者医疗费用的<span class="highlight">均值变化</span>情况。</p>
+                <p>整体来看，药品费用、中药类费用等均有显著下降。而综合服务、耗材等费用有小幅上升，可能与医疗服务价值的重新体现有关。</p>
+                <p><strong>请将鼠标悬停在图表上以查看具体数值。</strong></p>`;
+        }
+        
+        function renderRatioChart() {
+            myChart.setOption(optionRatio, true);
+            btnRatio.classList.add('active');
+            btnAvg.classList.remove('active');
+            infoText.innerHTML = `
+                <p>此图表展示了药品集中采购政策实施前后，各项医疗费用的<span class="highlight">构成占比</span>变化。</p>
+                <p>可以看到，<span class="highlight">药品类</span>费用占比从集采前的<strong>29.82%</strong>下降至<strong>28.11%</strong>。与此同时，<span class="highlight">耗材类</span>费用占比有所上升，体现了费用结构的优化调整。</p>`;
+        }
+
+        btnAvg.addEventListener('click', renderAvgChart);
+        btnRatio.addEventListener('click', renderRatioChart);
+
+        // 默认渲染均值图
+        renderAvgChart();
+        
+        // 窗口大小改变时重绘图表
+        window.addEventListener('resize', function () {
+            myChart.resize();
+        });
+        
+        // 侧边栏点击效果
+        const sidebarItems = document.querySelectorAll('.sidebar-item');
+        sidebarItems.forEach(item => {
+            item.addEventListener('click', () => {
+                sidebarItems.forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
+            });
+        });
+    });
+</script>
+
+</body>
+</html>

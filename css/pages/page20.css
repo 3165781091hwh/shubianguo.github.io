@@ -1,0 +1,209 @@
+/* css/pages/page20.css - 药品短缺分析页面沙箱化样式 */
+
+/* 1. 定义沙箱容器的基础属性 (替代原始 html, body 样式) */
+#page20-container .page20-wrapper {
+    width: 100%;
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    color: #3D405B;
+    
+    /* --- 背景图 --- */
+    background-image: url('../../image/（问题）68a50c3d7aaac.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    /* --- 将 :root 变量作用于沙箱内部 --- */
+    --bg-color: #FFFBF0;
+    --font-color: #3D405B;
+    --primary-color-1: #3D405B; /* 深灰蓝 */
+    --primary-color-2: #E07A5F;  /* 珊瑚橙 */
+    --accent-color-green: #81B29A; /* 强调色-绿 */
+    --border-color: rgba(0, 0, 0, 0.1);
+    --panel-bg: rgba(255, 255, 255, 0.75);
+    --font-family-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+}
+
+/* 2. 将所有原始CSS规则加上沙箱前缀 */
+#page20-container .page20-wrapper * { 
+    margin: 0; 
+    padding: 0; 
+    box-sizing: border-box; 
+}
+
+/* 确保内部最顶层容器能撑满视口 */
+#page20-container .page20-wrapper .page-container {
+    height: 100vh;
+    width: 100vw;
+    display: grid; 
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr auto;
+    grid-template-areas: "main" "footer";
+    padding: 2vw; 
+    gap: 2vw;
+}
+
+#page20-container .page20-wrapper .page-footer {
+    grid-area: footer; 
+    text-align: center;
+    font-size: 3.5vw; 
+    font-weight: 900; 
+    letter-spacing: 0.2em;
+    padding-top: 1vw; 
+    text-shadow: 0 0 15px rgba(255,255,255,0.7);
+    animation: fadeIn 0.8s 0.4s ease-out forwards;
+}
+
+/* 移除侧边栏相关样式 */
+
+#page20-container .page20-wrapper .main-content {
+    grid-area: main;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2vw; 
+    animation: fadeIn 0.8s 0.8s ease-out forwards;
+}
+
+#page20-container .page20-wrapper .panel {
+    border-radius: 12px; 
+    background: var(--panel-bg);
+    backdrop-filter: blur(10px); 
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    border: 1px solid var(--border-color); 
+    padding: 2vw;
+    overflow: hidden; 
+    display: flex; 
+    flex-direction: column;
+}
+
+#page20-container .page20-wrapper .text-panel {
+    grid-column: 1 / 2;
+    justify-content: center;
+}
+
+#page20-container .page20-wrapper .highlight-text {
+    font-weight: bold;
+    color: var(--primary-color-2);
+}
+
+#page20-container .page20-wrapper .right-column-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2vw;
+}
+
+#page20-container .page20-wrapper .image-panel {
+    padding: 1vw;
+    flex: 1;
+}
+
+#page20-container .page20-wrapper .image-panel img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; 
+}
+
+#page20-container .page20-wrapper .chart-panel {
+    flex: 1;
+}
+
+#page20-container .page20-wrapper .bar-chart-container {
+    width: 100%; 
+    height: 100%;
+    display: flex; 
+    flex-direction: column;
+}
+
+#page20-container .page20-wrapper .bar-chart-container .chart-title {
+    text-align: center; 
+    font-size: 1.1vw;
+    margin-bottom: 20px; 
+    flex-shrink: 0;
+    font-weight: bold;
+}
+
+#page20-container .page20-wrapper .bar-chart-area {
+    width: 100%; 
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: space-around;
+    position: relative;
+    left: -20px;
+}
+
+#page20-container .page20-wrapper .bar-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+    position: relative;
+}
+
+#page20-container .page20-wrapper .bar-label {
+    width: 45%;
+    text-align: right;
+    padding-right: 10px;
+    font-size: 0.8em;
+    white-space: nowrap;
+}
+
+#page20-container .page20-wrapper .bar-wrapper {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+}
+
+#page20-container .page20-wrapper .bar-segment {
+    height: 20px;
+    background-color: var(--accent-color-green);
+    border-radius: 3px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+#page20-container .page20-wrapper .bar-row:hover .bar-segment {
+    background-color: var(--primary-color-2);
+}
+
+#page20-container .page20-wrapper .bar-value {
+    margin-left: 8px;
+    font-size: 0.85em;
+    font-weight: bold;
+    color: var(--font-color);
+}
+
+#page20-container .page20-wrapper .tooltip-text {
+    visibility: hidden; 
+    opacity: 0;
+    width: max-content;
+    background-color: var(--primary-color-1);
+    color: #fff; 
+    text-align: center;
+    border-radius: 6px; 
+    padding: 5px 10px;
+    position: absolute; 
+    z-index: 10;
+    left: 50%; 
+    top: -15px;
+    transform: translateX(-50%);
+    font-size: 0.8em;
+    transition: opacity 0.3s;
+    pointer-events: none;
+}
+
+#page20-container .page20-wrapper .bar-row:hover .tooltip-text {
+    visibility: visible; 
+    opacity: 1;
+}
+
+
+/* 3. 重要：@规则（如@keyframes）必须放在沙箱外部，不能嵌套 */
+@keyframes fadeIn { 
+    from { opacity: 0; transform: translateY(10px); } 
+    to { opacity: 1; transform: translateY(0); } 
+}
+
+@keyframes slideInLeft { 
+    from { opacity: 0; transform: translateX(-50px); } 
+    to { opacity: 1; transform: translateX(0); } 
+}

@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page 7 - 药品集采分析</title>
+    <!-- 引入 ECharts -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <style>
+        /* --- 全局与基础样式 --- */
+        :root {
+            --bg-color: #FFFBF0;
+            --text-color: #333;
+            --primary-color-green: #27ae60;
+            --primary-color-yellow: #f39c12;
+            --border-color: rgba(0, 0, 0, 0.1);
+            --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100vh; /* 使用 vh 保证占满整个视口 */
+            overflow: hidden; /* 禁止滚动 */
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--font-family);
+        }
+
+        /* --- 页面主容器 --- */
+        .page-container {
+            display: grid;
+            grid-template-columns: 120px 1fr 1fr; /* 侧边栏 | 图表 | 文字 */
+            grid-template-rows: 1fr auto; /* 内容区 | 底部标题 */
+            grid-template-areas:
+                "sidebar main main"
+                "footer footer footer";
+            width: 100%;
+            height: 100%;
+            padding: 2vw;
+            box-sizing: border-box;
+        }
+
+        /* --- 动画定义 --- */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideInUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes slideInLeft {
+            from { transform: translateX(-30px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* --- 侧边栏 --- */
+        .sidebar {
+            grid-area: sidebar;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            padding-left: 2vw;
+            animation: slideInLeft 0.8s 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+        }
+
+        .sidebar-item {
+            font-size: 1.5vw;
+            font-weight: 300;
+            padding: 1.2vw 0;
+            margin: 0.5vw 0;
+            writing-mode: vertical-lr; /* 文字竖排 */
+            letter-spacing: 0.2vw;
+            cursor: default;
+            position: relative;
+            opacity: 0.6;
+            transition: opacity 0.3s ease;
+        }
+        
+        .sidebar-item.active {
+            font-weight: 600;
+            opacity: 1;
+        }
+
+        .sidebar-item.active::before {
+            content: '';
+            position: absolute;
+            left: -1.5vw;
+            top: 0;
+            width: 5px;
+            height: 100%;
+            background-color: var(--primary-color-green);
+            border-radius: 3px;
+        }
+
+        /* --- 主内容区 (图表 + 文字) --- */
+        .main-content {
+            grid-area: main;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 3vw;
+        }
+
+        /* --- 图表容器 --- */
+        .chart-wrapper {
+            width: 65%;
+            height: 90%;
+            display: flex;
+            flex-direction: column;
+            animation: slideInUp 0.8s 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+        }
+        
+        .chart-title {
+            font-size: 1.8vw;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 1.5vh;
+        }
+
+        #main-chart {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* --- 文字解释区 --- */
+        .explanation-card {
+            width: 30%;
+            height: auto;
+            padding: 2vw;
+            background-color: rgba(255, 255, 255, 0.3);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            animation: slideInUp 0.8s 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+        }
+
+        .explanation-card h3 {
+            font-size: 1.6vw;
+            margin-top: 0;
+            margin-bottom: 1.5vh;
+            border-left: 4px solid var(--primary-color-yellow);
+            padding-left: 1vw;
+        }
+
+        .explanation-card p {
+            font-size: 1.1vw;
+            line-height: 1.8;
+            font-weight: 300;
+        }
+
+        /* --- 底部大标题 --- */
+        .footer-title {
+            grid-area: footer;
+            text-align: center;
+            font-size: 5.5vw;
+            font-weight: 900;
+            padding-bottom: 2vh;
+            color: #4A4A4A;
+            letter-spacing: 0.5vw;
+            text-shadow: 2px 2px 5px rgba(0,0,0,0.05);
+            animation: fadeIn 1s 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="page-container">
+        <!-- 侧边栏 -->
+        <div class="sidebar">
+            <div class="sidebar-item active">患者</div>
+            <div class="sidebar-item">企业</div>
+            <div class="sidebar-item">社会</div>
+            <div class="sidebar-item">其他</div>
+        </div>
+
+        <!-- 主内容区 -->
+        <div class="main-content">
+            <!-- 图表 -->
+            <div class="chart-wrapper">
+                <div class="chart-title">图四：历次集采价格降幅与最高有效申报价趋势</div>
+                <div id="main-chart"></div>
+            </div>
+
+            <!-- 文字解释 -->
+            <div class="explanation-card">
+                <h3>图表解读</h3>
+                <p>
+                    <strong>价格降幅稳定：</strong>历次集采的平均价格降幅始终维持在较高水平，体现了政策在挤压药品价格水分方面的持续效力。
+                </p>
+                <p>
+                    <strong>申报价波动：</strong>最高有效申报价的均值与波动范围（标准差）较大，反映出不同批次、不同品种药品的竞争格局和定价策略存在显著差异。
+                </p>
+            </div>
+        </div>
+
+        <!-- 底部大标题 -->
+        <div class="footer-title">
+            降低患者负担
+        </div>
+    </div>
+
+    <script>
+        // 1. 初始化 ECharts 实例
+        var myChart = echarts.init(document.getElementById('main-chart'));
+
+        // 2. 图表数据（源自“表3”）
+        const batches = ['第二批', '第三批', '第四批', '第五批', '第七批', '第八批', '第九批'];
+        
+        // 价格降幅数据 [均值, 标准差]
+        const priceDropData = {
+            mean: [0.55, 0.72, 0.68, 0.70, 0.65, 0.61, 0.70],
+            stdDev: [0.22, 0.20, 0.19, 0.22, 0.24, 0.27, 0.21]
+        };
+
+        // 最高有效申报价/元 数据 [均值, 标准差]
+        const bidPriceData = {
+            mean: [80.70, 31.57, 140.86, 166.80, 75.88, 62.92, 96.64],
+            stdDev: [410.61, 119.01, 572.14, 456.90, 167.39, 145.26, 256.01]
+        };
+        
+        // 3. 辅助函数：处理数据以生成误差线所需格式
+        // 误差线数据格式为 [x轴索引, y轴下限, y轴上限]
+        function generateErrorData(data) {
+            return data.mean.map((mean, index) => {
+                const std = data.stdDev[index];
+                // 误差线不应低于0
+                const lowerBound = Math.max(0, mean - std); 
+                const upperBound = mean + std;
+                return [index, lowerBound, upperBound];
+            });
+        }
+        
+        const priceDropError = generateErrorData(priceDropData);
+        const bidPriceError = generateErrorData(bidPriceData);
+
+        // 4. ECharts 配置项
+        const option = {
+            // 使用您的分镜稿中的颜色
+            color: ['#27ae60', '#f39c12'], 
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'cross',
+                    crossStyle: {
+                        color: '#999'
+                    }
+                },
+                formatter: function (params) {
+                    let tooltipText = `${params[0].name}<br/>`;
+                    // 过滤掉误差线系列的提示
+                    params.filter(p => p.seriesType === 'line').forEach(p => {
+                        const seriesIndex = p.seriesIndex;
+                        const dataIndex = p.dataIndex;
+                        let mean, stdDev;
+                        if(seriesIndex === 0) { // 价格降幅
+                            mean = priceDropData.mean[dataIndex];
+                            stdDev = priceDropData.stdDev[dataIndex];
+                             tooltipText += `${p.marker} ${p.seriesName}: ${(mean * 100).toFixed(1)}% (±${(stdDev * 100).toFixed(1)}%)<br/>`;
+                        } else { // 最高有效申报价
+                            mean = bidPriceData.mean[dataIndex];
+                            stdDev = bidPriceData.stdDev[dataIndex];
+                            tooltipText += `${p.marker} ${p.seriesName}: ${mean.toFixed(2)}元 (±${stdDev.toFixed(2)})<br/>`;
+                        }
+                    });
+                    return tooltipText;
+                }
+            },
+            legend: {
+                data: ['价格降幅', '最高有效申报价'],
+                textStyle: {
+                    fontSize: 14
+                },
+                top: 'bottom'
+            },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '12%',
+                containLabel: true
+            },
+            xAxis: [
+                {
+                    type: 'category',
+                    data: batches,
+                    axisPointer: {
+                        type: 'shadow'
+                    }
+                }
+            ],
+            yAxis: [
+                {
+                    type: 'value',
+                    name: '价格降幅',
+                    min: 0,
+                    max: 1,
+                    axisLabel: {
+                        formatter: '{value}' // ECharts 5+ 会自动处理百分比，这里仅作占位，实际格式化在 tooltip 中
+                    }
+                },
+                {
+                    type: 'value',
+                    name: '最高有效申报价 (元)',
+                    // 动态计算 Y 轴范围以容纳误差线
+                    min: 0, 
+                    axisLabel: {
+                        formatter: '{value} 元'
+                    }
+                }
+            ],
+            series: [
+                // 系列1: 价格降幅（折线图）
+                {
+                    name: '价格降幅',
+                    type: 'line',
+                    yAxisIndex: 0, // 关联左侧Y轴
+                    data: priceDropData.mean,
+                    smooth: true,
+                    symbol: 'circle',
+                    symbolSize: 8,
+                },
+                // 系列2: 价格降幅（误差线）
+                {
+                    type: 'custom',
+                    name: '价格降幅误差',
+                    yAxisIndex: 0,
+                    renderItem: function (params, api) {
+                        // 渲染误差线的函数
+                        const xValue = api.value(0);
+                        const highPoint = api.coord([xValue, api.value(2)]);
+                        const lowPoint = api.coord([xValue, api.value(1)]);
+                        const halfWidth = api.size([1, 0])[0] * 0.1;
+
+                        return {
+                            type: 'group',
+                            children: [{
+                                type: 'line',
+                                shape: { x1: highPoint[0] - halfWidth, y1: highPoint[1], x2: highPoint[0] + halfWidth, y2: highPoint[1] },
+                                style: { stroke: api.visual('color'), lineWidth: 2 }
+                            }, {
+                                type: 'line',
+                                shape: { x1: highPoint[0], y1: highPoint[1], x2: lowPoint[0], y2: lowPoint[1] },
+                                style: { stroke: api.visual('color'), lineWidth: 2 }
+                            }, {
+                                type: 'line',
+                                shape: { x1: lowPoint[0] - halfWidth, y1: lowPoint[1], x2: lowPoint[0] + halfWidth, y2: lowPoint[1] },
+                                style: { stroke: api.visual('color'), lineWidth: 2 }
+                            }]
+                        };
+                    },
+                    data: priceDropError,
+                    z: 100, // 置于顶层
+                    tooltip: { show: false }
+                },
+                // 系列3: 最高有效申报价（折线图）
+                {
+                    name: '最高有效申报价',
+                    type: 'line',
+                    yAxisIndex: 1, // 关联右侧Y轴
+                    data: bidPriceData.mean,
+                    smooth: true,
+                    symbol: 'triangle',
+                    symbolSize: 10,
+                },
+                // 系列4: 最高有效申报价（误差线）
+                {
+                    type: 'custom',
+                    name: '最高有效申报价误差',
+                    yAxisIndex: 1,
+                    renderItem: function (params, api) {
+                         // 复用上面的渲染函数
+                        const xValue = api.value(0);
+                        const highPoint = api.coord([xValue, api.value(2)]);
+                        const lowPoint = api.coord([xValue, api.value(1)]);
+                        const halfWidth = api.size([1, 0])[0] * 0.1;
+
+                        return {
+                            type: 'group',
+                            children: [{
+                                type: 'line',
+                                shape: { x1: highPoint[0] - halfWidth, y1: highPoint[1], x2: highPoint[0] + halfWidth, y2: highPoint[1] },
+                                style: { stroke: api.visual('color'), lineWidth: 2 }
+                            }, {
+                                type: 'line',
+                                shape: { x1: highPoint[0], y1: highPoint[1], x2: lowPoint[0], y2: lowPoint[1] },
+                                style: { stroke: api.visual('color'), lineWidth: 2 }
+                            }, {
+                                type: 'line',
+                                shape: { x1: lowPoint[0] - halfWidth, y1: lowPoint[1], x2: lowPoint[0] + halfWidth, y2: lowPoint[1] },
+                                style: { stroke: api.visual('color'), lineWidth: 2 }
+                            }]
+                        };
+                    },
+                    data: bidPriceError,
+                    z: 100,
+                    tooltip: { show: false }
+                }
+            ],
+            animationDuration: 2000 // 图表初始动画时长
+        };
+
+        // 5. 应用配置项
+        myChart.setOption(option);
+
+        // 6. 监听窗口大小变化，使图表自适应
+        window.addEventListener('resize', function () {
+            myChart.resize();
+        });
+    </script>
+</body>
+</html>
