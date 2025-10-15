@@ -1,137 +1,206 @@
-/* =================================================================== */
-/*                           PAGE14 样式文件                            */
-/* =================================================================== */
-/* 页面14 - 节约医保开支 */
+/* page14.css - 最终修复且带有超详细注释的版本 */
 
-/* 页面容器布局 */
-#page14-container .page-container {
+/* ===================================================================
+ *   1. 页面总布局容器 (.page14-wrapper)
+ * ===================================================================
+ *   这是符合SOP的顶层容器，所有布局的“地基”。
+ *   它本身的高度继承自父级 .page-section 的 100vh，所以是占满全屏的。
+*/
+#page14-container .page14-wrapper {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
     display: grid;
-    grid-template-columns: 150px 1fr;
-    grid-template-rows: 1fr auto;
+
+    /* --- 可调节参数：主网格列定义 ---
+     *   作用：定义了两个垂直列：一个固定宽度给左侧边栏，另一个"1fr"占据所有剩余的宽度给主内容区。
+     *   调节效果：修改 "150px" 会直接改变左侧边栏的宽度。改得更大，右侧主内容区会自动变窄；反之亦然。
+    */
+    grid-template-columns: 1fr;
+
+    /* --- 可调节参数：主网格行定义 ---
+     *   作用：定义了两个水平行：一个"1fr"给主内容区，一个固定的"12vh"给页脚。
+     *   "1fr" 会自动计算并占据(页面总高度 - 12vh - gap - padding)的所有剩余空间。
+     *   调节效果：这是控制页脚不被内容侵占的核心。如果感觉页脚太高，可以减小"12vh"(如10vh)；如果太低，可以增大"12vh"(如15vh)。
+    */
+    grid-template-rows: 1fr 12vh;
+
+    /* --- 网格区域命名 ---
+     *   作用：定义了三个区域，并指定了它们在网格中的位置。
+     *   "sidebar main"   -> 第一行是侧边栏和主内容
+     *   "footer footer"  -> 第二行全部是页脚
+     *   这个定义解决了我们之前遇到的“页脚与图片重叠”的问题，请勿修改。
+    */
     grid-template-areas:
-        "sidebar main"
-        "footer footer";
-    height: 100vh;
-    padding: 2vw;
-    gap: 2vw;
+        "main"
+        "footer";
+
+    /* --- 可调节参数：全局内边距和间距 ---
+     *   padding: 定义了整个页面内容距离屏幕边缘的“留白”。第一个值是上下留白，第二个值是左右留白。
+     *   gap: 定义了网格项（sidebar, main, footer）之间的距离。
+     *   调节效果：如果内容在极端情况下还是溢出，可以优先考虑适当减小这里的 "1.5rem"，为内容腾出更多空间。
+    */
+    padding: 1.5rem;
+    gap: 1.5rem;
+
+    background-image: url('../../image/（现状）68a3f53e156c5.png');
+    background-size: cover;
+    background-position: center;
 }
 
-/* 页面底部标题 */
+#page14-container * { 
+    box-sizing: border-box; 
+}
+
+/* ===================================================================
+ *   2. 各个布局区域的具体样式
+ * =================================================================== */
+
+/* --- Grid 区域分配 (勿动) --- */
+#page14-container .main-content { grid-area: main; }
+#page14-container .page-footer { grid-area: footer; align-self: end; /* 让页脚内容在自己的区域里靠下对齐 */ }
+
+/* --- 主内容区 (.main-content) 内部的子网格 --- */
+#page14-container .main-content {
+    display: grid;
+    /* --- 可调节参数：主内容区左右列宽比例 ---
+     *   作用：定义了左（图表+图片）右（文本）两列的宽度比例。
+     *   调节效果：增大第一个值（如4fr），左栏变宽，右栏变窄。增大第二个值（如3fr），则效果相反。
+    */
+    grid-template-columns: 2.5fr 1.8fr;
+    gap: 1.5rem; 
+    min-height: 0; /* 技术性修复：防止网格内容在某些情况下溢出其轨道。建议保留。 */
+}
+
+/* --- 左栏 (.left-column) 内部的子网格 --- */
+#page14-container .left-column {
+    display: grid;
+    /* --- 可调节参数：左栏上下比例 ---
+     *   作用：定义了上方图表和下方图片的高度比例。
+     *   调节效果：增大第一个值（如3fr），图表区域变高，图片区域变矮，图片会上移。减小第一个值（如2fr），则效果相反，图片会下移。
+     *   调整：减少左栏高度，为右侧文本框腾出更多空间（增加10%+15%高度）
+     *   最新调整：左下角图片再往上移动更多，调整比例为1.8fr 1.2fr，给图片更多空间
+     */
+    grid-template-rows: 2.2fr 1fr;
+    gap: 1.5rem;
+    min-height: 0; /* 技术性修复，同上 */
+}
+
+/* --- 右侧文本框 (.right-column .panel) --- */
+#page14-container .right-column .panel {
+    /* 【核心修复 ①】: 将高度设为100%，让面板完全填充父级网格单元。 */
+    height: 100%; 
+    
+    /* 【核心修复 ②】: 使用 vw 单位，让内边距随屏幕宽度自适应，与参考HTML保持一致。 */
+    padding: 2vw; 
+    
+    overflow-y: auto; /* 保留一个备用滚动条，以防万一内容真的溢出 */
+}
+
+/* --- 【【【最关键修复】】】：右侧文本框内的 <p> 标签 ---
+ *   作用：此规则的唯一目的，是覆盖掉 main.css 中的全局 p { font-size: 1.2rem; } 样式，让我们能真正控制文本大小。
+ *   调节效果：这是控制右侧文本框是否溢出的"命门"。如果还溢出，请优先减小这里的 font-size 和 line-height。
+*/
+#page14-container .right-column .panel p {
+    /* 【核心修复 ③】: 使用 vw 单位，让字体大小随屏幕宽度自适应。 */
+    font-size: 1.0vw; 
+
+    /* 【核心修复 ④】: 调整为参考HTML中更宽松的行高，改善可读性。 */
+    line-height: 1.8;
+
+    /* 【核心修复 ⑤】: 调整为参考HTML中更宽松的段落间距。 */
+    margin-bottom: 1.5em;
+}
+
+
+/* ===================================================================
+ *   3. 其他装饰性样式 (基本无需调节)
+ * =================================================================== */
+
 #page14-container .page-footer {
-    grid-area: footer;
     text-align: center;
-    font-size: 3.5vw;
+    font-size: clamp(2rem, 3.5vw, 4rem);
     font-weight: 900;
-    letter-spacing: 0.2em;
-    padding-top: 1vw;
-    text-shadow: 0 0 15px rgba(255,255,255,0.7);
-    opacity: 0;
-    animation: fadeIn 0.8s 0.4s ease-out forwards;
+    padding-top: 1rem;
 }
 
-/* 左侧边栏 */
 #page14-container .sidebar {
-    grid-area: sidebar;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 20px;
-    opacity: 0;
-    animation: slideInLeft 0.8s 0.6s ease-out forwards;
+    gap: 20px; /* 统一到page16/17标准间距 */
+}
+
+#page14-container .sidebar-item, 
+#page14-container .panel,
+#page14-container .chart-container {
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+}
+
+/* 确保右侧文字栏的圆角正确显示 */
+#page14-container .right-column .panel {
+    border-radius: 12px !important;
 }
 
 #page14-container .sidebar-item {
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 80px;
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
-    font-size: 1.5vw;
+    height: 80px; /* 统一到page16/17标准高度 */
+    font-size: 1.5vw; /* 统一到page16/17标准字体大小 */
     font-weight: 500;
     cursor: pointer;
-    transition: all 0.3s ease;
-    background: var(--panel-bg);
-    backdrop-filter: blur(10px);
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    transition: all 0.3s ease; /* 统一到page16/17标准过渡动画 */
 }
 
 #page14-container .sidebar-item:hover {
-    transform: translateY(-5px) scale(1.05);
-    border-color: var(--primary-color-2);
+    transform: translateY(-5px) scale(1.05); /* 统一到page16/17标准悬停效果 */
+    border-color: #E07A5F; /* 统一到page16/17标准悬停颜色 */
 }
 
 #page14-container .sidebar-item.active {
-    background-color: var(--font-color);
-    color: var(--bg-color);
-    border-color: var(--font-color);
+    background-color: #3D405B; /* 统一到page16/17标准激活背景色 */
+    color: #FFFBF0; /* 统一到page16/17标准激活文字色 */
+    border-color: #3D405B; /* 统一到page16/17标准激活边框色 */
 }
 
-/* 主内容区域 */
-#page14-container .main-content {
-    grid-area: main;
-    display: grid;
-    grid-template-columns: 3fr 2fr;
-    gap: 2vw; 
-    opacity: 0;
-    animation: fadeIn 0.8s 0.8s ease-out forwards;
-    min-height: 0;
-}
-
-#page14-container .left-column {
-    display: grid;
-    grid-template-rows: 2fr 1fr;
-    gap: 2vw;
-    min-height: 0;
-}
-
-/* 右侧列面板 */
-#page14-container .right-column .panel {
-    height: 100%;
-    padding: 2vw;
-    font-size: 1.0vw; 
-    line-height: 1.8;
-    overflow-y: auto;
-}
-
-#page14-container .right-column .panel p {
-    margin-bottom: 1.5em;
-}
-
-/* 高亮文本 */
-#page14-container .highlight-text {
-    font-weight: bold;
-    color: var(--primary-color-2);
-}
-
-/* 图表容器 */
 #page14-container .chart-container {
-    position: relative;
-    width: 100%;
-    height: 100%;
     display: flex;
     flex-direction: column;
     padding: 20px;
-    border-radius: 12px;
-    background: var(--panel-bg);
-    backdrop-filter: blur(10px);
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-    border: 1px solid var(--border-color);
 }
 
-/* 图表控制按钮 */
+#page14-container #main-chart {
+    width: 100%;
+    flex-grow: 1;
+}
+
+#page14-container .art-text {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#page14-container .art-text img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
 #page14-container .chart-controls {
-    flex-shrink: 0;
+    display: flex;
+    justify-content: center;
     margin-bottom: 15px;
-    text-align: center;
 }
 
 #page14-container .chart-controls button {
     padding: 8px 20px;
     margin: 0 10px;
-    border: 1px solid var(--border-color);
+    border: 1px solid rgba(0, 0, 0, 0.1);
     background-color: transparent;
-    color: var(--font-color);
     border-radius: 20px;
     font-size: 14px;
     cursor: pointer;
@@ -140,63 +209,12 @@
 
 #page14-container .chart-controls button.active,
 #page14-container .chart-controls button:hover {
-    background-color: var(--font-color);
-    color: var(--bg-color);
-    border-color: var(--font-color);
+    background-color: #3D405B;
+    color: #FFFBF0;
+    border-color: #3D405B;
 }
 
-/* 主图表区域 */
-#page14-container #main-chart {
-    flex-grow: 1;
-    width: 100%;
-    height: 100%;
-    transition: opacity 0.4s ease-in-out;
+#page14-container .highlight-text {
+    font-weight: bold;
+    color: #E07A5F;
 }
-
-/* 左下图片容器 */
-#page14-container .art-text {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-}
-
-/* 图片样式 */
-#page14-container .art-text img {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain; /* 保证图片完整显示且不变形 */
-    transform: translateY(-10%);
-}
-
-/* 面板样式 */
-#page14-container .panel {
-    border-radius: 12px;
-    background: var(--panel-bg);
-    backdrop-filter: blur(10px);
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-    border: 1px solid var(--border-color);
-}
-
-/* 动画定义 */
-@keyframes fadeIn { 
-    from { 
-        opacity: 0; 
-        transform: translateY(10px); 
-    } 
-    to { 
-        opacity: 1; 
-        transform: translateY(0); 
-    } 
-}
-
-@keyframes slideInLeft { 
-    from { 
-        opacity: 0; 
-        transform: translateX(-50px); 
-    } 
-    to { 
-        opacity: 1; 
-        transform: translateX(0); 
-    } 
-} 

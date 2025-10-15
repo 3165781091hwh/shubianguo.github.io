@@ -1,244 +1,212 @@
-/* 页面1样式 - 实现横向滚动拦截 */
+/*
+ * ===================================================================
+ *                          css/pages/page1.css
+ *                     页面1样式（V5.0 标准注释版）
+ * -------------------------------------------------------------------
+ * 目标：遵循《项目前端开发与维护黄金标准》，实现样式完全沙箱化、
+ *      注释结构化分层，并在关键参数处提供可调节说明与影响分析。
+ * 适用范围：仅作用于 #page1-container 内部元素，避免全局污染。
+ * ===================================================================
+ */
 
-/* 容器样式 - 遵循全局PPT翻页布局规则 */
+/*
+ * ===================================================================
+ *                      1. 沙箱与页面容器约定
+ * -------------------------------------------------------------------
+ * - 所有选择器均以 #page1-container 开头，确保作用域仅限页面1。
+ * - 页面内部可使用 .page1-wrapper/.container 等包裹层承担布局职责。
+ * - 禁止直接给 body/h1/p 等标签设样式；必须通过带前缀的类选择器实现。
+ * - 若定义动画，建议名称前缀化（如 page1-fadeIn）避免跨页冲突。
+ * ===================================================================
+ */
+
+/* 2. 页面根容器（Root Container）
+ * 职责：提供页面的背景与基础排版上下文（字体栈）。
+ * 关键参数与影响：
+ *   - background-color: 背景底色，配合背景图一起呈现；可用于提升对比度。
+ *   - background-image: 背景图路径；受资源目录结构影响。
+ *   - background-size: cover 覆盖容器，可能裁剪；设置 contain 可保留全图但可能留白。
+ *   - background-position: center 居中显示；可根据视觉焦点调整为 top/left。
+ *   - font-family: UI 友好字体栈，跨平台呈现更稳定。
+ * 调节建议：
+ *   - 根据图像主色，适度调整背景底色以提高文本可读性。
+ */
 #page1-container {
-    /* 删除 position: relative，让全局规则生效 */
-    height: 100vh;
-    width: 100%;
-    overflow: hidden; /* 隐藏超出部分的幻灯片 */
-    background-color: #fffbf0;
-    /* 删除 z-index: 1，避免层级冲突 */
+    background-color: #FFFBF0;
+    background-image: url('../../image/（1-6）68a725b2d3e64.png');
+    background-size: cover;
+    background-position: center;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
-/* 幻灯片包装器 */
-.intro-slide-wrapper {
-    position: relative;
-    width: 100%;
-    height: 100%;
-}
-
-/* 单个幻灯片 */
-.intro-slide {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+/* 3. 主布局容器（Main Flex Container）
+ * 职责：承担两列布局（文本列/图表列），并在视口内居中显示。
+ * 关键参数与影响：
+ *   - display: flex 建立弹性布局，两列并排。
+ *   - width/height: 90vw/90vh 保持与视口尺寸的响应性；max-* 限制极端大屏。
+ *   - margin: 0 auto 水平居中；padding 提供内部留白。
+ *   - box-sizing: border-box 保证 padding 不影响设定的宽高。
+ * 调节建议：
+ *   - 小屏模式下通过媒体查询调整为纵向布局（column）。
+ */
+#page1-container .container {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    transition: transform 1.2s cubic-bezier(0.8, 0, 0.2, 1);
-    transform: translateX(100%); /* 默认移出屏幕外 */
-    background-color: #fffbf0;
+    width: 90vw;
+    height: 90vh;
+    max-width: 1400px;
+    max-height: 800px;
+    margin: 0 auto;
+    padding: 40px;
+    box-sizing: border-box;
+}
+
+/* 4. 文本列（Text Column）
+ * 职责：承载标题与正文文本，支持纵向滚动与垂直居中排版。
+ * 关键参数与影响：
+ *   - width: 43% 与图表列 57% 共同形成不对称布局，强调可视化区域。
+ *   - overflow-y: auto 当文本溢出时出现滚动条，保持整体布局稳定。
+ *   - display: flex + flex-direction: column 使内部元素垂直排列。
+ *   - justify-content: center 垂直居中，提高首屏可读性。
+ * 调节建议：
+ *   - 如需顶部对齐，将 justify-content 改为 flex-start。
+ */
+#page1-container .text-column {
+    width: 43%;
+    height: 100%;
+    padding-right: 40px;
+    box-sizing: border-box;
     color: #333;
-    /* 新增：建议GPU渲染以优化动画，防止闪烁 */
-    backface-visibility: hidden;
-    transform: translateX(100%) translateZ(0);
-}
-
-/* 当前活动的幻灯片 */
-.intro-slide.is-active {
-    transform: translateX(0) translateZ(0); /* 保持Z轴变换 */
-    z-index: 2;
-}
-
-/* 即将离开的幻灯片 */
-.intro-slide.is-exiting {
-    z-index: 1;
-}
-
-/* 背景数字样式 */
-.page-bg-number {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 40vw;
-    font-weight: 900;
-    color: rgba(0, 0, 0, 0.03);
-    z-index: -1;
-}
-
-/* 内容布局 */
-.content-wrapper {
-    width: 80%;
-    max-width: 1200px;
-    height: 80%;
+    overflow-y: auto;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
+    justify-content: center;
 }
 
-/* 词云容器 */
-.word-cloud-container {
-    position: relative;
-    width: 100%;
-    height: 70%;
+/* 4.1 文本列-标题（Heading）
+ * 职责：展示章节标题，配合底部边线形成视觉分隔。
+ * 关键参数与影响：
+ *   - font-size: 28px 标题字号；通过媒体查询在小屏下缩小。
+ *   - border-bottom: 2px solid #0B4F6C 底部分隔线，提升层次感。
+ *   - margin/padding 控制标题与正文之间的距离。
+ * 调节建议：
+ *   - 主题化：将颜色替换为 var(--brand-ink) 以统一主题。
+ */
+#page1-container .text-column h1 {
+    font-size: 28px;
+    color: #111;
+    margin-bottom: 24px;
+    border-bottom: 2px solid #0B4F6C;
+    padding-bottom: 12px;
 }
 
-.word-cloud-container span {
-    position: absolute;
-    font-size: 3.5vw;
-    opacity: 0; /* 默认隐藏，等待入场动画 */
-    transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    white-space: nowrap;
-    cursor: default;
+/* 4.2 文本列-正文（Paragraph）
+ * 职责：承载说明文本，采用两端对齐提高排版整齐度。
+ * 关键参数与影响：
+ *   - font-size: 16px 正文字号；与 line-height 共同影响可读性。
+ *   - line-height: 1.8 较为舒适的行距配置。
+ *   - text-align: justify 两端对齐；中文场景下可视需要调整。
+ *   - margin-bottom 段间距，避免视觉拥挤。
+ * 调节建议：
+ *   - 小屏可适度降低字号至 14px，并缩短段间距。
+ */
+#page1-container .text-column p {
+    font-size: 18px;
+    line-height: 1.8;
+    text-align: justify;
+    margin-bottom: 0;
 }
 
-/* 词云入场动画 */
-.intro-slide.is-active .word-cloud-container span {
-    animation: fadeInDown 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+/* 4.3 强调文本样式（橙色强调色）
+ * 职责：为strong标签和.highlight-text类添加橙色强调色
+ * 关键参数与影响：
+ *   - color: #E07A5F 使用橙色强调色，提高视觉重点
+ *   - font-weight: bold 保持粗体显示
+ */
+#page1-container .text-column strong,
+#page1-container .text-column .highlight-text {
+    color: #E07A5F;
+    font-weight: bold;
 }
 
-@keyframes fadeInDown {
-    from {
-        opacity: 0;
-        transform: translateY(-40px) scale(0.9);
-    }
-    to {
-        opacity: 0.8;
-        transform: translateY(0) scale(1);
-    }
+/* 5. 图表列（Chart Column）
+ * 职责：展示图表或可视化内容，宽度略大以突出视觉重点。
+ * 关键参数与影响：
+ *   - width: 57% 与文本列互补，确保图表空间充足。
+ *   - height: 100% 与父容器同高，便于等高布局。
+ * 调节建议：
+ *   - 内部图表若采用绝对定位，请在此列中建立定位上下文。
+ */
+#page1-container .chart-column {
+    width: 57%;
+    height: 100%;
 }
 
-/* 下方文字容器与入场动画 */
-.text-container {
-    height: 20%;
-    font-size: 2.2vw;
-    font-weight: 300;
-    text-align: center;
-    color: #555;
-    opacity: 0; /* 默认隐藏 */
-}
-
-.intro-slide.is-active .text-container {
-    animation: fadeInUp 0.8s 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-}
-
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* === 每个页面的词云独特布局 === */
-/* Page 1: 背景介绍 */
-.intro-slide[data-slide="1"] .w1 { 
-    top: 10%; 
-    left: 15%; 
-    font-size: 4.5vw; 
-    color: #c0392b; 
-}
-.intro-slide[data-slide="1"] .w2 { 
-    top: 30%; 
-    left: 60%; 
-    font-size: 5vw; 
-}
-.intro-slide[data-slide="1"] .w3 { 
-    top: 55%; 
-    left: 20%; 
-    font-size: 3.5vw; 
-}
-.intro-slide[data-slide="1"] .w4 { 
-    top: 75%; 
-    left: 70%; 
-    font-size: 4vw; 
-    color: #2980b9; 
-}
-
-/* Page 2: 成果与效益 */
-.intro-slide[data-slide="2"] .w1 { 
-    top: 15%; 
-    left: 10%; 
-    font-size: 6vw; 
-    color: #27ae60; 
-}
-.intro-slide[data-slide="2"] .w2 { 
-    top: 40%; 
-    left: 70%; 
-    font-size: 4vw; 
-}
-.intro-slide[data-slide="2"] .w3 { 
-    top: 70%; 
-    left: 25%; 
-    font-size: 5vw; 
-}
-.intro-slide[data-slide="2"] .w4 { 
-    top: 60%; 
-    left: 60%; 
-    font-size: 3.5vw; 
-    color: #e67e22; 
-}
-
-/* Page 3: 质疑与挑战 */
-.intro-slide[data-slide="3"] .w1 { 
-    top: 50%; 
-    left: 50%; 
-    transform: translateX(-50%); 
-    font-size: 5.5vw; 
-    color: #e74c3c; 
-}
-.intro-slide[data-slide="3"] .w2 { 
-    top: 20%; 
-    left: 15%; 
-    font-size: 4vw; 
-}
-.intro-slide[data-slide="3"] .w3 { 
-    top: 75%; 
-    left: 65%; 
-    font-size: 4.5vw; 
-}
-
-/* Page 4: 提出核心问题 */
-.intro-slide[data-slide="4"] .w1 { 
-    top: 20%; 
-    left: 20%; 
-    font-size: 6vw; 
-    color: #8e44ad; 
-}
-.intro-slide[data-slide="4"] .w2 { 
-    top: 45%; 
-    left: 65%; 
-    font-size: 5vw; 
-}
-.intro-slide[data-slide="4"] .w3 { 
-    top: 70%; 
-    left: 30%; 
-    font-size: 5.5vw; 
-}
-
-/* 响应式设计 */
+/* 6. 响应式布局（Responsive）
+ * 职责：在不同屏幕宽度下调整布局与排版以保持可读性。
+ * 断点说明：
+ *   - 768px：典型平板/小型笔记本屏幕，改为纵向布局以适配窄宽度。
+ *   - 480px：典型手机屏幕，进一步缩小内边距与字号。
+ * 调节建议：
+ *   - 根据实际设备分布，可新增 1024px/1280px 等中间断点优化。
+ */
 @media (max-width: 768px) {
-    .word-cloud-container span {
-        font-size: 5vw;
+    /* 改为纵向布局并缩小内边距 */
+    #page1-container .container {
+        flex-direction: column;
+        padding: 20px;
     }
     
-    .text-container {
-        font-size: 3vw;
+    /* 文本列拉伸为半屏高度，取消右侧间距，底部留白用于分隔 */
+    #page1-container .text-column {
+        width: 100%;
+        height: 50%;
+        padding-right: 0;
+        padding-bottom: 20px;
     }
     
-    .page-bg-number {
-        font-size: 50vw;
+    /* 图表列占据下半屏，保证图表展示空间 */
+    #page1-container .chart-column {
+        width: 100%;
+        height: 50%;
+    }
+    
+    /* 缩小标题字号以适配窄屏 */
+    #page1-container .text-column h1 {
+        font-size: 24px;
+    }
+    
+    /* 缩小正文字号，维持舒适阅读 */
+    #page1-container .text-column p {
+        font-size: 14px;
     }
 }
 
 @media (max-width: 480px) {
-    .word-cloud-container span {
-        font-size: 6vw;
+    /* 进一步缩小内边距，适配手机屏宽 */
+    #page1-container .container {
+        padding: 15px;
     }
     
-    .text-container {
-        font-size: 4vw;
+    /* 标题字号在手机上继续减小，提高信息密度 */
+    #page1-container .text-column h1 {
+        font-size: 20px;
     }
     
-    .content-wrapper {
-        width: 90%;
-        padding: 20px;
+    /* 正文字号与行距配合窄屏阅读 */
+    #page1-container .text-column p {
+        font-size: 13px;
     }
-} 
+}
+
+/*
+ * ===================================================================
+ *                          7. 合规性自检（SOP）
+ * -------------------------------------------------------------------
+ * - CSS 沙箱化：已全部使用 #page1-container 前缀（符合法则二第1条）。
+ * - 禁止标签选择器：未对 body/h1/p 等标签直接设样式（符合法则二第3条）。
+ * - 动画命名：当前无 @keyframes 定义；若未来添加，建议采用 page1-* 前缀。
+ * - 包装器职责：.container 作为布局容器职责明确（符合法则一关于内层包装器）。
+ * - 媒体查询：在断点内仍保持前缀选择器，避免污染其他页面样式。
+ * - 综述：页面1样式总体遵循 SOP 要求，若后续引入复杂交互请继续保持前缀与沙箱策略。
+ * ===================================================================
+ */

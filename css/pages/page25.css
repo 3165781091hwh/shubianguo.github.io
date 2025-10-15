@@ -1,0 +1,202 @@
+/*
+ * css/pages/page25.css
+ * 新插入页面 - 总结与署名页面
+ * 设计风格与正文页面保持一致
+ */
+
+/* --- 继承自原文件的设计变量 --- */
+#page25-container {
+    --bg-color: #FFFBF0;
+    --font-color: #3D405B;
+    --primary-color-1: #3D405B;
+    --primary-color-2: #E07A5F;
+    --border-color: rgba(0, 0, 0, 0.1);
+    --panel-bg: rgba(255, 255, 255, 0.75);
+    --font-family-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    --overlay-bg-color: rgba(61, 64, 91, 0.90); /* 与参考文献页相同的灰色 */
+
+    font-family: var(--font-family-main);
+}
+
+/* --- 基础重置与页面设置 --- */
+#page25-container * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* --- 页面整体容器 (背景图) --- */
+#page25-container .page-wrapper {
+    height: 100vh;
+    width: 100vw;
+    background-image: url('../../image/（现状）68a3f53e156c5.png'); /* 与正文页相同的背景 */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    flex-direction: column;
+}
+
+/* --- 上五分之四内容区域 --- */
+#page25-container .content-area {
+    height: 80%; /* 上五分之四 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: clamp(1vw, 2vw, 3vw);
+}
+
+/* --- 正文文本框 --- */
+#page25-container .text-panel {
+    width: 80% !important;
+    max-width: 1200px !important;
+    background: var(--panel-bg);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 2.5vw;
+    overflow: hidden;
+}
+
+/* --- 正文样式 --- */
+#page25-container .text-panel p {
+    font-size: 1.2rem !important;
+    line-height: 1.8;
+    text-align: justify;
+    margin-bottom: 0;
+    color: var(--font-color);
+}
+
+#page25-container .text-panel p:last-child {
+    margin-bottom: 0;
+}
+
+/* --- 强调文本样式 --- */
+#page25-container .highlight-text {
+    font-weight: bold;
+    color: var(--primary-color-2);
+}
+
+/* --- 下五分之一灰色方块区域 --- */
+#page25-container .footer-area {
+    height: 20%; /* 下五分之一 */
+    background-color: var(--overlay-bg-color); /* 与参考文献页相同的灰色 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+/* --- 署名内容 --- */
+#page25-container .signature-content {
+    color: #FFFFFF;
+    text-align: left;
+    font-size: clamp(0.9rem, 1.2vw, 1.4rem);
+    line-height: 1.4;
+    position: absolute;
+    left: clamp(4vw, 6vw, 8vw);
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+#page25-container .signature-content div {
+    margin-bottom: 0.5em;
+}
+
+/* --- 动画效果 --- */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* --- 确保内容可见 --- */
+#page25-container .text-panel,
+#page25-container .signature-content {
+    animation: none;
+    opacity: 1;
+}
+
+/* --- 响应式设计 --- */
+@media (max-height: 900px) {
+    #page25-container .content-area {
+        padding: clamp(0.5vw, 1vw, 1.5vw) clamp(1.5vw, 2vw, 2.5vw);
+    }
+    
+    #page25-container .text-panel {
+        width: clamp(65%, 75%, 80%);
+        max-width: 900px;
+        padding: clamp(1.5vw, 2vw, 2.5vw);
+    }
+    
+    #page25-container .text-panel p {
+        font-size: clamp(0.8rem, 1vw, 1.1rem);
+        line-height: clamp(1.5, 1.8, 2);
+        margin-bottom: clamp(0.8em, 1.2em, 1.5em);
+    }
+}
+
+@media (max-height: 768px) {
+    #page25-container .content-area {
+        padding: clamp(0.3vw, 0.5vw, 0.8vw) clamp(1.5vw, 2vw, 2.5vw);
+    }
+    
+    #page25-container .text-panel {
+        width: clamp(60%, 70%, 75%);
+        max-width: 800px;
+        padding: clamp(1vw, 1.5vw, 2vw);
+    }
+    
+    #page25-container .text-panel p {
+        font-size: clamp(0.7rem, 0.9vw, 1rem);
+        line-height: clamp(1.4, 1.6, 1.8);
+        margin-bottom: clamp(0.6em, 1em, 1.2em);
+    }
+    
+    #page25-container .signature-content {
+        font-size: clamp(0.8rem, 1vw, 1.1rem);
+        left: clamp(3vw, 5vw, 7vw);
+        bottom: clamp(1vh, 1.8vh, 2.5vh);
+    }
+}
+
+@media (max-width: 1920px) {
+    #page25-container .text-panel {
+        width: clamp(65%, 75%, 80%);
+        max-width: 900px;
+    }
+}
+
+@media (max-width: 1366px) {
+    #page25-container .text-panel {
+        width: clamp(75%, 85%, 90%);
+        max-width: 800px;
+    }
+    
+    #page25-container .text-panel p {
+        font-size: clamp(0.8rem, 1vw, 1.1rem);
+    }
+}
+
+@media (max-width: 1024px) {
+    #page25-container .text-panel {
+        width: clamp(80%, 90%, 95%);
+        max-width: 700px;
+    }
+    
+    #page25-container .text-panel p {
+        font-size: clamp(0.7rem, 0.9rem, 1rem);
+        line-height: clamp(1.4, 1.6, 1.8);
+    }
+    
+    #page25-container .signature-content {
+        font-size: clamp(0.8rem, 0.9rem, 1rem);
+        left: clamp(2vw, 4vw, 6vw);
+    }
+}

@@ -1,42 +1,38 @@
-/* =================================================================== */
-/*                            PAGE13 脚本                              */
-/* =================================================================== */
+// js/pages/page13.js
 
-// 页面13 - 推动产业升级
 (function() {
-    'use strict';
+    // 使用 IIFE (立即调用函数表达式) 封装代码，避免全局作用域污染。
+    // 这是项目遵循的良好实践。
 
-    // 等待DOM加载完成
     document.addEventListener('DOMContentLoaded', function() {
-        initializePage13();
-    });
+        
+        // 获取当前页面的容器元素
+        const page13Container = document.getElementById('page13-container');
 
-    // 页面初始化函数
-    function initializePage13() {
-        console.log('Page 13 initialized');
-        
-        // 获取页面元素
-        const sidebarItems = document.querySelectorAll('#page13-container .sidebar-item');
-        
-        // 为侧边栏项目添加点击事件
+        // 确认页面元素存在
+        if (!page13Container) {
+            console.error('Page 13 container not found!');
+            return;
+        }
+
+        // 目前 Page 13 是一个静态内容展示页面，没有复杂的交互逻辑。
+        // 此文件主要用于保持项目结构的统一性和完整性。
+        // 未来的任何针对 Page 13 的特定交互都可以添加到这里。
+
+        // 例如，我们可以监听侧边栏的点击事件（尽管目前只是样式变化）
+        const sidebarItems = page13Container.querySelectorAll('.sidebar-item');
         sidebarItems.forEach(item => {
-            item.addEventListener('click', function() {
-                // 移除所有active类
-                sidebarItems.forEach(i => i.classList.remove('active'));
-                // 为当前点击的项目添加active类
-                this.classList.add('active');
+            item.addEventListener('click', () => {
+                // 目前没有定义点击后的行为，仅作为示例
+                console.log(`Sidebar item clicked: ${item.textContent}`);
+                
+                // 如果需要实现点击切换 active 状态，可以在这里添加逻辑
+                // sidebarItems.forEach(i => i.classList.remove('active'));
+                // item.classList.add('active');
             });
         });
+        
+        console.log("Page 13 script loaded and initialized successfully.");
+    });
 
-        // 页面进入动画完成后的回调
-        setTimeout(() => {
-            console.log('Page 13 animations completed');
-        }, 1200);
-    }
-
-    // 暴露给全局的接口（如果需要）
-    window.Page13 = {
-        initialize: initializePage13
-    };
-
-})(); 
+})();

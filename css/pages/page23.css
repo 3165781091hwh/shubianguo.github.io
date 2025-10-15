@@ -1,0 +1,101 @@
+/*
+ * V5.0 Sandboxed CSS for Page 22 (完全还原原版)
+ * ---------------------------------------
+ * 目标：与原始page23.html显示效果完全一致，无滚动条
+ */
+
+/* @RULES MUST BE OUTSIDE OF SELECTORS */
+@keyframes page23-fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* 1. WRAPPER: Establishes the sandboxed environment and background */
+#page23-container .page23-wrapper {
+    /* Define page-specific variables to avoid global scope pollution */
+    --page23-bg-color: #FFFBF0;
+    --page23-font-color: #3D405B;
+    --page23-primary-color-1: #3D405B;
+    --page23-primary-color-2: #E07A5F;
+    --page23-border-color: rgba(0, 0, 0, 0.1);
+    --page23-panel-bg: rgba(255, 255, 255, 0.75);
+    --page23-font-family-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+
+    /* Create the full-screen container - 完全还原原版设置 */
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: var(--page23-font-family-main);
+    color: var(--page23-font-color);
+    background-image: url('../../image/（问题）68a50c3d7aaac.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+/* 2. SANDBOXED STYLES: All original styles are prefixed */
+
+/* Sandboxed universal reset - 完全还原原版 */
+#page23-container .page23-wrapper * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* 主内容区 - 完全还原原版的flex布局 */
+#page23-container .page23-wrapper .main-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2vw;
+    animation: page23-fadeIn 0.8s 0.4s ease-out forwards;
+    opacity: 0;
+}
+
+/* 面板与文本框样式 - 完全还原原版 */
+#page23-container .page23-wrapper .panel {
+    border-radius: 12px;
+    background: var(--page23-panel-bg);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    border: 1px solid var(--page23-border-color);
+    padding: 2.5vw;
+    overflow: hidden;
+}
+
+/* 文本框 - 完全还原原版，移除滚动条 */
+#page23-container .page23-wrapper .text-panel {
+    width: 60%;
+    max-width: 800px;
+    /* 移除 max-height 和 overflow-y，让内容自然适应 */
+    overflow: visible;
+}
+
+/* 标题样式 - 完全还原原版 */
+#page23-container .page23-wrapper .text-panel h3 {
+    text-align: center;
+    margin-bottom: 2vw;
+    font-size: 1.8vw;
+    color: var(--page23-primary-color-1);
+    line-height: 1.5;
+}
+
+/* 段落样式 - 完全还原原版 */
+#page23-container .page23-wrapper .text-panel p {
+    font-size: 1.1vw;
+    line-height: 2;
+    text-align: justify;
+    margin-bottom: 1.5em;
+}
+
+#page23-container .page23-wrapper .text-panel p:last-child {
+    margin-bottom: 0;
+}
+
+/* 高亮文本样式 - 完全还原原版 */
+#page23-container .page23-wrapper .highlight-text {
+    font-weight: bold;
+    color: var(--page23-primary-color-2);
+}

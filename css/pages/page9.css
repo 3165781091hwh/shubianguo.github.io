@@ -1,135 +1,117 @@
-/* =================================================================== */
-/*                           PAGE9 样式文件                            */
-/* =================================================================== */
-/* 药品集采深度解析页面 - 政策驱动下的市场响应与质量保证 */
+/* Page 9 - Sandboxed Version */
 
-/* 1. 左侧导航栏重塑 */
-.side-nav {
+#page9-container {
+    --primary-color: #b85c5c;
+    --green-color: #27ae60;
+    --yellow-color: #f39c12;
+    --border-color: rgba(0, 0, 0, 0.1);
+    
+    background-color: #FFFBF0;
+    color: #3D3D3D;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hir Chirurgino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    display: block;
+    max-width: none !important; 
+    padding: 0 !important; 
+    width: 100%;
+    height: 100%;
+}
+
+#page9-container .page-wrapper {
+    position: absolute; 
+    display: grid;
+    grid-template-rows: 1fr auto; /* 【布局核心】上方自适应，底部固定 */
+    grid-template-columns: 1fr; /* 【布局核心】移除左侧栏，主内容占满 */
+    grid-template-areas:
+        "main"
+        "footer";
+    height: 100%; /* 【布局关键】撑满父容器 */
+    width: 100%;
+    padding: 2vw; /* 【布局关键】内边距 */
+    gap: 2vw; /* 【布局关键】网格间距 */
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    color: #3D405B;
+    background-image: url('../../image/（现状）68a3f53e156c5.png');
+    background-size: cover; /* 【布局关键】cover=裁剪适配，contain=完整显示 */
+    background-position: center;
+    background-repeat: no-repeat;
+    box-sizing: border-box; 
+}
+
+/* 移除侧边栏相关样式 */
+
+/* 移除原有的::after伪元素样式，因为新设计不需要 */
+
+#page9-container .main-content {
+    grid-area: main;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 5vw;
-    flex-shrink: 0;
-    position: relative;
-    opacity: 0;
-    animation: fadeIn 1s 0.2s forwards;
+    opacity: 1; /* 取消淡入效果 */
 }
 
-.side-nav::before {
-    content: '';
-    position: absolute;
-    left: 50%;
-    top: 15%;
-    bottom: 15%;
-    width: 2px;
-    background-color: rgba(0,0,0,0.08);
-    transform: translateX(-50%);
+#page9-container .page-header {
+    opacity: 1; /* 取消淡入效果 */
 }
-
-.nav-item {
-    font-size: 1.1vw;
-    font-weight: 500;
-    color: #888;
-    margin: 2vw 0;
-    cursor: pointer;
-    transition: color 0.3s ease;
-    position: relative;
-}
-
-.nav-item.active, .nav-item:hover {
-    color: var(--primary-color);
-}
-
-.nav-item.active::after {
-    content: '';
-    position: absolute;
-    left: -1.5vw;
-    top: 50%;
-    width: 0.8vw;
-    height: 2px;
-    background-color: var(--primary-color);
-    transform: translateY(-50%);
-}
-
-/* 2. 主内容区布局重构 */
-.main-content {
-    flex-grow: 1;
-    padding-left: 4vw;
-    display: flex;
-    flex-direction: column;
-}
-
-.page-header {
-    opacity: 0;
-    animation: slideInUp 0.8s 0.4s forwards;
-}
-
-.page-header .subtitle {
+#page9-container .page-header .subtitle {
     font-size: 1.2vw;
     color: #999;
     font-weight: 400;
+    text-align: left;
 }
-
-.page-header .title {
+#page9-container .page-header .title {
     font-size: 2.8vw;
     font-weight: 700;
     color: var(--primary-color);
     margin: 0.5vw 0 3vw 0;
+    text-align: center;
 }
 
-.content-grid {
+#page9-container .content-grid {
     display: grid;
-    grid-template-columns: 55fr 45fr; /* 非对称布局 */
+    grid-template-columns: 55fr 45fr;
     gap: 4vw;
     flex-grow: 1;
+    background: rgba(255, 255, 255, 0.1);
+    opacity: 1; /* 取消淡入效果 */
 }
 
-/* 3. 数据可视化升级 */
-.chart-section {
+#page9-container .chart-section {
     display: flex;
     flex-direction: column;
-    opacity: 0;
-    animation: slideInUp 0.8s 0.6s forwards;
+    opacity: 1; /* 取消淡入效果 */
 }
-
-.chart-section h3 {
+#page9-container .chart-section h3 {
     font-size: 1.6vw;
     font-weight: 600;
     margin-bottom: 1.5vw;
+    text-align: left;
 }
-
-#chart-container {
+#page9-container #page9-chart-container {
     width: 100%;
     height: 35vh; 
 }
-
-.chart-summary {
+#page9-container .chart-summary {
     font-size: 1vw;
     color: #666;
     margin-top: 1.5vw;
     line-height: 1.8;
     padding-left: 1vw;
     border-left: 3px solid var(--green-color);
+    text-align: left;
 }
 
-/* 4. 信息架构优化 (手风琴) */
-.rules-section {
-    opacity: 0;
-    animation: slideInUp 0.8s 0.8s forwards;
+#page9-container .rules-section {
+    opacity: 1; /* 取消淡入效果 */
 }
-
-.rules-section h3 {
-     font-size: 1.6vw;
+#page9-container .rules-section h3 {
+    font-size: 1.6vw;
     font-weight: 600;
     margin-bottom: 1.5vw;
+    text-align: left;
 }
-
-.accordion-item {
+#page9-container .accordion-item {
     border-bottom: 1px solid var(--border-color);
 }
-
-.accordion-header {
+#page9-container .accordion-header {
     padding: 1.2vw 0;
     font-size: 1.1vw;
     font-weight: 500;
@@ -139,86 +121,65 @@
     align-items: center;
     transition: color 0.3s;
 }
-
-.accordion-header:hover {
+#page9-container .accordion-header:hover {
     color: var(--primary-color);
 }
-
-.accordion-header::after {
+#page9-container .accordion-header::after {
     content: '+';
     font-size: 1.5vw;
     font-weight: 300;
     transition: transform 0.3s ease;
 }
-
-.accordion-item.active .accordion-header::after {
+#page9-container .accordion-item.active .accordion-header::after {
     transform: rotate(45deg);
 }
-
-.accordion-content {
+#page9-container .accordion-content {
     max-height: 0;
     overflow: hidden;
     transition: max-height 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
-
-.accordion-content-inner {
+#page9-container .accordion-content-inner {
     padding-bottom: 1.5vw;
     font-size: 0.95vw;
     line-height: 1.9;
     color: #555;
+    text-align: left;
 }
-
-/* 增加对 active 状态的 max-height，确保内容能完全显示 */
-.accordion-item.active .accordion-content {
-     max-height: 500px; /* 使用一个固定的足够大的值，或通过JS动态计算 */
+#page9-container .accordion-item.active .accordion-content {
+     max-height: 500px;
 }
-
-.highlight-box {
+#page9-container .highlight-box {
     background: rgba(184, 92, 92, 0.08);
     border-left: 3px solid var(--primary-color);
     padding: 1vw;
     margin-top: 1vw;
     border-radius: 4px;
 }
+#page9-container .highlight-box strong { color: #E07A5F; }
+#page9-container strong { color: #E07A5F; }
 
-.highlight-box strong { 
-    color: var(--primary-color); 
-}
-
-.highlight-box ul {
-    margin: 0.5vw 0;
-    padding-left: 1.5vw;
-}
-
-.highlight-box li {
-    margin: 0.3vw 0;
-}
-        
-/* 页面底部结论 */
-.page-conclusion {
+#page9-container .page-conclusion {
     text-align: center;
-    font-size: 2vw;
-    font-weight: 300;
+    font-size: 3.2vw;
+    font-weight: 700;
+    letter-spacing: 0.1em;
     margin-top: 3vw;
-    padding-bottom: 2vw; /* 增加底部内边距，避免紧贴页面底部 */
-    opacity: 0;
-    animation: slideInUp 1s 1s forwards;
-    color: #333;
+    padding-bottom: 2vw;
+    opacity: 1; /* 取消淡入效果 */
+    color: var(--p10-primary-text-color);
 }
 
-/* 动画 */
-@keyframes fadeIn { 
-    from { opacity: 0; } 
-    to { opacity: 1; } 
+@keyframes page9-fadeIn { 
+    from { opacity: 0; transform: translateY(10px); } 
+    to { opacity: 1; transform: translateY(0); } 
 }
 
-@keyframes slideInUp { 
-    from { 
-        opacity: 0; 
-        transform: translateY(30px); 
-    } 
-    to { 
-        opacity: 1; 
-        transform: translateY(0); 
-    } 
-} 
+@keyframes page9-slideInUp { 
+    from { opacity: 0; transform: translateY(30px); } 
+    to { opacity: 1; transform: translateY(0); } 
+}
+
+@keyframes page9-slideInLeft { 
+    from { opacity: 0; transform: translateX(-50px); } 
+    to { opacity: 1; transform: translateX(0); } 
+}

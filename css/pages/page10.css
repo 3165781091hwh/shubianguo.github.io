@@ -1,154 +1,184 @@
-/* =================================================================== */
-/*                            PAGE10 样式                               */
-/*                    药品质量与可及性得到保证页面                        */
-/* =================================================================== */
+/* css/pages/page10.css - 药品质量与可及性得到保证 (v2-最终版) */
 
-/* --- 基础与字体设置 --- */
-:root {
+/* 1. 定义沙箱容器的基础属性，并将 :root 变量移入 */
+#page10-container {
+    /* 添加措施背景1 - 与13页之后保持一致 */
+    background-image: url('../../image/（现状）68a3f53e156c5.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    
+    /* 覆盖 main.css 的全局限制 */
+    max-width: none !important;
+    padding: 0 !important;
+    display: block !important;
+}
+
+#page10-container .page10-wrapper {
+    width: 100%;
+    overflow: hidden;
+    
+    /* --- 基础与字体设置 (原 :root 和 body) --- */
     --bg-color: #FFFBF0;
     --primary-text-color: #3D405B;
     --secondary-text-color: #8D99AE;
     --bar-color-western: #4F7CAC;
     --bar-color-tcm: #83A9D3;
+    --primary-color-2: #E07A5F; /* 橙色变量 */
+
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    /* 移除背景色，让父容器的背景图片显示 */
+    color: var(--primary-text-color);
 }
 
-/* --- 主容器与布局 --- */
-#page10-container .page-container { 
-    display: flex; 
-    width: 100%; 
-    height: 100%; 
-    padding: 3vw 4vw; 
+/* 2. 将原始CSS中所有规则，全部加上沙箱前缀 */
+#page10-container .page10-wrapper * { 
+    box-sizing: border-box; 
+    margin: 0; 
+    padding: 0; 
 }
 
-#page10-container .side-panel { 
-    flex: 0 0 10%; 
+/* 确保内部最顶层容器能撑满视口 */
+#page10-container .page10-wrapper .page-container {
+    display: flex;
+    width: 100vw; /* 撑满视口宽度 */
+    height: 100vh; /* 撑满视口高度 */
+    padding: clamp(2vw, 3vw, 4vw) clamp(3vw, 4vw, 5vw) clamp(2vw, 3vw, 4vw) clamp(1vw, 2vw, 3vw); /* 响应式内边距 */
+    position: relative; /* 新增：作为绝对定位的参照物 */
+}
+
+#page10-container .page10-wrapper .side-panel { 
+    flex: 0 0 clamp(8%, 10%, 12%); 
     display: flex; 
     flex-direction: column; 
     justify-content: flex-start; 
-    padding-top: 15vh; 
-    gap: 6vh; 
+    padding-top: clamp(10vh, 15vh, 20vh); 
+    gap: clamp(4vh, 6vh, 8vh); 
+    opacity: 1; /* 取消淡入效果 */
 }
 
-#page10-container .main-content { 
+#page10-container .page10-wrapper .main-content { 
     flex: 1; 
     display: flex; 
     flex-direction: column; 
     height: 100%; 
 }
 
-/* --- 左侧关键词 --- */
-#page10-container .stakeholder-item {
-    font-size: 2vw; 
+#page10-container .page10-wrapper .content-body {
+    margin-top: 0;
+}
+
+#page10-container .page10-wrapper .stakeholder-item {
+    font-size: clamp(1.5vw, 2vw, 2.5vw); 
     font-weight: 500; 
-    padding-left: 1.5vw;
-    border-left: 3px solid var(--primary-text-color);
-    opacity: 0; 
-    transform: translateX(-20px);
-    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+    padding-left: clamp(1vw, 1.5vw, 2vw);
+    border-left: 3px solid transparent; /* 竖线透明 */
+    opacity: 1; /* 取消淡入效果 */
+    transform: none;
+    transition: none;
 }
 
-/* --- 内容元素通用样式 --- */
-#page10-container .content-block {
-    opacity: 0; 
-    transform: translateY(20px);
-    transition: opacity 1s ease-out, transform 1s ease-out, filter 0.5s ease-in-out;
+#page10-container .page10-wrapper .content-block {
+    opacity: 1; 
+    transform: none;
+    transition: none;
 }
 
-/* 焦点管理：非当前焦点的元素会变暗 */
-#page10-container .is-dimmed { 
+#page10-container .page10-wrapper .is-dimmed { 
     opacity: 0.3 !important; 
 }
 
-/* 图表标题 */
-#page10-container .chart-wrapper h3 {
-    font-size: 1.3vw; 
+#page10-container .page10-wrapper .chart-wrapper h3 {
+    font-size: clamp(1vw, 1.3vw, 1.6vw); 
     font-weight: 600;
-    margin-bottom: 3.5vh; /* 增加下边距，解决重叠问题 */
+    margin-bottom: clamp(2.5vh, 3.5vh, 4.5vh);
     color: var(--primary-text-color);
 }
 
-/* 图表1: 垂直柱状图 */
-#page10-container .bar-chart-vertical { 
+#page10-container .page10-wrapper .bar-chart-vertical { 
     display: flex; 
     justify-content: space-around; 
     align-items: flex-end; 
-    height: 25vh; 
+    height: clamp(15vh, 18vh, 22vh); /* 进一步缩小图表高度 */
     border-bottom: 1px solid #ddd; 
     padding-bottom: 0.5vh; 
 }
 
-#page10-container .bar-group { 
+#page10-container .page10-wrapper .bar-group { 
     display: flex; 
     flex-direction: column; 
     align-items: center; 
-    width: 6%; 
+    width: clamp(5%, 6%, 7%); 
     height: 100%; 
-    position: relative; 
     justify-content: flex-end; 
 }
 
-#page10-container .bar { 
-    width: 70%; 
+#page10-container .page10-wrapper .bar { 
+    width: clamp(60%, 70%, 80%); 
     background-color: var(--bar-color-western); 
     transition: height 1.5s cubic-bezier(0.23, 1, 0.32, 1); 
     display: flex; 
     flex-direction: column-reverse; 
+    position: relative;
 }
 
-#page10-container .bar-tcm { 
+#page10-container .page10-wrapper .bar-tcm { 
     width: 100%; 
     background-color: var(--bar-color-tcm); 
 }
 
-#page10-container .bar-value { 
+#page10-container .page10-wrapper .bar-value { 
     position: absolute; 
-    top: -3vh; 
-    font-size: 0.8vw; 
+    top: clamp(-2.5vh, -3vh, -3.5vh);
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    text-align: center;
+    font-size: clamp(0.6vw, 0.8vw, 1vw); 
     font-weight: 600; 
-    opacity: 0; 
-    transition: opacity 0.5s ease 1s; 
+    opacity: 1; 
+    transition: none;
 }
 
-#page10-container .bar-label { 
-    margin-top: 1vh; 
-    font-size: 0.8vw; 
+#page10-container .page10-wrapper .bar-label { 
+    margin-top: clamp(0.8vh, 1vh, 1.2vh); 
+    font-size: clamp(0.6vw, 0.8vw, 1vw); 
     color: var(--secondary-text-color); 
 }
 
-/* 图表2: 水平条形图 */
-#page10-container .chart-wrapper { 
-    margin-bottom: 4vh; /* 增加图表间距 */
+#page10-container .page10-wrapper .chart-wrapper { 
+    margin-bottom: clamp(2vh, 2.5vh, 3vh); /* 减少图表之间的间距 */
 }
 
-#page10-container .bar-chart-horizontal { 
+#page10-container .page10-wrapper .bar-chart-horizontal { 
     width: 100%; 
 }
 
-#page10-container .bar-row { 
+#page10-container .page10-wrapper .bar-row { 
     display: flex; 
     align-items: center; 
-    margin-bottom: 1.2vh; 
-    opacity: 0; 
-    transition: opacity 0.5s ease; 
+    margin-bottom: clamp(0.8vh, 1vh, 1.2vh); /* 减少水平条形图行间距 */
+    opacity: 1; 
+    transition: none; 
 }
 
-#page10-container .bar-row-label { 
-    width: 25%; 
+#page10-container .page10-wrapper .bar-row-label { 
+    width: clamp(20%, 25%, 30%); 
     text-align: right; 
-    padding-right: 1.5vw; 
-    font-size: 0.9vw; 
+    padding-right: clamp(1vw, 1.5vw, 2vw); 
+    font-size: clamp(0.7vw, 0.9vw, 1.1vw); 
     color: var(--primary-text-color); 
     white-space: nowrap; 
 }
 
-#page10-container .bar-horizontal-wrapper { 
+#page10-container .page10-wrapper .bar-horizontal-wrapper { 
     flex: 1; 
-    height: 1.8vh; 
+    height: clamp(1.2vh, 1.5vh, 1.8vh); /* 缩小水平条形图高度 */
     background-color: #EAEAEA; 
     border-radius: 0.9vh; 
 }
 
-#page10-container .bar-horizontal { 
+#page10-container .page10-wrapper .bar-horizontal { 
     width: 0; 
     height: 100%; 
     background-color: var(--bar-color-western); 
@@ -157,106 +187,80 @@
     transition: width 1.5s cubic-bezier(0.23, 1, 0.32, 1); 
 }
 
-#page10-container .bar-horizontal-value { 
+#page10-container .page10-wrapper .bar-horizontal-value { 
     position: absolute; 
-    right: -3vw; 
+    right: clamp(-2.5vw, -3vw, -3.5vw); 
     top: 50%; 
     transform: translateY(-50%); 
-    font-size: 0.9vw; 
+    font-size: clamp(0.7vw, 0.9vw, 1.1vw); 
     font-weight: 600; 
 }
 
-/* 中间说明文案 */
-#page10-container .summary-text {
-    font-size: 1.1vw; 
+#page10-container .page10-wrapper .summary-text {
+    font-size: clamp(0.9vw, 1.1vw, 1.3vw); 
     line-height: 1.8; 
     color: #555;
-    max-width: 95%; 
-    margin-bottom: 3vh;
+    max-width: clamp(90%, 95%, 98%); 
+    margin-bottom: 0;
+    margin-left: clamp(-1.5vw, -2vw, -2.5vw); /* 整体内容左移 */
 }
 
-#page10-container .summary-text p { 
-    margin-bottom: 1em; 
+#page10-container .page10-wrapper .summary-text p { 
+    margin-bottom: 0.1em; /* 减小段落间距 */
 }
 
-/* 底部结论 */
-#page10-container .conclusion { 
+#page10-container .page10-wrapper .summary-text p:last-child {
+    margin-bottom: 0;
+}
+
+#page10-container .page10-wrapper .summary-text strong {
+    color: var(--primary-color-2);
+}
+
+#page10-container .page10-wrapper .conclusion { 
+    /* 移除 grid-area: footer，因为父容器使用flexbox布局 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
     text-align: center; 
-    margin-top: auto; 
     padding-bottom: 2vh; 
+    
+    /* 修改为绝对定位，实现真正的页面居中 */
+    position: absolute; /* 改为绝对定位 */
+    bottom: 0;          /* 定位到底部 */
+    left: 0;            /* 横向撑满 */
+    right: 0;           /* 横向撑满 */
 }
 
-#page10-container .conclusion h1 { 
-    font-size: 3.2vw; 
-    font-weight: 700; 
-    letter-spacing: 0.1em; 
+#page10-container .page10-wrapper .conclusion h1 { 
+    font-size: clamp(2.5vw, 3.5vw, 4.5vw);
+    font-weight: 900;
+    letter-spacing: 0.2em;
+    color: #3D405B; /* 与page11、12的--font-color保持一致 */
+    padding-top: clamp(0.8vw, 1vw, 1.2vw);
+    padding-bottom: clamp(0.8vw, 1vw, 1.2vw);
 }
 
-/* 动画触发类 */
-#page10-container .is-visible { 
+#page10-container .page10-wrapper .is-visible { 
     opacity: 1 !important; 
     transform: none !important; 
 }
 
-#page10-container .is-visible .bar-value { 
+#page10-container .page10-wrapper .is-visible .bar-value { 
     opacity: 1; 
 }
 
-/* 响应式设计 */
-@media (max-width: 768px) {
-    #page10-container .page-container {
-        padding: 2vw 3vw;
-    }
-    
-    #page10-container .side-panel {
-        flex: 0 0 15%;
-        padding-top: 10vh;
-        gap: 4vh;
-    }
-    
-    #page10-container .stakeholder-item {
-        font-size: 3vw;
-        padding-left: 1vw;
-    }
-    
-    #page10-container .chart-wrapper h3 {
-        font-size: 2.5vw;
-        margin-bottom: 2.5vh;
-    }
-    
-    #page10-container .bar-chart-vertical {
-        height: 20vh;
-    }
-    
-    #page10-container .bar-group {
-        width: 8%;
-    }
-    
-    #page10-container .bar-value {
-        font-size: 1.5vw;
-        top: -2.5vh;
-    }
-    
-    #page10-container .bar-label {
-        font-size: 1.5vw;
-    }
-    
-    #page10-container .bar-row-label {
-        width: 30%;
-        font-size: 2vw;
-        padding-right: 2vw;
-    }
-    
-    #page10-container .bar-horizontal-value {
-        font-size: 2vw;
-        right: -4vw;
-    }
-    
-    #page10-container .summary-text {
-        font-size: 2.5vw;
-    }
-    
-    #page10-container .conclusion h1 {
-        font-size: 5vw;
-    }
-} 
+/* 确保动画元素有正确的初始状态 */
+#page10-container .page10-wrapper .stakeholder-item.is-visible {
+    opacity: 1 !important; /* 取消淡入效果 */
+    transform: none !important;
+}
+
+#page10-container .page10-wrapper .content-block.is-visible {
+    opacity: 1 !important;
+    transform: none !important;
+}
+
+#page10-container .page10-wrapper .bar-row.is-visible {
+    opacity: 1 !important;
+}

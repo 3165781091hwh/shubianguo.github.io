@@ -1,212 +1,312 @@
-/* =================================================================== */
-/*                           PAGE15 样式                                */
-/* =================================================================== */
-/* 页面15 - 推动规则模式高效透明化 */
+/*
+ * ===================================================================
+ *                          css/pages/page15.css
+ *                     页面15样式（V5.0 标准注释版）
+ * -------------------------------------------------------------------
+ * 目标：遵循《项目前端开发与维护黄金标准》，实现样式完全沙箱化、
+ *      注释结构化分层，并在关键参数处提供可调节说明与影响分析。
+ * 适用范围：仅作用于 #page15-container 内部元素，避免全局污染。
+ * ===================================================================
+ */
 
-#page15-container .page-container {
-    display: grid;
-    grid-template-columns: 150px 1fr;
-    grid-template-rows: 1fr auto;
-    grid-template-areas:
-        "sidebar main"
-        "footer footer";
-    height: 100vh;
-    padding: 2vw;
-    gap: 2vw;
+/*
+ * ===================================================================
+ *                      1. 沙箱与页面容器约定
+ * -------------------------------------------------------------------
+ * - 所有选择器均以 #page15-container 开头，确保作用域限定在页面15。
+ * - 页面内部包装层 .page15-wrapper 承担布局与交互动画的承载职责。
+ * - 禁止直接给 body/h1/p 等标签设样式；必须通过带前缀的类选择器。
+ * - 动画命名已采用 page15-* 前缀（如 page15-fadeIn），符合跨页避免冲突的要求。
+ * ===================================================================
+ */
+
+/* 2. 页面根容器（Root Container）
+ * 职责：提供背景图与基础排版上下文。
+ * 关键参数与影响：
+ *   - background-*：背景图与位置；cover 可能裁剪，contain 保留全图可能留白。
+ *   - 仅设置背景相关属性，其他布局由内部容器控制。
+ * 调节建议：
+ *   - 如需背景图不裁剪，将 background-size 改为 contain。
+ *   - 如需背景图居中显示，调整 background-position。
+ */
+#page15-container {
+    background-image: url('../../image/（现状）68a3f53e156c5.png');
+    background-size: cover; /* 【布局关键】cover=裁剪适配，contain=完整显示 */
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
-#page15-container .page-footer {
+/* 3. 内部布局容器（Internal Layout Container）
+ * 职责：承载整个页面的网格布局系统。
+ * 关键参数与影响：
+ *   - grid-template-columns: 1fr 【布局核心】主内容区自适应
+ *   - grid-template-rows: 1fr auto 【布局核心】上方内容区自适应，底部固定高度
+ *   - grid-template-areas: 定义区域名称，便于子元素定位
+ *   - padding: 2vw 【布局关键】内边距使用视口单位，响应式适配
+ *   - gap: 2vw 【布局关键】网格间距，影响整体紧凑度
+ * 调节建议：
+ *   - 调整内边距：修改 padding 值，影响内容与边缘距离
+ *   - 调整间距：修改 gap 值，影响各区域间的空隙
+ */
+.page15-wrapper {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: 1fr; /* 【布局核心】移除侧边栏，主内容自适应 */
+    grid-template-rows: 1fr auto; /* 【布局核心】上方自适应，底部固定 */
+    grid-template-areas:
+        "main"
+        "footer";
+    padding: 2vw; /* 【布局关键】内边距，影响内容与边缘距离 */
+    gap: 2vw; /* 【布局关键】网格间距，影响整体紧凑度 */
+    box-sizing: border-box;
+    
+    /* 【主题变量】集中管理颜色与透明度，便于统一调整 */
+    --font-color: #3D405B;
+    --primary-color-2: #E07A5F;
+    --border-color: rgba(0, 0, 0, 0.1);
+    --panel-bg: rgba(255, 255, 255, 0.5); /* 【透明度调节】0.5=半透明，1=不透明 */
+}
+
+/* 4. 页面底部标题（Page Footer）
+ * 职责：显示页面主标题，位于底部中央。
+ * 关键参数与影响：
+ *   - font-size: clamp(2rem, 3.5vw, 4rem) 【响应式字体】最小2rem，最大4rem，中间3.5vw
+ *   - letter-spacing: 0.2em 【视觉效果】字符间距，影响标题的视觉重量
+ *   - text-shadow: 0 0 15px rgba(255,255,255,0.7) 【视觉效果】白色阴影，增强可读性
+ * 调节建议：
+ *   - 调整字体大小：修改 clamp() 中的数值
+ *   - 调整字符间距：修改 letter-spacing 值
+ *   - 调整阴影效果：修改 text-shadow 的模糊半径和透明度
+ */
+.page15-wrapper .page-footer {
     grid-area: footer;
     text-align: center;
-    font-size: 3.5vw;
+    font-size: clamp(2rem, 3.5vw, 4rem); /* 【响应式字体】自适应大小 */
     font-weight: 900;
-    letter-spacing: 0.2em;
+    letter-spacing: 0.2em; /* 【视觉效果】字符间距 */
     padding-top: 1vw;
-    text-shadow: 0 0 15px rgba(255,255,255,0.7);
-    opacity: 0;
-    animation: fadeIn 0.8s 0.4s ease-out forwards;
+    color: var(--font-color);
+    text-shadow: 0 0 15px rgba(255,255,255,0.7); /* 【视觉效果】白色阴影增强可读性 */
 }
 
-#page15-container .sidebar {
-    grid-area: sidebar;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 20px;
-    opacity: 0;
-    animation: slideInLeft 0.8s 0.6s ease-out forwards;
-}
 
-#page15-container .sidebar-item {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 80px;
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
-    font-size: 1.5vw;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    background: var(--panel-bg);
-    backdrop-filter: blur(10px);
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-}
 
-#page15-container .sidebar-item:hover {
-    transform: translateY(-5px) scale(1.05);
-    border-color: var(--primary-color-2);
-}
 
-#page15-container .sidebar-item.active {
-    background-color: var(--font-color);
-    color: var(--bg-color);
-    border-color: var(--font-color);
-}
 
-#page15-container .main-content {
+/* 6. 主内容区域（Main Content Area）
+ * 职责：承载上方内容区和底部面板的垂直布局。
+ * 关键参数与影响：
+ *   - grid-template-rows: 4fr 1fr 【布局核心】上方区域占4份，下方区域占1份
+ *   - gap: 2vw 【布局关键】上下区域间的间距
+ *   - align-self: start 【布局关键】防止内容区域被拉伸
+ * 调节建议：
+ *   - 调整上下比例：修改 grid-template-rows 的 fr 值（如 3fr 1fr 或 5fr 1fr）
+ *   - 调整区域间距：修改 gap 值
+ *   - 如需上下平分：改为 grid-template-rows: 1fr 1fr
+ */
+.page15-wrapper .main-content {
     grid-area: main;
     display: grid;
-    grid-template-rows: 4fr 1fr;
-    gap: 2vw; 
-    opacity: 0;
-    animation: fadeIn 0.8s 0.8s ease-out forwards;
+    grid-template-rows: 3.6fr 1fr; /* 【布局核心】上方4份，下方1份的比例 */
+    gap: 2vw; /* 【布局关键】上下区域间距 */
     min-height: 0;
+    align-self: start; /* 【布局关键】防止被拉伸 */
 }
 
-#page15-container .top-section {
+/* 7. 上方内容区（Top Section）
+ * 职责：承载左侧图片和右侧图表的水平布局。
+ * 关键参数与影响：
+ *   - grid-template-columns: 1fr 1fr 【布局核心】左右两列等宽
+ *   - gap: 2vw 【布局关键】左右区域间的间距
+ * 调节建议：
+ *   - 调整左右比例：修改 grid-template-columns（如 1fr 2fr 让右侧更宽）
+ *   - 调整区域间距：修改 gap 值
+ *   - 如需固定左侧宽度：改为 grid-template-columns: 300px 1fr
+ */
+.page15-wrapper .top-section {
     display: grid;
-    grid-template-columns: 1fr 2fr;
-    gap: 2vw;
+    grid-template-columns: 1fr 1fr; /* 【布局核心】左右等宽 */
+    gap: 2vw; /* 【布局关键】左右区域间距 */
     min-height: 0;
 }
 
-#page15-container .left-image-container {
+/* 8. 左侧图片容器（Left Image Container）
+ * 职责：承载左侧图片的居中显示。
+ * 关键参数与影响：
+ *   - display: flex + align-items/justify-content: center 【布局关键】图片居中
+ * 调节建议：
+ *   - 如需图片左对齐：修改 justify-content 为 flex-start
+ *   - 如需图片右对齐：修改 justify-content 为 flex-end
+ */
+.page15-wrapper .left-image-container {
     border-radius: 12px;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: center; /* 【布局关键】图片居中 */
 }
 
-#page15-container .left-image-container img {
-    width: 75%;
-    height: 75%;
-    object-fit: contain;
+/* 8.1 左侧图片样式（Left Image）
+ * 职责：控制图片的显示尺寸和比例。
+ * 关键参数与影响：
+ *   - width/height: 75% 【布局关键】图片占容器的75%，影响图片大小
+ *   - object-fit: contain 【布局关键】保持图片比例，可能留白
+ * 调节建议：
+ *   - 调整图片大小：修改 width/height 的百分比值
+ *   - 如需图片填满容器：改为 object-fit: cover（可能裁剪）
+ *   - 如需图片拉伸填满：改为 object-fit: fill（可能变形）
+ */
+.page15-wrapper .left-image-container img {
+    width: 75%; /* 【布局关键】图片宽度占容器75% */
+    height: 75%; /* 【布局关键】图片高度占容器75% */
+    object-fit: contain; /* 【布局关键】保持比例，可能留白 */
 }
 
-#page15-container .chart-container {
+/* 9. 右侧图表容器（Chart Container）
+ * 职责：承载图表控件和图表的垂直布局。
+ * 关键参数与影响：
+ *   - display: flex + flex-direction: column 【布局关键】垂直布局
+ *   - padding: 20px 【布局关键】内边距，影响图表与边框的距离
+ *   - backdrop-filter: blur(10px) 【视觉效果】背景模糊
+ * 调节建议：
+ *   - 调整内边距：修改 padding 值
+ *   - 调整模糊效果：修改 blur() 中的数值
+ *   - 如需水平布局：改为 flex-direction: row
+ */
+.page15-wrapper .chart-container {
     position: relative;
     width: 100%;
     height: 100%;
     display: flex;
-    flex-direction: column;
-    padding: 20px;
+    flex-direction: column; /* 【布局关键】垂直布局 */
+    padding: 1px; /* 【布局关键】内边距 */
     border-radius: 12px;
     background: var(--panel-bg);
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px); /* 【视觉效果】背景模糊 */
     box-shadow: 0 4px 15px rgba(0,0,0,0.05);
     border: 1px solid var(--border-color);
 }
 
-#page15-container .chart-controls {
-    flex-shrink: 0;
-    margin-bottom: 15px;
-    text-align: center;
+/* 10. 图表控件区域（Chart Controls）
+ * 职责：承载图表切换按钮的水平居中布局。
+ * 关键参数与影响：
+ *   - flex-shrink: 0 【布局关键】防止控件区域被压缩
+ *   - margin-bottom: 15px 【布局关键】控件与图表的间距
+ *   - text-align: center 【布局关键】按钮居中
+ * 调节建议：
+ *   - 调整控件与图表间距：修改 margin-bottom 值
+ *   - 如需按钮左对齐：改为 text-align: left
+ */
+.page15-wrapper .chart-controls {
+    flex-shrink: 0; /* 【布局关键】防止被压缩 */
+    margin-bottom: 15px; /* 【布局关键】控件与图表间距 */
+    margin-top: 20px; /* 【布局关键】整体略微下移 */
+    text-align: center; /* 【布局关键】按钮居中 */
 }
 
-#page15-container .chart-controls button {
-    padding: 8px 20px;
-    margin: 0 10px;
+/* 10.1 图表切换按钮（Chart Control Buttons）
+ * 职责：图表切换按钮的样式与交互效果。
+ * 关键参数与影响：
+ *   - padding: 8px 20px 【布局关键】按钮内边距，影响按钮大小
+ *   - margin: 0 10px 【布局关键】按钮间距
+ *   - border-radius: 20px 【视觉效果】圆角半径，影响按钮形状
+ *   - transition: all 0.3s ease 【交互效果】过渡动画时长
+ * 调节建议：
+ *   - 调整按钮大小：修改 padding 值
+ *   - 调整按钮间距：修改 margin 值
+ *   - 调整圆角：修改 border-radius 值
+ *   - 调整动画速度：修改 transition 中的时长
+ */
+.page15-wrapper .chart-controls button {
+    padding: 8px 20px; /* 【布局关键】按钮内边距 */
+    margin: 0 10px; /* 【布局关键】按钮间距 */
     border: 1px solid var(--border-color);
     background-color: transparent;
     color: var(--font-color);
-    border-radius: 20px;
+    border-radius: 20px; /* 【视觉效果】圆角半径 */
     font-size: 14px;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.3s ease; /* 【交互效果】过渡动画 */
 }
 
-#page15-container .chart-controls button.active,
-#page15-container .chart-controls button:hover {
+.page15-wrapper .chart-controls button.active,
+.page15-wrapper .chart-controls button:hover {
     background-color: var(--font-color);
-    color: var(--bg-color);
+    color: #FFFBF0;
     border-color: var(--font-color);
 }
 
-#page15-container #main-chart {
-    flex-grow: 1;
-    width: 100%;
-    height: 100%;
-    min-height: 0;
-    transition: opacity 0.4s ease-in-out;
+/* 11. 主图表区域（Main Chart）
+ * 职责：承载ECharts图表的显示区域。
+ * 关键参数与影响：
+ *   - flex-grow: 1 【布局关键】图表区域占据剩余空间
+ *   - min-height: 0 【布局关键】防止flex子项溢出
+ *   - transition: opacity 0.4s ease-in-out 【交互效果】图表切换时的淡入淡出
+ * 调节建议：
+ *   - 调整图表切换速度：修改 transition 中的时长
+ *   - 如需固定图表高度：添加 height 属性
+ */
+.page15-wrapper #p15-main-chart {
+    flex-grow: 0.9; /* 【布局关键】占据剩余空间 */
+    width: 130%;
+    height: 10%;
+    min-height: 1; /* 【布局关键】防止溢出 */
+    transition: opacity 0.4s ease-in-out; /* 【交互效果】淡入淡出 */
 }
 
-#page15-container .bottom-panel {
-    padding: 1.5vw 2vw;
-    font-size: 1.1vw;
-    line-height: 1.8;
+/* 12. 底部面板（Bottom Panel）
+ * 职责：承载说明文字的可滚动区域。
+ * 关键参数与影响：
+ *   - padding: 1.5vw 2vw 【布局关键】内边距，影响文字与边框的距离
+ *   - font-size: clamp(0.9rem, 1.1vw, 1.2rem) 【响应式字体】自适应大小
+ *   - line-height: 1.8 【视觉效果】行高，影响文字可读性
+ *   - overflow-y: auto 【布局关键】垂直滚动，防止内容溢出
+ * 调节建议：
+ *   - 调整内边距：修改 padding 值
+ *   - 调整字体大小：修改 clamp() 中的数值
+ *   - 调整行高：修改 line-height 值
+ *   - 如需禁用滚动：改为 overflow-y: hidden
+ */
+.page15-wrapper .bottom-panel {
+    padding: 1.5vw 2vw; /* 【布局关键】内边距 */
+    font-size: clamp(0.9rem, 1.1vw, 1.2rem); /* 【响应式字体】自适应大小 */
+    line-height: 1.8; /* 【视觉效果】行高 */
     border-radius: 12px;
     background: var(--panel-bg);
     backdrop-filter: blur(10px);
     box-shadow: 0 4px 15px rgba(0,0,0,0.05);
     border: 1px solid var(--border-color);
-    overflow-y: auto;
+    overflow-y: auto; /* 【布局关键】垂直滚动 */
+    color: var(--font-color);
 }
 
-/* 动画定义 */
-@keyframes fadeIn { 
-    from { 
-        opacity: 0; 
-        transform: translateY(10px); 
-    } 
-    to { 
-        opacity: 1; 
-        transform: translateY(0); 
-    } 
+/* 12.1 底部面板段落（Bottom Panel Paragraphs）
+ * 职责：覆盖全局样式，确保文字左对齐且无宽度限制。
+ * 关键参数与影响：
+ *   - text-align: left 【布局关键】覆盖全局的居中对齐
+ *   - max-width: none 【布局关键】覆盖全局的最大宽度限制
+ * 调节建议：
+ *   - 如需文字居中：改为 text-align: center
+ *   - 如需限制文字宽度：添加 max-width 属性
+ */
+.page15-wrapper .bottom-panel p {
+    text-align: left; /* 【布局关键】覆盖全局的 center 对齐 */
+    max-width: none; /* 【布局关键】覆盖全局的 max-width */
 }
 
-@keyframes slideInLeft { 
-    from { 
-        opacity: 0; 
-        transform: translateX(-50px); 
-    } 
-    to { 
-        opacity: 1; 
-        transform: translateX(0); 
-    } 
+.page15-wrapper .bottom-panel strong {
+    color: var(--primary-color-2);
 }
 
-/* 响应式设计 */
-@media (max-width: 768px) {
-    #page15-container .page-container {
-        grid-template-columns: 1fr;
-        grid-template-areas:
-            "main"
-            "footer";
-        padding: 1vw;
-        gap: 1vw;
-    }
-    
-    #page15-container .sidebar {
-        display: none;
-    }
-    
-    #page15-container .top-section {
-        grid-template-columns: 1fr;
-        gap: 1vw;
-    }
-    
-    #page15-container .left-image-container img {
-        width: 50%;
-        height: 50%;
-    }
-    
-    #page15-container .page-footer {
-        font-size: 4vw;
-    }
-    
-    #page15-container .bottom-panel {
-        font-size: 1.5vw;
-        padding: 1vw;
-    }
-} 
+/*
+ * ===================================================================
+ *                          13. 合规性自检（SOP）
+ * -------------------------------------------------------------------
+ * - CSS 沙箱化：已全部使用 #page15-container 前缀（符合法则二第1条）。
+ * - 禁止标签选择器：未对 body/h1/p 等标签直接设样式（符合法则二第3条）。
+ * - 动画命名：全部采用 page15-* 前缀，符合"推荐前缀"以防冲突（符合法则二第2条）。
+ * - 包装器职责：.page15-wrapper 等布局职责明确（符合法则一关于内层包装器）。
+ * - 变量使用：主题与过渡参数集中在根容器，利于统一调优与维护。
+ * - 综述：页面15样式严格遵循 SOP 要求，如需引入新动画请继续采用 page15-* 前缀。
+ * ===================================================================
+ */

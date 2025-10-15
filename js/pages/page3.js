@@ -19,6 +19,6 @@
 
     observer.observe(container);
 
-    console.log('Page 3 (集采效果) 初始化完成');
+    console.log('Page 3 (目录页面) 初始化完成');
 
 })(); 

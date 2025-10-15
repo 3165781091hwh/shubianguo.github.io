@@ -1,24 +1,18 @@
-// Page16 - 推动规则创新页面脚本
+// js/pages/page16.js - 已根据项目架构进行重构和封装
+
 (function() {
-    'use strict';
-
-    // 等待DOM加载完成
+    // 确保在DOM加载完毕后执行，避免找不到元素
     document.addEventListener('DOMContentLoaded', function () {
-        // 初始化右侧图表 (图17)
-        initRightChart();
         
-        // 初始化左侧图表切换逻辑
-        initLeftChartToggle();
-        
-        // 监听窗口大小调整
-        window.addEventListener('resize', handleResize);
-    });
+        // 关键：将所有DOM查询限定在Page16的容器内，防止ID冲突
+        const pageContainer = document.getElementById('page16-container');
+        if (!pageContainer) {
+            // 如果页面不存在于DOM中，则不执行任何操作
+            return;
+        }
 
-    // 初始化右侧图表 - 四个地方联盟集采竞争强度与降价幅度
-    function initRightChart() {
-        const rightChartDom = document.getElementById('right-chart');
-        if (!rightChartDom) return;
-
+        // --- 右侧图表 (图17) ---
+        const rightChartDom = document.getElementById('page16-right-chart');
         const rightMyChart = echarts.init(rightChartDom);
         const rightOption = {
             title: {
@@ -115,25 +109,16 @@
                 }
             ]
         };
-        
         rightMyChart.setOption(rightOption);
-        
-        // 保存图表实例到全局变量，用于resize
-        window.page16RightChart = rightMyChart;
-    }
 
-    // 初始化左侧图表切换逻辑
-    function initLeftChartToggle() {
-        const btnA = document.getElementById('btn-chart-a');
-        const btnB = document.getElementById('btn-chart-b');
-        const chartAImg = document.getElementById('chart-a-img');
-        const chartBContainer = document.getElementById('chart-b-container');
-
-        if (!btnA || !btnB || !chartAImg || !chartBContainer) return;
+        // --- 左侧图表切换逻辑 (图A 和 图B/图16) ---
+        const btnA = document.getElementById('page16-btn-chart-a');
+        const btnB = document.getElementById('page16-btn-chart-b');
+        const chartAImg = document.getElementById('page16-chart-a-img');
+        const chartBContainer = document.getElementById('page16-chart-b-container');
 
         let chartB = null;
 
-        // 图B的配置选项
         const optionB = {
             grid: {
                 left: '3%',
@@ -169,7 +154,6 @@
             }]
         };
 
-        // 渲染左侧图表的函数
         function renderLeftChart(type) {
             if (type === 'A') {
                 chartAImg.style.opacity = 1;
@@ -182,35 +166,27 @@
                 btnB.classList.add('active');
                 btnA.classList.remove('active');
                 
-                // 懒加载图B，只在需要时创建
                 if (!chartB) {
                     chartB = echarts.init(chartBContainer);
                     chartB.setOption(optionB);
-                    // 保存图表实例到全局变量，用于resize
-                    window.page16ChartB = chartB;
                 }
             }
         }
 
-        // 绑定按钮点击事件
         btnA.addEventListener('click', () => renderLeftChart('A'));
         btnB.addEventListener('click', () => renderLeftChart('B'));
 
-        // 默认显示图A
         renderLeftChart('A');
-    }
-
-    // 处理窗口大小调整
-    function handleResize() {
-        // 调整右侧图表大小
-        if (window.page16RightChart) {
-            window.page16RightChart.resize();
-        }
         
-        // 调整左侧图B大小
-        if (window.page16ChartB) {
-            window.page16ChartB.resize();
-        }
-    }
-
-})(); 
+        // --- 响应式图表：使用 ResizeObserver 监听容器尺寸变化 ---
+        const observer = new ResizeObserver(() => {
+            rightMyChart.resize();
+            if (chartB) {
+                chartB.resize();
+            }
+        });
+        
+        // 监听主容器的尺寸变化
+        observer.observe(pageContainer);
+    });
+})();
