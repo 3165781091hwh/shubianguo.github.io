@@ -16,112 +16,161 @@
  * - 所有选择器均以 #page8-container 开头，确保作用域限定在页面8。
  * - 页面内部包装层 .page-container 承担网格布局与内容分区职责。
  * - 禁止直接给 body/h1/p 等标签设样式；必须通过带前缀的类选择器。
- * - 动画如需新增，建议采用 page8-* 前缀命名以避免跨页冲突。
+ * - 动画命名采用 page8-* 前缀，避免跨页冲突。
  * ===================================================================
  */
 
-/* Page 8 - Final Fix: Isolate Grid Context */
+/* Page 8 - Sandboxed Version */
 
-/* Reset the root container to be a simple block, letting main.css handle it */
 #page8-container {
-    display: block !important;
-    /* Remove all layout properties from the root container */
-}
-
-/* Apply ALL layout and styling to the inner .page-container */
-#page8-container .page-container {
-    /* Establish the Grid Layout */
-    background-image: url('../../image/（现状）68a3f53e156c5.png');
-    background-size: cover;
-    background-position: center;
-    display: grid;
-    grid-template-columns: 1fr 320px;
-    grid-template-rows: 100px auto 80px;
-    grid-template-areas:
-        "header header"
-        "main infobar"
-        "footer footer";
-    
-    /* Make it fill the parent section perfectly */
-    width: 100%;
-    height: 100%;
-
-    /* Apply padding and gap here, inside the clean container */
-    padding: 2.5vw;
-    gap: 2vw;
-    box-sizing: border-box;
-
-    /* Theming */
-    --bg-color: #FFFBF0;
-    --font-color: #4A4A4A;
-    --font-color-light: #7A7A7A;
-    --color-decrease: #65BB5D;
-    --color-increase: #D9534F;
+    /* Page-specific variables */
+    --primary-color-green: #65BB5D;
+    --primary-color-red: #D9534F;
     --border-color: rgba(0, 0, 0, 0.1);
-    --panel-bg: rgba(255, 255, 255, 0.1);
-    --font-family-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
-    font-family: var(--font-family-main);
-    color: var(--font-color);
-    background-color: var(--bg-color);
 }
 
-#page8-container * { 
-    margin: 0; 
-    padding: 0; 
+#page8-container .page-container {
+    position: absolute; 
+    display: grid;
+    grid-template-rows: 1fr auto; /* 【布局核心】上方自适应，底部固定 */
+    grid-template-columns: 1fr; /* 【布局核心】移除左侧栏，主内容占满 */
+    grid-template-areas:
+        "main"
+        "footer";
+    height: 100%; /* 【布局关键】撑满父容器 */
+    width: 100%;
+    padding: 2vw; /* 【布局关键】内边距 */
+    gap: 2vw; /* 【布局关键】网格间距 */
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    color: #3D405B;
+    background-image: url('../../image/（现状）68a3f53e156c5.png');
+    background-size: cover; /* 【布局关键】cover=裁剪适配，contain=完整显示 */
+    background-position: center;
+    background-repeat: no-repeat;
     box-sizing: border-box; 
 }
 
-/* All other styles remain the same, but are now relative to the .page-container grid */
-#page8-container .page-header { grid-area: header; display: flex; align-items: center; justify-content: space-between; /* 移除边框，因为标题已移到main-content内部 */ }
-#page8-container .main-title { font-size: 3.2vw; font-weight: 900; letter-spacing: 0.05em; }
-#page8-container .page-number { font-size: 1.2vw; font-weight: 400; color: var(--font-color-light); }
-#page8-container .page-number span { font-weight: 700; color: var(--color-decrease); }
+@keyframes page8-fadeIn { 
+    from { opacity: 0; transform: translateY(10px); } 
+    to { opacity: 1; transform: translateY(0); } 
+}
 
-/* 页面标题样式 - 位于page-indicator右侧 */
-#page8-container .page-title {
-    position: absolute;
-    top: 2vw;
-    left: 12vw; /* 位于Page 8指示器右侧 */
-    font-size: 2.8vw;
+@keyframes page8-slideInUp { 
+    from { opacity: 0; transform: translateY(30px); } 
+    to { opacity: 1; transform: translateY(0); } 
+}
+
+@keyframes page8-slideInLeft { 
+    from { opacity: 0; transform: translateX(-50px); } 
+    to { opacity: 1; transform: translateX(0); } 
+}
+
+#page8-container .main-content {
+    grid-area: main;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3vw;
+    width: 100%; /* 确保主内容占满整个宽度 */
+}
+
+#page8-container .chart-wrapper {
+    width: 65%;
+    height: 90%;
+    display: flex;
+    flex-direction: column;
+    animation: page8-slideInUp 0.8s 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+#page8-container .chart-controls {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 15px;
+    gap: 10px;
+}
+
+#page8-container .control-btn {
+    padding: 10px 25px;
+    font-size: 1vw;
+    border: 1px solid var(--border-color);
+    background: transparent;
+    color: #3D405B;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#page8-container .control-btn:hover {
+    background-color: rgba(0,0,0,0.03);
+    border-color: #3D405B;
+}
+
+#page8-container .control-btn.active {
+    background-color: #3D405B;
+    color: #FFFBF0;
+    border-color: #3D405B;
+}
+
+#page8-container #chart-container {
+    flex-grow: 1;
+    min-height: 0;
+}
+
+#page8-container .explanation-card {
+    width: 30%;
+    height: auto;
+    padding: 2vw;
+    background-color: rgba(255, 255, 255, 0.3);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    animation: page8-slideInUp 0.8s 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+#page8-container .explanation-card h3 {
+    font-size: 1.6vw;
+    margin-top: 0;
+    margin-bottom: 1.5vh;
+    border-left: 4px solid var(--primary-color-green);
+    padding-left: 1vw;
+}
+
+#page8-container .explanation-card p {
+    font-size: 1.1vw;
+    line-height: 1.8;
+    font-weight: 300;
+}
+
+#page8-container strong {
+    color: #E07A5F;
     font-weight: 700;
-    color: var(--color-decrease);
-    z-index: 10;
 }
 
-/* 调整主内容区域 */
-#page8-container .main-content { 
-    grid-area: main; 
-    display: flex; 
-    flex-direction: column; 
-    min-height: 0; /* Crucial for flex children in a grid cell */
+#page8-container .footer-title {
+    grid-area: footer;
+    text-align: center;
+    font-size: 5.5vw;
+    font-weight: 900;
+    padding-bottom: 2vh;
+    color: #4A4A4A;
+    letter-spacing: 0.5vw;
+    text-shadow: 2px 2px 5px rgba(0,0,0,0.05);
+    animation: page8-fadeIn 1s 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
 }
 
-/* 移除侧边栏相关样式 */
-
-#page8-container .info-panel { grid-area: infobar; padding: 30px; border-radius: 12px; background: var(--panel-bg); backdrop-filter: blur(12px); box-shadow: 0 4px 20px rgba(0,0,0,0.04); border: 1px solid var(--border-color); position: relative; }
-#page8-container .info-panel::before { content: ''; position: absolute; left: 30px; top: 35px; width: 5px; height: 2.5vh; background-color: var(--color-decrease); border-radius: 3px; }
-#page8-container .info-panel h3 { font-size: 1.5vw; margin-bottom: 25px; font-weight: 600; padding-left: 20px; }
-#page8-container .info-panel p { font-size: 1vw; line-height: 2.2; font-weight: 300; margin-bottom: 1.5em; }
-#page8-container .info-panel strong { font-weight: 600; color: #E07A5F; }
-
-#page8-container .main-content { 
-    grid-area: main; 
-    display: flex; 
-    flex-direction: column; 
-    min-height: 0; /* Crucial for flex children in a grid cell */
-}
-#page8-container .chart-controls { display: flex; justify-content: center; margin-bottom: 15px; gap: 10px; }
-#page8-container .control-btn { padding: 10px 25px; font-size: 1vw; border: 1px solid var(--border-color); background: transparent; color: var(--font-color); border-radius: 25px; cursor: pointer; transition: all 0.3s ease; }
-#page8-container .control-btn:hover { background-color: rgba(0,0,0,0.03); border-color: var(--font-color); }
-#page8-container .control-btn.active { background-color: var(--font-color); color: var(--bg-color); border-color: var(--font-color); }
-
-#page8-container #chart-container { 
-    flex-grow: 1; /* Allow chart to fill available space in the flex container */
-    min-height: 0; /* Allow chart to shrink if needed */
-}
-
-#page8-container .page-footer { grid-area: footer; display: flex; align-items: center; justify-content: center; }
-#page8-container .chart-title { font-size: 1.2vw; font-weight: 500; color: var(--font-color-light); text-align: center; }
+/*
+ * ===================================================================
+ *                          8. 合规性自检（SOP）
+ * -------------------------------------------------------------------
+ * - CSS 沙箱化：选择器已使用 #page8-container 前缀（符合法则二第1条）。
+ * - 禁止标签选择器：未对 body/h1/p 等标签直接设样式（符合法则二第3条）。
+ * - 动画命名：全部使用 page8-* 前缀，避免跨页冲突（符合法则二第2条）。
+ * - 包装器职责：.page-container 管理网格布局与分区（符合法则一）。
+ * - 综述：页面8样式遵循 SOP 要求，后续扩展请保持前缀与沙箱策略。
+ * ===================================================================
+ */
 
 /*
  * ===================================================================

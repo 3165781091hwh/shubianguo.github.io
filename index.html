@@ -351,34 +351,31 @@
         <!-- 页面7 - 集采前后医疗费用变化 -->
         <section id="page8-container" class="page-section">
             <div class="page-indicator">Page 7</div>
-            <div class="page-title">降低患者负担</div>
-            <!-- page8.html 的 <body.内容从这里开始 -->
             <div class="page-container">
-                <header class="page-header">
-                    <!-- 保留原有的header结构 -->
-                </header>
-                
-                <main class="main-content">
-                    <div class="chart-controls">
-                        <button id="show-change-rate" class="control-btn active">费用变化率</button>
-                        <button id="show-composition" class="control-btn">费用构成流转</button>
+                <!-- 主内容区 -->
+                <div class="main-content">
+                    <!-- 图表区域 -->
+                    <div class="chart-wrapper">
+                        <div class="chart-controls">
+                            <button id="show-change-rate" class="control-btn active">费用变化率</button>
+                            <button id="show-composition" class="control-btn">费用构成流转</button>
+                        </div>
+                        <div id="chart-container"></div>
                     </div>
-                    <div id="chart-container"></div>
-                </main>
 
-                <aside class="info-panel">
-                    <h3>历次集采……</h3>
-                    <div id="info-text">
+                    <!-- 文字解释区域 -->
+                    <div class="explanation-card">
+                        <h3>历次集采……</h3>
                         <p><strong>降费成效显著：</strong>药品相关费用降幅最为明显，直接体现了集采政策的核心成效。</p>
                         <p><strong>结构腾笼换鸟：</strong>部分体现医务价值的项目（如耗材）费用呈<strong>正增长</strong>，反映了医疗费用结构的优化调整，而非一味压缩。</p>
                     </div>
-                </aside>
+                </div>
 
-                <footer class="page-footer">
-                    <div id="chart-title-container" class="chart-title"></div>
-                </footer>
+                <!-- 底部大标题 -->
+                <div class="footer-title">
+                    降低患者负担
+                </div>
             </div>
-            <!-- page8.html 的 <body> 内容在这里结束 -->
         </section>
         <!-- ▲▲▲ PAGE8 HTML CONTENT END ▲▲▲ -->
 
@@ -389,7 +386,6 @@
             <div class="page-wrapper">
                 <main class="main-content">
                     <header class="page-header">
-                        <h1 class="title">政策驱动下的市场响应与质量保证</h1>
                     </header>
 
                     <div class="content-grid">

@@ -26,8 +26,8 @@
         "footer";
     height: 100%; /* 【布局关键】撑满父容器 */
     width: 100%;
-    padding: 2vw; /* 【布局关键】内边距 */
-    gap: 2vw; /* 【布局关键】网格间距 */
+    padding: 1vw; /* 增加内边距，创造更多留白 */
+    gap: 1vw; /* 增加网格间距 */
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
     color: #3D405B;
     background-image: url('../../image/（现状）68a3f53e156c5.png');
@@ -45,6 +45,7 @@
     grid-area: main;
     display: flex;
     flex-direction: column;
+    gap: 1vw; /* 增加内容区域间距 */
     opacity: 1; /* 取消淡入效果 */
 }
 
@@ -67,10 +68,12 @@
 
 #page9-container .content-grid {
     display: grid;
-    grid-template-columns: 55fr 45fr;
-    gap: 4vw;
+    grid-template-columns: 60fr 40fr; /* 调整比例，图表区域更大 */
+    gap: 5vw; /* 增加间距，创造更多留白 */
     flex-grow: 1;
     background: rgba(255, 255, 255, 0.1);
+    padding: 2vw; /* 增加内边距 */
+    border-radius: 12px; /* 添加圆角 */
     opacity: 1; /* 取消淡入效果 */
 }
 
@@ -80,22 +83,26 @@
     opacity: 1; /* 取消淡入效果 */
 }
 #page9-container .chart-section h3 {
-    font-size: 1.6vw;
+    font-size: 1.8vw; /* 增大标题字体 */
     font-weight: 600;
-    margin-bottom: 1.5vw;
+    margin-bottom: 2vw; /* 增加标题下方间距 */
     text-align: left;
+    color: var(--primary-color);
 }
 #page9-container #page9-chart-container {
     width: 100%;
-    height: 35vh; 
+    height: 45vh; /* 显著增加图表高度，避免挤扁 */
+    min-height: 300px; /* 设置最小高度 */
 }
 #page9-container .chart-summary {
-    font-size: 1vw;
+    font-size: 1.1vw; /* 增大字体 */
     color: #666;
-    margin-top: 1.5vw;
+    margin-top: 2vw; /* 增加上方间距 */
     line-height: 1.8;
-    padding-left: 1vw;
-    border-left: 3px solid var(--green-color);
+    padding: 1.5vw; /* 增加内边距 */
+    border-left: 4px solid var(--green-color); /* 加粗边框 */
+    background: rgba(255, 255, 255, 0.2); /* 添加背景色 */
+    border-radius: 8px; /* 添加圆角 */
     text-align: left;
 }
 
@@ -103,32 +110,38 @@
     opacity: 1; /* 取消淡入效果 */
 }
 #page9-container .rules-section h3 {
-    font-size: 1.6vw;
+    font-size: 1.8vw; /* 增大标题字体 */
     font-weight: 600;
-    margin-bottom: 1.5vw;
+    margin-bottom: 2vw; /* 增加标题下方间距 */
     text-align: left;
+    color: var(--primary-color);
 }
 #page9-container .accordion-item {
     border-bottom: 1px solid var(--border-color);
+    margin-bottom: 1vw; /* 增加项之间的间距 */
 }
 #page9-container .accordion-header {
-    padding: 1.2vw 0;
-    font-size: 1.1vw;
+    padding: 1.5vw 0; /* 增加内边距 */
+    font-size: 1.2vw; /* 增大字体 */
     font-weight: 500;
     cursor: pointer;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    transition: color 0.3s;
+    transition: color 0.3s, background-color 0.3s;
+    border-radius: 6px; /* 添加圆角 */
+    padding-left: 1vw; /* 左侧内边距 */
 }
 #page9-container .accordion-header:hover {
     color: var(--primary-color);
+    background-color: rgba(184, 92, 92, 0.05); /* 悬停背景色 */
 }
 #page9-container .accordion-header::after {
     content: '+';
-    font-size: 1.5vw;
+    font-size: 1.8vw; /* 增大图标 */
     font-weight: 300;
     transition: transform 0.3s ease;
+    margin-right: 1vw; /* 右侧间距 */
 }
 #page9-container .accordion-item.active .accordion-header::after {
     transform: rotate(45deg);
@@ -139,14 +152,17 @@
     transition: max-height 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 #page9-container .accordion-content-inner {
-    padding-bottom: 1.5vw;
-    font-size: 0.95vw;
+    padding: 2vw; /* 增加内边距 */
+    font-size: 1.05vw; /* 增大字体 */
     line-height: 1.9;
     color: #555;
     text-align: left;
+    background: rgba(255, 255, 255, 0.1); /* 添加背景色 */
+    border-radius: 0 0 8px 8px; /* 底部圆角 */
+    margin-top: -1px; /* 与标题对齐 */
 }
 #page9-container .accordion-item.active .accordion-content {
-     max-height: 500px;
+     max-height: 600px; /* 增加最大高度 */
 }
 #page9-container .highlight-box {
     background: rgba(184, 92, 92, 0.08);
@@ -159,14 +175,17 @@
 #page9-container strong { color: #E07A5F; }
 
 #page9-container .page-conclusion {
+    /* 【手动调整】与page10底部标题保持一致 */
     text-align: center;
-    font-size: 3.2vw;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    margin-top: 3vw;
-    padding-bottom: 2vw;
+    font-size: clamp(2.5vw, 3.5vw, 4.5vw); /* 【手动调整】字体大小：与page10一致 */
+    font-weight: 900; /* 【手动调整】字体粗细：与page10一致 */
+    letter-spacing: 0.2em; /* 【手动调整】字母间距：与page10一致 */
+    margin-top: -8vw; /* 【手动调整】上移20%：从4vw改为2vw */
+    padding: 3vw 0; /* 增加上下内边距 */
     opacity: 1; /* 取消淡入效果 */
-    color: var(--p10-primary-text-color);
+    color: #3D405B; /* 【手动调整】颜色：与page10一致 */
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1); /* 添加阴影效果 */
+    line-height: 1.2; /* 调整行高 */
 }
 
 @keyframes page9-fadeIn { 
